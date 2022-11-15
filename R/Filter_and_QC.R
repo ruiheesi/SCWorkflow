@@ -34,6 +34,8 @@
 #' @import svglite 
 #' @import ggplot2
 #' 
+#' @export
+#' 
 #' @return Seurat Objects, Filters and Plots QC (before and after filtering) on samples. Takes a dataset of filtered h5 files (each representing one sample), and performs basic QC across several metrics. Also puts the data into a Seurat Object, the basic data structure for Seurat Single Cell analysis. This template is Step 1 of the basic Single-Cell RNA-seq workflow.
 
 
