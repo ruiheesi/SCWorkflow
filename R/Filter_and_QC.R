@@ -68,6 +68,8 @@ Filter_and_QC <- function(H5_Files,
   
     if(missing(H5_Files)){ stop("No input dataset.") }
   
+    library(Seurat)  
+  
     #image:png
     imageType = "png"
     localFilePaths <- H5_Files
