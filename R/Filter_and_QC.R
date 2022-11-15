@@ -33,6 +33,9 @@
 #' @import stringr
 #' @import svglite 
 #' @import ggplot2
+#' @import png
+#' @import Sys
+#' @import grid
 #' 
 #' @export
 #' 
@@ -111,8 +114,8 @@ Filter_and_QC <- function(H5_Files,
          mitoch = "^MT-"
      } else{
          mitoch = "^mt-"
-         cc.genes$g2m.genes= str_to_title(cc.genes$g2m.genes)
-         cc.genes$s.genes = str_to_title(cc.genes$s.genes)
+         Seurat::cc.genes$g2m.genes= str_to_title(Seurat::cc.genes$g2m.genes)
+         Seurat::cc.genes$s.genes = str_to_title(Seurat::cc.genes$s.genes)
      }
 
     seurat_object <- function(i) {
@@ -332,10 +335,13 @@ Filter_and_QC <- function(H5_Files,
     imageWidth = min(1000*length(so.list[[1]][[3]]),15000)
     imageHeight = min(1000*length(so.grobs.list)*2,24000)
     dpi = 300
-
+  
+    timestamp_png = format(Sys.time(), "%Y_%m_%d_%H_%M_%s")
+    png_name = paste0("Filter_and_QC_",timestamp_png,".png")
+    
     if (imageType == 'png') {
     png(
-      filename="Filter_and_QC.png",
+      filename=png_name,
       width=imageWidth,
       height=imageHeight,
       units="px",
@@ -346,7 +352,7 @@ Filter_and_QC <- function(H5_Files,
     } else {
         library(svglite)
         svglite::svglite(
-        file="Filter_and_QC.png",
+        file=png_name,
         width=round(imageWidth/dpi,digits=2),
         height=round(imageHeight/dpi,digits=2),
         pointsize=1,
@@ -359,7 +365,11 @@ Filter_and_QC <- function(H5_Files,
     for(i in 1:length(so.grobs2.list)){grobdat=append(grobdat,list(so.grobs2.list[[i]])) }
     
     grid.arrange((arrangeGrob(grobs=grobdat,nrow=length(grobdat))),nrow=1)
-
+    
+    dev.off()
+    display_png <- readPNG(png_name)
+    grid::grid.raster(display_png)
+    
     cellcount.nf <- lapply(so.nf.list, function(x) dim(x)[2])
     cellcount.f <- lapply(so.f.list, function(x) dim(x)[2])
     sum.before <- sum(unlist(cellcount.nf))
