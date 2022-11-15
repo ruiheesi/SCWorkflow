@@ -115,8 +115,8 @@ Filter_and_QC <- function(H5_Files,
          mitoch = "^MT-"
      } else{
          mitoch = "^mt-"
-         Seurat::cc.genes$g2m.genes= str_to_title(Seurat::cc.genes$g2m.genes)
-         Seurat::cc.genes$s.genes = str_to_title(Seurat::cc.genes$s.genes)
+         cc.genes$g2m.genes= str_to_title(cc.genes$g2m.genes)
+         cc.genes$s.genes = str_to_title(cc.genes$s.genes)
      }
 
     seurat_object <- function(i) {
