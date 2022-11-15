@@ -3,7 +3,6 @@
 export(Filter_and_QC)
 import(RColorBrewer)
 import(Seurat)
-import(Sys)
 import(ggplot2)
 import(grid)
 import(gridExtra)

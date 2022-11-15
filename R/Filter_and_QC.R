@@ -34,7 +34,6 @@
 #' @import svglite 
 #' @import ggplot2
 #' @import png
-#' @import Sys
 #' @import grid
 #' 
 #' @export
