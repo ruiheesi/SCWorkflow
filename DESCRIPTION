@@ -38,7 +38,6 @@ Imports:
     xfun (>= 0.32),
     zip (>= 2.2.0),
     ComplexHeatmap (>= 2.10.0),
-    GenomeInfoDbData (>= 1.2.6),
     MAST (>= 1.20.0),
     SingleR (>= 1.8.1),
     BiocManager,
