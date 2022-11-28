@@ -6,24 +6,20 @@
 #' @param Gene Default values: Gapdh, GAPDH. Please enter genes which you would like to visualize. If you don't know what genes to look at, consider consulting your DEG table for interest contrasts. 
 #' @param Assay Default value: SCT. Select from SCT,RNA,integrated. Select Assay to Plot (default is SCT).
 #' @param Max_sample Default value: 10000. Random subsampling of cells without replacement.  At the moment only ten thousand cells can be displayed in 3d tSNE viewer.
-#' @param On_NIDAP Default value: false. This option is to use the API calls
 #' 
 #' @import Seurat 
-#' @import httr
-#' @import jsonlite 
 #' @import plyr 
 #' 
 #' @export
 #' 
-#' @return return the  Register the output dataset on phonograph2 and ret
+#' @return return the proccessed 3d coordinate dataset
 
 
 
 tSNE_3D_Coordinates <- function(Combine_and_Renormalize,
                                 Gene = c("Gapdh","GAPDH"),
                                 Assay = "SCT",
-                                Max_sample = 10000,
-                                On_NIDAP = FALSE) {
+                                Max_sample = 10000) {
   
   ## -------------------------------- ##
   ## User-Defined Template Parameters ##
@@ -74,7 +70,7 @@ tSNE_3D_Coordinates <- function(Combine_and_Renormalize,
   colnames(gene.mat)<-gene
   
   # Run TSNE on the imported dataset
-  yourseuratobject <- RunTSNE(object = so, reduction = "pca", dim.embed = 3, seed.use = 1)
+  yourseuratobject <- Seurat::RunTSNE(object = so, reduction = "pca", dim.embed = 3, seed.use = 1)
   
   # Gather spatial coordinates for cells
   x <- yourseuratobject[["tsne"]]@cell.embeddings[,1]
