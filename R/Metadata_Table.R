@@ -4,11 +4,11 @@
 # Example https://nidap.nih.gov/workspace/vector/view/ri.vector.main.workbook.d9fbfd7b-fb08-4814-ae16-7327cb7f4f37?branch=master
 
 
-#' @title Extracting meta.data and reductions slots from Seurat Object
-#' @description Returns the per cell metadata and dimension embeddings (optional) of the Seurat Object as a data table.
+#' @title Extracting meta.data and reductions slots from Seurat-class object
+#' @description Returns the per cell metadata and dimension embeddings (optional) of the Seurat object as a data table.
 #' @details Exposes the metadata of any combined Seurat object, though it is recommended to input a SingleR annotated Seurat Object.
 #' 
-#' @param SO object of class Seurat
+#' @param SO Seurat-class object
 #' @param return.cell.embeddings If TRUE, cell embeddings from dimensional reductions present in the Seurat Object are added to the output metadata table
 #' 
 #' @importFrom Seurat AddMetaData
