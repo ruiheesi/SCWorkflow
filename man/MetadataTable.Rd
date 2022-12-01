@@ -2,12 +2,12 @@
 % Please edit documentation in R/Metadata_Table.R
 \name{MetadataTable}
 \alias{MetadataTable}
-\title{Extracting meta.data and reductions slots from Seurat Object}
+\title{Extracting meta.data and reductions slots from Seurat-class object}
 \usage{
 MetadataTable(SO, return.cell.embeddings = FALSE)
 }
 \arguments{
-\item{SO}{object of class Seurat}
+\item{SO}{Seurat-class object}
 
 \item{return.cell.embeddings}{If TRUE, cell embeddings from dimensional reductions present in the Seurat Object are added to the output metadata table}
 }
@@ -15,7 +15,7 @@ MetadataTable(SO, return.cell.embeddings = FALSE)
 a data.frame extracted from the Seurat object
 }
 \description{
-Returns the per cell metadata and dimension embeddings (optional) of the Seurat Object as a data table.
+Returns the per cell metadata and dimension embeddings (optional) of the Seurat object as a data table.
 }
 \details{
 Exposes the metadata of any combined Seurat object, though it is recommended to input a SingleR annotated Seurat Object.
