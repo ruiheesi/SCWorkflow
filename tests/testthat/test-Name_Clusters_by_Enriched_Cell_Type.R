@@ -1,8 +1,6 @@
 # load data
 seurat.object <- readRDS(test_path("fixtures", "SO_moduleScore.rds"))
-
 metadata <- read.csv(test_path("fixtures", "Cell_Metadata.csv"))
-
 identities_match <- read.csv(test_path("fixtures", "ClusterNames_match.csv"))
 identities_diff <- read.csv(test_path("fixtures", "ClusterNames_diff.csv"))
 identities_oneMore <- read.csv(test_path("fixtures", "ClusterNames_oneMore.csv"))

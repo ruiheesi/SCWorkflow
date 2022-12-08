@@ -1,7 +1,6 @@
 # load data
 seurat.object <-readRDS(test_path("fixtures", "SO_moduleScore.rds"))
 
-
 # run tests
 test_that("reductions are returned", {
   
