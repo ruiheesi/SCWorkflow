@@ -48,6 +48,9 @@ Imports:
     gridExtra (>= 2.3),
     RColorBrewer (>= 1.1-3),
     Seurat (>= 4.1.1),
-    png
+    png,
+    httr,
+    jsonlite,
+    plyr
 Config/testthat/edition: 3
 
