@@ -5,7 +5,7 @@
 #' @param SO Seurat-class object
 #' 
 #' @importFrom methods slotNames
-#'#' 
+#' 
 #'   
 #' @export
 #' @return A table (data.frame) with the number of cells per each sample name (column names)
