@@ -21,6 +21,9 @@
 #' @import purrr
 #' @import magrittr
 #' @import tidyverse
+#' @import dplyr
+#' @import limma
+#' @import statmod
 #'   
 #' @export
 
@@ -226,7 +229,7 @@ Pseudobulk_DEG <- function(so,
     keep = meta %>%
       dplyr::count(cell_type, label) %>%
       group_by(cell_type) %>%
-      filter(all(n >= min_cells)) %>%
+      dplyr::filter(all(n >= min_cells)) %>%
       pull(cell_type) %>%
       unique()
     
