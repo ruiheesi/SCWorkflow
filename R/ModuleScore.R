@@ -32,6 +32,7 @@
   #' @import grid
   #' @import data.table
   #' @import utils
+  #' @importFrom dplyr select
   #'   
   #' @export
 
