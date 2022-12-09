@@ -1,9 +1,9 @@
 test_that("Test Dual labeling", {
   
-  obj <- readRDS("/rstudio-files/ccbr-data/users/maggie/SCWorkflow/tests/testthat/fixtures/SO_moduleScore.rds")
-  markertypes <- c("SCT","protein")
+  obj <- readRDS(test_path("fixtures", "SO_moduleScore.rds"))
+  markertypes <- c("SCT")
   reductions <- c("tsne","umap")
-  genenames <- list(geneset2 <- c("badgene","Cd8a"),gene1 = c("Cd8a","Cd4"))
+  genenames <- list(geneset2 <- c("Gapdh","Cd8a"),gene1 = c("Cd8a","Cd4"))
   for(g in genenames){
     for(m in markertypes){
       for(r in reductions){
