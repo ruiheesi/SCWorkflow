@@ -14,13 +14,13 @@ DotplotMet(
 )
 }
 \arguments{
+\item{metadata}{Metadata category to plot}
+
 \item{cell.type}{Column that contains the cell type information}
 
 \item{dot.color}{Dot color (default is "dark red")}
 
-\item{input.dataset}{}
-
-\item{metadata.category.to.plot}{}
+\item{input.dataset}{Seurat Object}
 
 \item{sample}{Column that contains sample id}
 
