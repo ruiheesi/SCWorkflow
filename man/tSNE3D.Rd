@@ -9,6 +9,7 @@ tSNE3D(
   color.variable,
   label.variable,
   fileName = "plot.html",
+  save.plot = FALSE,
   npcs = 15
 )
 }
@@ -19,9 +20,11 @@ tSNE3D(
 
 \item{label.variable}{Metadata column to use for label}
 
-\item{fileName}{Filename for saving plot}
+\item{fileName}{Filename for saving plot (default is "plot.html")}
 
-\item{npcs}{Number of PC's}
+\item{save.plot}{Save plot (default is FALSE)}
+
+\item{npcs}{Number of PC's (default is 15)}
 }
 \description{
 Returns 3D tSNE plot for seurat object
