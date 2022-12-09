@@ -28,6 +28,7 @@
 #' @import pheatmap
 #' @import dendsort
 #' @import dendextend
+#' @import colorspace
 #'   
 #' @export
 #'   
