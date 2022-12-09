@@ -2,3 +2,5 @@
 .nfs*
 *.png
 Rcheck.txt
+.Rproj.user
+NAMESPACE
