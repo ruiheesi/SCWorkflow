@@ -1,6 +1,6 @@
 test_that("Produce heatmap and return filtered dataframe", {
   
-      seurat_object <- readRDS("/rstudio-files/ccbr-data/users/maggie/SCWorkflow/tests/testthat/fixtures/SO_moduleScore.rds")
+      obj <- readRDS(test_path("fixtures", "SO_moduleScore.rds"))
       sample_names <- c("1_E13","2_E15","3_Newborn","4_Adult")
       metadata_to_plot <- c("orig_ident","Likely_CellType")
       transcripts_to_plot = c("Epcam","Aire","Fezf2","Pigr","Ly6d","Spink5","Ivl","Krt10","Gapdh","Cd8a","Foxp3","Cd4")
@@ -8,7 +8,7 @@ test_that("Produce heatmap and return filtered dataframe", {
       plot_title <- "Heatmap_IO_test"
       trim_outliers_percentage <- 0.01
       
-      heatplot <- Heatmap(object = seurat_object,
+      heatplot <- Heatmap(object = obj,
                           sample.names = sample_names,
                           metadata = metadata_to_plot,
                           transcripts = transcripts_to_plot,
