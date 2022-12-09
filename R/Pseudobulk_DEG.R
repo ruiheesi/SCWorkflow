@@ -1,6 +1,7 @@
 # This code comes from NIDAP 'Pseudobulk DEG [scRNA-seq][CCBR]' code template
 # Template Manager https://nidap.nih.gov/workspace/vector/templates/ri.vector.main.template.07c5b878-ada6-4cd8-9f61-e312f8491904
 # Documentation https://nidap.nih.gov/workspace/notepad/view/ri.notepad.main.notepad.422102e6-4d67-4ec9-baf7-e4f1fd78e0a8
+# Original Code comes from https://github.com/neurorestore/Libra/blob/main/R/pseudobulk_de.R
 
 #' @title Pseudobulk Differential Gene Expression Analysis
 #' @description Performs Linear Models for Microarray Data on single-cell data 
