@@ -6,7 +6,6 @@
 \usage{
 NameClusters(
   SO = seurat.object,
-  metadata,
   cluster.identities.table,
   cluster.column.from.SO,
   cluster.names,
@@ -15,8 +14,6 @@ NameClusters(
 }
 \arguments{
 \item{SO}{Seurat-class object with cluster a cluster IDs column and "Likely_CellTypes" column present}
-
-\item{metadata}{a data.frame containing at least a cluster ID column; the column name will be used to retrieve clusters from the input Seurat Object, which then will be matched with the cluster IDs in the Cluster Identities Table}
 
 \item{cluster.identities.table}{a data.frame with 2 columns - one with Cluster IDs (numeric) and the other with Cluster names}
 
