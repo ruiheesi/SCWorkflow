@@ -2,3 +2,5 @@
 .nfs*
 *.png
 Rcheck.txt
+*.pdf
+tests/testthat/otherData/
