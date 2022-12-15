@@ -61,6 +61,11 @@ Imports:
     png,
     httr,
     jsonlite,
-    plyr
+    plyr,
+    colorspace,
+    dendextend,
+    dendsort,
+    pheatmap,
+    scales
 Config/testthat/edition: 3
 

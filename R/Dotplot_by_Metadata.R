@@ -53,7 +53,7 @@ DotplotMet <- function(object,
           labs(y=metadata)
   
   # Generate Contingency Table for Annotated cell types
-  sample_column = sub("_",".",sample_column)
+  sample_column = sub("_",".",sample.column)
   cluster_num <- as.data.frame.matrix(table(object@meta.data[[sample_column]],object@meta.data[[metadata]]))
   cluster_num %>% rownames_to_column("Samples") -> cluster_num
   
