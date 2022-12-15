@@ -1,5 +1,5 @@
 test_that("Load testing dataset", {
-  datadir <- readRDS("./fixtures/filter_qc_test_in.rds")
+  datadir <- readRDS(test_path("fixtures","filter_qc_test_in.rds"))
   
   filter_qc_out <- Filter_and_QC(datadir,
                                  Organism = "Mouse")
