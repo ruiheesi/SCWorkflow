@@ -1,15 +1,10 @@
-# This code comes from NIDAP 'Metadata Table [scRNA-seq][CCBR]' code template https://nidap.nih.gov/workspace/vector/templates/ri.vector.main.template.51ea15ce-2be0-415f-902b-3c86175eb6cd
-# Documentation https://nidap.nih.gov/workspace/notepad/view/ri.notepad.main.notepad.53192624-dba0-4e63-9cbb-9bec776ede47
-# Example https://nidap.nih.gov/workspace/vector/view/ri.vector.main.workbook.00e7a393-4cd7-4f20-bdd2-1c1c0cfd1ea2?branch=master
-
-
-#' Extracting cell identities from the meta.data slot of Seurat-class object
-#' 
 #' Returns tabulation of cell identities present in the orig_ident column
 #' 
 #' It is recommended to run this function after doing SingleR annotations and before doing any visualizations/downstream analysis that requires inputting sample names.
 #' 
 #' @param SO Seurat-class object
+#' 
+#' @importFrom methods slotNames
 #' 
 #'   
 #' @export

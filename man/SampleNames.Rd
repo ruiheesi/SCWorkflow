@@ -2,7 +2,7 @@
 % Please edit documentation in R/Sample_Names.R
 \name{SampleNames}
 \alias{SampleNames}
-\title{Extracting cell identities from the meta.data slot of Seurat-class object}
+\title{Returns tabulation of cell identities present in the orig_ident column}
 \usage{
 SampleNames(SO)
 }
@@ -13,8 +13,5 @@ SampleNames(SO)
 A table (data.frame) with the number of cells per each sample name (column names)
 }
 \description{
-Returns tabulation of cell identities present in the orig_ident column
-}
-\details{
 It is recommended to run this function after doing SingleR annotations and before doing any visualizations/downstream analysis that requires inputting sample names.
 }
