@@ -1,7 +1,7 @@
 test_that("Load testing dataset", {
-  # localFilePaths <- list("/rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/otherData/1_filtered_feature_bc_matrix.h5", 
-                         # "/rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/otherData/2_filtered_feature_bc_matrix.h5")
-  
+
+  datadir <- readRDS(test_path("fixtures","filter_qc_test_in.rds"))
+
   localFilePaths=(test_path("fixtures", "filter_qc_test_h5.h5"))
   
   
