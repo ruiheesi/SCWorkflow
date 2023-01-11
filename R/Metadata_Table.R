@@ -1,9 +1,3 @@
-# This code comes from NIDAP 'Metadata Table [scRNA-seq][CCBR]' code template
-# Template Manager https://nidap.nih.gov/workspace/vector/templates/ri.vector.main.template.6a8139b7-45b4-4c6a-8648-c8ec34e6fc60
-# Documentation https://nidap.nih.gov/workspace/notepad/view/ri.notepad.main.notepad.70a5a28a-fa78-4f77-bee2-30f2d4854304
-# Example https://nidap.nih.gov/workspace/vector/view/ri.vector.main.workbook.d9fbfd7b-fb08-4814-ae16-7327cb7f4f37?branch=master
-
-
 #' @title Extracting meta.data and reductions slots from Seurat-class object
 #' @description Returns the per cell metadata and dimension embeddings (optional) of the Seurat object as a data table.
 #' @details Exposes the metadata of any combined Seurat object, though it is recommended to input a SingleR annotated Seurat Object.
@@ -28,11 +22,11 @@
 #' 
 #' # Return dimensional reductions
 #' metadata <- MetadataTable(SO = seurat.object, return.cell.embeddings = TRUE)
-#' umap_coordinates <- metadata %>% dplyr::select(Barcode, seurat_clusters, contains("UMAP"))
+#' umap.coordinates <- metadata %>% dplyr::select(Barcode, seurat_clusters, contains("UMAP"))
 #' 
 #' ## Plot 
 #' library(ggplot2)
-#' ggplot(umap_coordinates, aes(x = UMAP_1, y = UMAP_2, colour = seurat_clusters)) + 
+#' ggplot(umap.coordinates, aes(x = UMAP_1, y = UMAP_2, colour = seurat_clusters)) + 
 #' geom_point(size = 0.1) + theme_bw()
 #' }
 #' 
@@ -40,7 +34,8 @@
 
 
 MetadataTable <- function(SO, return.cell.embeddings = FALSE) {
-  # get cell embeddings? ====
+  
+  # got cell embeddings? ====
   
   if (return.cell.embeddings) {
     reds = names(SO@reductions)
@@ -72,6 +67,5 @@ MetadataTable <- function(SO, return.cell.embeddings = FALSE) {
   
   # return output ====
   
-  #print(summary(met.df))
   return(met.df)
 }
