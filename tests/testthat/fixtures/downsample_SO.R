@@ -11,12 +11,25 @@ saveRDS(downsampled.obj,file=OUT)
 }
 
 
-
+## TEC
 IN='/rstudio-files/ccbr-data/data/singlecell/TEC/TEC_Cell_Types_SingleR_SO.rds'
 OUT='/rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/fixtures/TEC/TEC_CellTypesSingleR_SO_downsample.rds'
 downsample_SO(IN,OUT)
+# cp /rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/fixtures/TEC/TEC_CellTypesSingleR_SO_downsample.rds
+# /rstudio-files/ccbr-data/data/singlecell/TEC
+
+
+IN='/rstudio-files/ccbr-data/data/singlecell/TEC/TEC_Combine_and_Renormalize_SO.rds'
+OUT='/rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/fixtures/TEC/TEC_Combine_and_Renormalize_SO_downsample.rds'
+downsample_SO(IN,OUT)
+# cp /rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/fixtures/TEC/TEC_Combine_and_Renormalize_SO_downsample.rds \
+# /rstudio-files/ccbr-data/data/singlecell/TEC
 
 
 
-
-
+## Chariou
+IN='/rstudio-files/ccbr-data/data/singlecell/Chariou/Chariou_Combine_and_Renormalize_SO.rds'
+OUT='/rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/fixtures/Chariou/Chariou_Combine_and_Renormalize_SO_downsample.rds'
+downsample_SO(IN,OUT)
+# cp /rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/fixtures/Chariou/Chariou_Combine_and_Renormalize_SO_downsample.rds \
+# /rstudio-files/ccbr-data/data/singlecell/Chariou
