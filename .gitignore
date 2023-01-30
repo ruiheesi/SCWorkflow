@@ -2,5 +2,7 @@
 .nfs*
 *.png
 Rcheck.txt
+*.pdf
+tests/testthat/otherData/
 .Rproj.user
-NAMESPACE
+*.txt

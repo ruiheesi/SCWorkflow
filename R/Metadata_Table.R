@@ -22,11 +22,11 @@
 #' 
 #' # Return dimensional reductions
 #' metadata <- MetadataTable(SO = seurat.object, return.cell.embeddings = TRUE)
-#' umap_coordinates <- metadata %>% dplyr::select(Barcode, seurat_clusters, contains("UMAP"))
+#' umap.coordinates <- metadata %>% dplyr::select(Barcode, seurat_clusters, contains("UMAP"))
 #' 
 #' ## Plot 
 #' library(ggplot2)
-#' ggplot(umap_coordinates, aes(x = UMAP_1, y = UMAP_2, colour = seurat_clusters)) + 
+#' ggplot(umap.coordinates, aes(x = UMAP_1, y = UMAP_2, colour = seurat_clusters)) + 
 #' geom_point(size = 0.1) + theme_bw()
 #' }
 #' 

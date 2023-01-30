@@ -4,7 +4,6 @@
 #' 
 #' 
 #' @param SO Seurat-class object with cluster a cluster IDs column and "Likely_CellTypes" column present
-#' @param metadata a data.frame containing at least a cluster ID column; the column name will be used to retrieve clusters from the input Seurat Object, which then will be matched with the cluster IDs in the Cluster Identities Table
 #' @param cluster.identities.table a data.frame with 2 columns - one with Cluster IDs (numeric) and the other with Cluster names
 #' @param cluster.column.from.SO name of the cluster ID column present in the meta.data slot in the Seurat Object
 #' @param cluster.names column containing cluster labels
@@ -22,7 +21,6 @@
 
 NameClusters <-
   function(SO = seurat.object,
-           metadata,
            cluster.identities.table,
            cluster.column.from.SO,
            cluster.names,
@@ -35,14 +33,14 @@ NameClusters <-
     colval <- metadata.df[, cluster.column.from.SO]
     seurat.cluster <-
       colnames(SO@meta.data)[which(colnames(metadata.df) == cluster.column.from.SO)]
-    cluster_num <-
+    cluster.num <-
       as.data.frame.matrix(table(colval, SO@meta.data$Likely_CellType))
-    clusnum.df <- melt(as.matrix(cluster_num))
-    sums <- rowSums(cluster_num)
-    cluster_perc <- (cluster_num / sums) * 100
+    clusnum.df <- melt(as.matrix(cluster.num))
+    sums <- rowSums(cluster.num)
+    cluster.perc <- (cluster.num / sums) * 100
     
     # draw plot with Likely cell type numbers per cluster
-    clus.df <- melt(as.matrix(cluster_perc))
+    clus.df <- melt(as.matrix(cluster.perc))
     clus.df$num <- clusnum.df$value
     colnames(clus.df) <- c("cluster", "celltype", "percent", "number")
     minclus <- min(clus.df$cluster)
@@ -100,7 +98,7 @@ NameClusters <-
         print(table(output$Clusternames, output$Likely_CellType))
         
       } else {
-        output <- cluster_num
+        output <- cluster.num
         cat(
           sprintf(
             "\n\nNo update in the Seurat Object - Cluster numbers in the metadata table are not identical with the Seurat Object's %s.\n\n",
@@ -110,7 +108,7 @@ NameClusters <-
       }
       
     } else {
-      output <- cluster_num
+      output <- cluster.num
       cat(
         sprintf(
           "\n\nNo update in the Seurat Object - The number of clusters in the metadata table is not the same as in the Seurat Object's %s column.\n\n",
