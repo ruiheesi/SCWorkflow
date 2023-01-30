@@ -1,8 +1,10 @@
-# load data
-seurat.object <-readRDS(test_path("fixtures", "SO_moduleScore.rds"))
+
 
 # run tests
 test_that("reductions are returned", {
+  
+  # load data
+  seurat.object <-readRDS(test_path("fixtures", "SO_moduleScore.rds"))
   
   metadata <-
     MetadataTable(SO = seurat.object,
@@ -15,6 +17,9 @@ test_that("reductions are returned", {
 })
 
 test_that("function returns correct class", {
+  
+  # load data
+  seurat.object <-readRDS(test_path("fixtures", "SO_moduleScore.rds"))
   
   metadata <-
     MetadataTable(SO = seurat.object,

@@ -1,17 +1,15 @@
-# load data
-seurat.object <- readRDS(test_path("fixtures", "SO_moduleScore.rds"))
-metadata <- read.csv(test_path("fixtures", "Cell_Metadata.csv"))
-identities_match <- read.csv(test_path("fixtures", "ClusterNames_match.csv"))
-identities_diff <- read.csv(test_path("fixtures", "ClusterNames_diff.csv"))
-identities_oneMore <- read.csv(test_path("fixtures", "ClusterNames_oneMore.csv"))
+
 
 # tests
 test_that("Function returns a list with specified names", {
   
+  # load data
+  seurat.object <- readRDS(test_path("fixtures", "SO_moduleScore.rds"))
+  identities_match <- read.csv(test_path("fixtures", "ClusterNames_match.csv"))
+  
   output <-
     NameClusters(
       SO = seurat.object,
-      metadata = metadata,
       cluster.identities.table = identities_match,
       cluster.column.from.SO = "SCT_snn_res_0_2",
       cluster.names = "Cluster_Names",
@@ -28,10 +26,16 @@ test_that("Function returns a list with specified names", {
 
 test_that("Function returns correct class", {
   
+  # load data
+  seurat.object <- readRDS(test_path("fixtures", "SO_moduleScore.rds"))
+  identities_match <- read.csv(test_path("fixtures", "ClusterNames_match.csv"))
+  identities_diff <- read.csv(test_path("fixtures", "ClusterNames_diff.csv"))
+  identities_oneMore <- read.csv(test_path("fixtures", "ClusterNames_oneMore.csv"))
+  
   output <-
     NameClusters(
       SO = seurat.object,
-      metadata = metadata,
+      #metadata = metadata,
       cluster.identities.table = identities_diff,
       cluster.column.from.SO = "SCT_snn_res_0_2",
       cluster.names = "Cluster_Names",
@@ -42,7 +46,6 @@ test_that("Function returns correct class", {
   output <-
     NameClusters(
       SO = seurat.object,
-      metadata = metadata,
       cluster.identities.table = identities_oneMore,
       cluster.column.from.SO = "SCT_snn_res_0_2",
       cluster.names = "Cluster_Names",
@@ -53,7 +56,6 @@ test_that("Function returns correct class", {
   output <-
     NameClusters(
       SO = seurat.object,
-      metadata = metadata,
       cluster.identities.table = identities_match,
       cluster.column.from.SO = "SCT_snn_res_0_2",
       cluster.names = "Cluster_Names",
@@ -66,12 +68,15 @@ test_that("Function returns correct class", {
 
 test_that("Function returns Clusternames column", {
   
+  # load data
+  seurat.object <- readRDS(test_path("fixtures", "SO_moduleScore.rds"))
+  identities_match <- read.csv(test_path("fixtures", "ClusterNames_match.csv"))
+ 
   colname = "Clusternames"
   
   output <-
     NameClusters(
       SO = seurat.object,
-      metadata = metadata,
       cluster.identities.table = identities_match,
       cluster.column.from.SO = "SCT_snn_res_0_2",
       cluster.names = "Cluster_Names",

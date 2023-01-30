@@ -71,17 +71,17 @@ DualLabeling <- function(object,
   ##--------------- ##
   ## Error Messages ##
   ## -------------- ##
-  
-  if(!(marker1 %in% rownames(obj))){
+
+  if(!(marker1 %in% rownames(object))){
     stop(paste0("ERROR: ",marker1," is not found in dataset"))
   }
-  if(!(marker2 %in% rownames(obj))){
+  if(!(marker2 %in% rownames(object))){
     stop(paste0("ERROR: ",marker2," is not found in dataset"))
   }
-  if(!(marker_1_type %in% names(obj@assays))){
+  if(!(marker_1_type %in% names(object@assays))){
     stop(paste0("ERROR: ",marker_1_type," slot is not found in dataset"))
   }
-  if(!(marker_2_type %in% names(obj@assays))){
+  if(!(marker_2_type %in% names(object@assays))){
     stop(paste0("ERROR: ",marker_2_type," slot is not found in dataset"))
   }
     
