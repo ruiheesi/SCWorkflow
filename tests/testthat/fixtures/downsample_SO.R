@@ -33,3 +33,35 @@ OUT='/rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/fixtures/Char
 downsample_SO(IN,OUT)
 # cp /rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/fixtures/Chariou/Chariou_Combine_and_Renormalize_SO_downsample.rds \
 # /rstudio-files/ccbr-data/data/singlecell/Chariou
+
+
+IN='/rstudio-files/ccbr-data/data/singlecell/Chariou/Chariou_Combine_and_Renormalize_SO.rds'
+OUT='/rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/fixtures/Chariou/Chariou_Cell_Types_SingleR_SO_downsample.rds'
+downsample_SO(IN,OUT)
+# cp /rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/fixtures/Chariou/Chariou_Cell_Types_SingleR_SO_downsample.rds \
+# /rstudio-files/ccbr-data/data/singlecell/Chariou
+
+
+
+## NSCLC_Single
+
+IN='/rstudio-files/ccbr-data/data/singlecell/NSCLC_Single/NSCLCsingle_Combine_and_Renormalize_SO.rds'
+OUT='/rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/fixtures/NSCLC_Single/NSCLCsingle_Combine_and_Renormalize_SO_downsample.rds'
+downsample_SO(IN,OUT)
+# cp /rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/fixtures/NSCLC_Single/NSCLCsingle_Combine_and_Renormalize_SO_downsample.rds \
+# /rstudio-files/ccbr-data/data/singlecell/NSCLC_Single
+
+
+IN='/rstudio-files/ccbr-data/data/singlecell/NSCLC_Single/NSCLCsingle_Cell_Types_SingleR_SO.rds'
+OUT='/rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/fixtures/NSCLC_Single/NSCLCsingle_Cell_Types_SingleR_SO_downsample.rds'
+downsample_SO(IN,OUT)
+# cp /rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/fixtures/NSCLC_Single/NSCLCsingle_Cell_Types_SingleR_SO_downsample.rds \
+# /rstudio-files/ccbr-data/data/singlecell/NSCLC_Single
+
+
+
+
+
+
+
+
