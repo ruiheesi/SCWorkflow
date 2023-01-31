@@ -7,31 +7,37 @@
 DotplotMet(
   object,
   metadata,
-  sample.column,
-  cell.type,
+  cells,
   markers,
-  dot.color = "darkred"
+  plot.reverse = FALSE,
+  cell.reverse.sort = FALSE,
+  dot.color = "darkblue"
 )
 }
 \arguments{
+\item{object}{Seurat Object}
+
 \item{metadata}{Metadata category to plot}
 
-\item{cell.type}{Column that contains the cell type information}
+\item{cells}{Metadata category factors to plot}
 
-\item{dot.color}{Dot color (default is "dark red")}
+\item{markers}{Column that contains gene names}
 
-\item{input.dataset}{Seurat Object}
+\item{plot.reverse}{Set Metadata categories to x-axis (default is FALSE)}
 
-\item{sample}{Column that contains sample id}
+\item{cell.reverse.sort}{Reverse Metadata Categories to plot (default is FALSE)}
 
-\item{genes.column}{Column that contains gene names}
+\item{dot.color}{Dot color (default is "dark blue")}
 }
 \value{
 Dotplot with markers and cell types.
 }
 \description{
-This Dotplot plotter plots average gene expression values for a set of genes from an input table.  Input table contains a single column for "Genes" and a single column for "Cell Type".  The values in the "Cell Type" column should match the values provided in the metadata template (Metadata Category to Plot).  The plot will order the genes (x-axis, left to right) and Cell Types (y-axis, top to bottom) in the order in which it appears in the input table.  Based on the additional column selected (Sample Column where sample or any other metadata category), it will display a contingency table for the Metadata
+This function uses the Dotplot function from Seurat and plots
+average gene expression values and percent expressed for a set of genes.
 }
 \details{
-This method provides a visualization plot showing the frequency of positively
+This method provides a dotplot showing the percent frequency of
+gene-positive cells as size of dot and degree of expression as color
+of dot.
 }
