@@ -7,24 +7,27 @@
 DotplotMet(
   object,
   metadata,
-  sample.column,
-  cell.type,
+  cells,
   markers,
-  dot.color = "darkred"
+  plot.reverse = FALSE,
+  cell.reverse.sort = FALSE,
+  dot.color = "darkblue"
 )
 }
 \arguments{
 \item{metadata}{Metadata category to plot}
 
-\item{cell.type}{Column that contains the cell type information}
+\item{cells}{Metadata category factors to plot}
 
-\item{dot.color}{Dot color (default is "dark red")}
+\item{markers}{Column that contains gene names}
+
+\item{plot.reverse}{Set Metadata categories to x-axis}
+
+\item{cell.reverse.sort}{Reverse Metadata Categories to plot}
+
+\item{dot.color}{Dot color (default is "dark blue")}
 
 \item{input.dataset}{Seurat Object}
-
-\item{sample}{Column that contains sample id}
-
-\item{genes.column}{Column that contains gene names}
 }
 \value{
 Dotplot with markers and cell types.
