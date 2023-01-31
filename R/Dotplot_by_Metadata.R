@@ -1,19 +1,22 @@
-# This code comes from NIDAP 'Dotplot of Gene Expression by Metadata [scRNA-Seq][CCBR] (79573b27-8a93-4f22-9863-993be1a44fc1): v16' code template
+# This code comes from NIDAP 'Dotplot of Gene Expression by Metadata'
 
 #' @title Dotplot of Gene Expression by Metadata
-#' @description This Dotplot plotter plots average gene expression values for a set of genes from an input table.  Input table contains a single column for "Genes" and a single column for "Cell Type".  The values in the "Cell Type" column should match the values provided in the metadata template (Metadata Category to Plot).  The plot will order the genes (x-axis, left to right) and Cell Types (y-axis, top to bottom) in the order in which it appears in the input table.  Based on the additional column selected (Sample Column where sample or any other metadata category), it will display a contingency table for the Metadata 
-#' @details This method provides a visualization plot showing the frequency of positively
+#' @description This function uses the Dotplot function from Seurat and plots 
+#'        average gene expression values and percent expressed for a set of genes.  
+#' @details This method provides a dotplot showing the percent frequency of 
+#'        gene-positive cells as size of dot and degree of expression as color 
+#'        of dot.
 #' 
-#' @param input.dataset Seurat Object
+#' @param object Seurat Object
 #' @param metadata Metadata category to plot
 #' @param cells Metadata category factors to plot
 #' @param markers Column that contains gene names
-#' @param plot.reverse Set Metadata categories to x-axis
-#' @param cell.reverse.sort Reverse Metadata Categories to plot
+#' @param plot.reverse Set Metadata categories to x-axis (default is FALSE)
+#' @param cell.reverse.sort Reverse Metadata Categories to plot (default is FALSE)
 #' @param dot.color Dot color (default is "dark blue")
 
 #' @importFrom tidyr pivot_wider
-#' @import Seurat
+#' @importFrom Seurat subset Idents DotPlot
 
 #' @export 
 #' 
@@ -32,26 +35,29 @@ DotplotMet <- function(object,
   Idents(object) <- metadata.df[[metadata]]
   
   #Error messages depending on the input celltype category
-  #Calculate difference in input category elements from metadata column elements
-  a <- length(unique(Idents(object)))
-  b <- length(cells)
-  c <- a - b
-  d <- b - a
   
-  if(sum(cells %in% Idents(object)) == 0){
-    stop("ERROR: The category from the input table you wish to plot should match the metadata column you are plotting.")
-  } else if(c>0){
+  #Calculate difference in input category elements from metadata column elements
+  a <- sum(cells %in% unique(Idents(object)))
+  b <- sum(!unique(Idents(object)) %in% cells)
+  c <- sum(!cells %in% unique(Idents(object)))
+  
+  if(a < 2){
+    stop("At least 2 metadata categories you wish to plot should 
+         match the metadata column you are plotting.")
+  }
+  
+  if(b>0){
     missinglab <- unique(Idents(object))[!unique(Idents(object)) %in% cells]
-    warning(paste0("There are ",c," additional element(s) in the 
-                  metadata table category that were missing from 
-                   your input table: \n",
+    warning(paste0("There are ",b," additional element(s) in the metadata table category that were missing from
+                   your input categories:",
                    paste(as.character(missinglab),collapse="\n")))
-    cat("\n")
-  } else if(d>0){
+  } 
+  
+  if(c>0){
     missinglab2 <- celltype[!celltype %in% unique(Idents(object))]
-    print(paste0("There are ",d," elements in the category from your input table that are missing from your metadata table: "))
+    warning(paste0("There are ",c," additional elements in your input categories 
+                 that are missing from your metadata table: "))
     missinglab2 <- cat(paste(as.character(missinglab2),collapse="\n"))
-    cat("\n")
   }
   
   #Subset object by identity
@@ -65,7 +71,8 @@ DotplotMet <- function(object,
   
   l2 <- length(markers)
   print(paste("There are ",l2," total unique genes in the genelist"))
-  if(l1 > l2){warning(paste0("\n\nThe following duplicate genes were removed: ",dups))}
+  if(l1 > l2){warning(paste0("\n\nThe following duplicate genes were removed: ",
+                             dups))}
   missing.genes <- markers[!markers %in% rownames(object)]
   
   l3 <- length(missing.genes)
@@ -111,7 +118,7 @@ DotplotMet <- function(object,
         plot <- plot + scale_y_discrete(limits = rev(levels(dp$data$id)))
   }
   
-  # Generate Contingency Table for Annotated cell types
+  #Tabular format of Dotplot data are provided
   dp$data %>% select(features.plot,pct.exp,id) %>% tidyr::pivot_wider(names_from = features.plot, values_from = pct.exp) -> dp.pct.tab
   dp$data %>% select(features.plot,avg.exp.scaled,id) %>% tidyr::pivot_wider(names_from = features.plot, values_from = avg.exp.scaled) -> dp.exp.tab
   
