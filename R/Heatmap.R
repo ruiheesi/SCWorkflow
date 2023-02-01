@@ -1,8 +1,8 @@
 # This code comes from NIDAP 'Heatmap for Single Cell Data [scRNA-Seq][CCBR]' code template
 
-#' @title Plot coexpression of 2 markers using transcript and/or protein expression values 
+#' @title Plot coexpression of 2 transcripts using transcript and/or protein expression values 
 #' @description Returns individual and combined expression of 2 genes and allows for filtering (optional) of the Seurat object using expression thresholds
-#' @details This method provides visualization of coexpression of 2 genes (or proteins) and additional methods for filtering for cells with gene expression values that are above or below thresholds set for one or both markers.  
+#' @details This method provides visualization of coexpression of 2 genes (or proteins) and additional methods for filtering for cells with gene expression values that are above or below thresholds set for one or both transcripts.  
 #' 
 #' @param object Seurat-class object
 #' @param sample.names Sample names
@@ -14,7 +14,7 @@
 #' @param protein.annotations Protein annotations to add (defulat is NULL)
 #' @param rna.annotations Gene annotations to add (default is NULL)
 #' @param arrange.by.metadata Arrange by metadata (default is TRUE)
-#' @param add.row.names Add row names (default is FALSE)
+#' @param add.row.names Add row names (default is TRUE)
 #' @param add.column.names Add column names (default is FALSE)
 #' @param set.seed Seed for colors (default is 6)
 #' @param scale.data Perform z-scaling on rows (default is TRUE)
@@ -50,6 +50,7 @@ Heatmap <- function(object,
                     trim.outliers.percentage = 0.01,
                     order.heatmap.rows = FALSE,
                     row.order = c()) {
+  
   ## -------------------------------- ##
   ## Functions                        ##
   ## -------------------------------- ##
@@ -210,7 +211,31 @@ Heatmap <- function(object,
       print(paste("missing genes:", genesmiss))
     }
   }
-  transcripts = transcripts[transcripts %in% rownames(object$SCT@scale.data)]
+  
+  #Remove spaces in transcript entries:
+  
+  transcripts <- gsub("[[:space:]]", "", transcripts)
+  
+  l1 <- length(transcripts)
+  dups <- transcripts[duplicated(transcripts)]
+  transcripts <- transcripts[!duplicated(transcripts)]
+  
+  l2 <- length(transcripts)
+  print(paste("There are ",l2," total unique genes in the genelist"))
+  if(l1 > l2){warning(paste0("\n\nThe following duplicate genes were removed: ",
+                             dups))}
+  missing.genes <- transcripts[!transcripts %in% rownames(object)]
+  
+  l3 <- length(missing.genes)
+  missing.genes <- paste(shQuote(missing.genes), collapse=", ")
+  if(l3 == l2){stop("No genes listed are found in dataset.")}
+  if(l3 > 0){warning(paste0("There are ",l3," gene(s) absent from dataset:", 
+                            missing.genes,
+                            ". Possible reasons are that gene is not official gene symbol",
+                            " or gene is not highly expressed and has been filtered.\n "))}
+  transcripts <- transcripts[transcripts %in% rownames(object)]
+  
+  
   
   #Clean up protein names and print missing proteins:
   if(!is.null(object@assays$Protein)){
@@ -274,6 +299,12 @@ Heatmap <- function(object,
   }
   
   metadata <- sub("orig_ident","orig.ident",metadata)
+  
+  #Add Barcode Column:
+  if(!"Barcode" %in% colnames(object@meta.data)){
+    object@meta.data$Barcode <- rownames(object@meta.data) 
+  }
+  
   #Set up annotation track: 
   object@meta.data %>% dplyr::filter(orig.ident %in% samples_to_include) -> metadata_table
   
@@ -341,11 +372,12 @@ Heatmap <- function(object,
   
  q=0
   for(i in 1:dim(annotation_col)[2]){
+    if(class(annot[[groups[i]]]) != "numeric")
     q = q+length(unique(annotation_col[,i]))
-  } 
-  
+  }
+
   colors=distinctColorPalette(q,5)
-  
+
   b=1
   i=1
   nam = NULL
@@ -384,12 +416,6 @@ Heatmap <- function(object,
   return(heatmap.res)
 }
 
-#################################################
-## Global imports and functions included below ##
-#################################################
-
-# Functions defined here will be available to call in
-# the code for any table.
 
 
  
