@@ -1,22 +1,66 @@
-test_that("Produce heatmap and return filtered dataframe", {
+CRObject <- getparamhm("TEC")
+
+test_that("Produce heatmap and return filtered dataframe - TEC data", {
   
-      obj <- readRDS(test_path("fixtures", "SO_moduleScore.rds"))
-      sample_names <- c("1_E13","2_E15","3_Newborn","4_Adult")
-      metadata_to_plot <- c("orig_ident","Likely_CellType")
-      transcripts_to_plot = c("Epcam","Aire","Fezf2","Pigr","Ly6d","Spink5","Ivl","Krt10","Gapdh","Cd8a","Foxp3","Cd4")
-      proteins_to_plot = c("")
-      plot_title <- "Heatmap_IO_test"
-      trim_outliers_percentage <- 0.01
-      
-      heatplot <- Heatmap(object = obj,
-                          sample.names = sample_names,
-                          metadata = metadata_to_plot,
-                          transcripts = transcripts_to_plot,
-                          proteins = NULL,
-                          trim.outliers.percentage = trim_outliers_percentage,
-                          plot.title = "Heatmap")
-      print(heatplot$data[1:5,1:5])
+      heatplot <- do.call(Heatmap,CRObject)
+      dev.off()
+      print(heatplot$plot)
       expected.elements = c("plot","data")
       expect_setequal(names(heatplot), expected.elements)
 })      
-      
+
+test_that("Heatmap scaled vs unscaled", {
+
+  CRObject_test <- CRObject$object
+  CRObject_test$scale.data <- FALSE
+  heatplot2 <- do.call(Heatmap,CRObject)
+  dev.off()
+  print(heatplot$plot)
+  
+  #compare scaled (a) vs. nonscaled data (b) to be different
+  a <- rowMeans(as.data.frame.matrix(heatplot$data)[,-1]) 
+  b <- rowMeans(as.data.frame.matrix(heatplot2$data)[,-1])
+  
+  expect_false(isTRUE(all.equal(a, b)))
+
+})      
+
+test_that("Heatmap run with bad gene name", {
+  
+  CRObject_test <- CRObject
+  CRObject_test$transcripts <- c("badgene",CRObject_test$transcripts) #Spike in with bad gene name
+  expect_warning(do.call(Heatmap,CRObject_test),"^There are")
+  
+  #Actual warning:
+  #There are 1 gene(s) absent from dataset:'badgene'. 
+  #Possible reasons are that gene is not official gene symbol 
+  #or gene is not highly expressed and has been filtered.
+  
+}) 
+
+test_that("Heatmap run with duplicate gene names", {
+  
+  CRObject_test <- CRObject
+  CRObject_test$transcripts <- c("Map7",CRObject_test$transcripts) #Spike in with bad gene name
+  expect_warning(do.call(Heatmap,CRObject_test),"The following duplicate genes were removed: Map7")
+  
+}) 
+
+test_that("Heatmap run with error for missing all genes", {
+  
+  CRObject_test <- CRObject
+  CRObject_test$transcripts <- c("APOE","ARG1","CD38","CD3D","CD3E","CD3G")
+  expect_error(do.call(Heatmap,CRObject_test),
+               "No genes listed are found in dataset.")
+  
+})
+
+test_that("Produce heatmap and return filtered dataframe - Chariou data", {
+  
+  CRObject <- getparamhm("Chariou")
+  heatplot <- do.call(Heatmap,CRObject)
+  dev.off()
+  print(heatplot$plot)
+  expected.elements = c("plot","data")
+  expect_setequal(names(heatplot), expected.elements)
+})    

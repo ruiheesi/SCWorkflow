@@ -1,7 +1,7 @@
 
 #This helper script will return parameters for each test dependent on the data input:
 
-getparam <- function(data){
+getparamdp <- function(data){
 
   if(data == "TEC"){
       object <- select_crobject("TEC")
