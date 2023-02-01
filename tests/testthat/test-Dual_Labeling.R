@@ -1,30 +1,75 @@
-test_that("Test Dual labeling", {
+CRObject <- getparamdl("TEC")
+
+test_that("Test Dual labeling TEC Data", {
   
-  obj <- readRDS(test_path("fixtures", "SO_moduleScore.rds"))
-  markertypes <- c("SCT")
-  reductions <- c("tsne","umap")
-  genenames <- list(geneset2 <- c("Gapdh","Cd8a"),gene1 = c("Cd8a","Cd4"))
-  for(g in genenames){
-    for(m in markertypes){
-      for(r in reductions){
-        print(m)
-        duallabel.result <- DualLabeling(object = obj,
-                              samples <- c("1_E13","2_E15","3_Newborn","4_Adult"),
-                              marker1 <- g[1],
-                              marker_1_type = m,
-                              marker2 <- g[2],
-                              marker_2_type = m,
-                              data_reduction = r,
-                              density_heatmap = TRUE,
-                              display_unscaled_values = TRUE)
-        ggsave(file=paste0(g[1],"_",g[2],"_",m,"_",r,"_duallabel.pdf"),
-                           duallabel.result$plot)
-      }
-    }
-  }
+  dual.label.result <- do.call(DualLabeling,CRObject)  
+  #grid.arrange(dual.label.result$plot)
+  
+  tpath <- paste0(test_path(),"/output")
+  ggsave(file=paste0(tpath,"/tsne_duallabel.png"),dual.label.result$plot)
+         
+  expect_snapshot_file(tpath,"tsne_duallabel.png")
   
   expected.elements = c("so","plot")
-  expect_setequal(names(duallabel.result), expected.elements)
+  expect_setequal(names(dual.label.result), expected.elements)
+  expect_length(dual.label.result$plot$grobs,7)
   
 })
+
+test_that("Dual labeling with missing gene", {
+  
+  CRObject_Test <- CRObject
+  CRObject_Test$marker1 <- "Cd8"
+  expect_error(do.call(DualLabeling,CRObject_Test),
+               "is not found in dataset$")
+})
+
+test_that("Dual labeling with umap", {
+  
+  CRObject_Test <- CRObject
+  CRObject_Test$data.reduction = "umap"
+  dual.label.result <- do.call(DualLabeling,CRObject_Test)
+  #grid.arrange(dual.label.result$plot)
+  
+  tpath <- paste0(test_path(),"/output")
+  ggsave(file=paste0(tpath,"/umap_duallabel.png"),dual.label.result$plot)
+  
+  expect_snapshot_file(tpath,"umap_duallabel.png")
+  expected.elements = c("so","plot")
+  expect_setequal(names(dual.label.result), expected.elements)
+})
+
+test_that("Dual labeling without density heatmap", {
+  
+  CRObject_Test <- CRObject
+  CRObject_Test$density.heatmap = FALSE
+  dual.label.result <- do.call(DualLabeling,CRObject_Test)
+  
+  tpath <- paste0(test_path(),"/output")
+  ggsave(file=paste0(tpath,"/nodensity_duallabel.png"),
+         dual.label.result$plot)
+  
+  expect_snapshot_file(tpath,"nodensity_duallabel.png")
+  expect_length(dual.label.result$plot$grobs,6)
+
+})
+
+test_that("Test Dual labeling Chariou Data", {
+  
+  CRObject <- getparamdl("Chariou")
+  dual.label.result <- do.call(DualLabeling,CRObject)  
+
+  tpath <- paste0(test_path(),"/output")
+  ggsave(file=paste0(tpath,"/chariou_duallabel.png"),
+         dual.label.result$plot)
+  
+  expect_snapshot_file(tpath,"chariou_duallabel.png")
+  
+  expected.elements = c("so","plot")
+  expect_setequal(names(dual.label.result), expected.elements)
+  expect_length(dual.label.result$plot$grobs,7)
+  
+})
+
+
         
