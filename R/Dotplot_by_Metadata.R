@@ -78,13 +78,13 @@ DotplotMet <- function(object,
   l3 <- length(missing.genes)
   missing.genes <- paste(shQuote(missing.genes), collapse=", ")
   if(l3 == l2){stop("No genes listed are found in dataset.")}
-  if(l3 > 0){warning(paste0("\n\n",l3," genes are absent from dataset:", 
-                      missing.genes,
-              ". Possible reasons are that gene is not official gene symbol",
-              " or gene is not highly expressed and has been filtered.\n "))}
+  if(l3 > 0){warning(paste0("There are ",l3," gene(s) absent from dataset:", 
+                            missing.genes,
+                            ". Possible reasons are that gene is not official gene symbol",
+                            " or gene is not highly expressed and has been filtered.\n "))}
   markers <- markers[markers %in% rownames(object)]
-  cells <- cells[cells != ""]
   
+  cells <- cells[cells != ""]
   
   dp <- DotPlot(object, assay="SCT", features=markers, 
                 dot.scale=4,
@@ -102,20 +102,20 @@ DotplotMet <- function(object,
   dp$data$features.plot <- factor(dp$data$features.plot, levels=markers)
   
   plot <- ggplot(data = dp$data, 
-                mapping = aes_string(x = "features.plot", y = "id")) + 
-                geom_point(mapping = aes_string(size = "pct.exp", 
-                                color = "avg.exp.scaled")) + 
-                scale_color_gradient(low = "lightgrey", high = dot.color) +
-                theme_cowplot() + 
-                theme(axis.title.x = element_blank(), 
-                      axis.text.x = element_text(angle = 90)) + 
-                labs(y=metadata) 
+                 mapping = aes_string(x = "features.plot", y = "id")) + 
+    geom_point(mapping = aes_string(size = "pct.exp", 
+                                    color = "avg.exp.scaled")) + 
+    scale_color_gradient(low = "lightgrey", high = dot.color) +
+    theme_cowplot() + 
+    theme(axis.title.x = element_blank(), 
+          axis.text.x = element_text(angle = 90)) + 
+    labs(y=metadata) 
   
   if(plot.reverse == TRUE){
-        plot <- plot + coord_flip() 
+    plot <- plot + coord_flip() 
   }
   if(cell.reverse.sort == TRUE){
-        plot <- plot + scale_y_discrete(limits = rev(levels(dp$data$id)))
+    plot <- plot + scale_y_discrete(limits = rev(levels(dp$data$id)))
   }
   
   #Tabular format of Dotplot data are provided
@@ -125,9 +125,8 @@ DotplotMet <- function(object,
   result.list <- list("plot" = plot, "pct" = dp.pct.tab, "exp" = dp.exp.tab)
   
   return(result.list)
-
+  
 }
-
 
 
 
