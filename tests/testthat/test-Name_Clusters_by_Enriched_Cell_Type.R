@@ -1,90 +1,123 @@
-
-
-# tests
-test_that("Function returns a list with specified names", {
+test_that("Run Name clusters with default parameters - TEC data", {
   
   # load data
-  seurat.object <- readRDS(test_path("fixtures", "SO_moduleScore.rds"))
-  identities_match <- read.csv(test_path("fixtures", "ClusterNames_match.csv"))
+  input <- getparams_nameclus("TEC") 
+  output <- do.call(NameClusters,input)
   
-  output <-
-    NameClusters(
-      SO = seurat.object,
-      cluster.identities.table = identities_match,
-      cluster.column.from.SO = "SCT_snn_res_0_2",
-      cluster.names = "Cluster_Names",
-      cluster.numbers = "Cluster_Numbers"
-    )
+  #Test output values and plot:
+  newclus <- output$object@meta.data$clusternames
+  expect_equal(sort(unique(newclus)),sort(input$cluster.names))
+  
+  ggsave("output/TEC_clusters.png",output$plot, width = 10, height = 10)
+  expect_snapshot_file("output","TEC_clusters.png")
   
   expect_type(output,"list")
-  
-  expected.elements = c("output", "plot")
+  expected.elements = c("object","table", "plot")
+  expect_s4_class(output$object, "Seurat")
+  expect_s3_class(output$table, "gtable")
   expect_equal(length(setdiff(expected.elements, names(output))), 0)
   
 })
 
-
-test_that("Function returns correct class", {
+test_that("Run Name clusters with interactive plot", {
   
   # load data
-  seurat.object <- readRDS(test_path("fixtures", "SO_moduleScore.rds"))
-  identities_match <- read.csv(test_path("fixtures", "ClusterNames_match.csv"))
-  identities_diff <- read.csv(test_path("fixtures", "ClusterNames_diff.csv"))
-  identities_oneMore <- read.csv(test_path("fixtures", "ClusterNames_oneMore.csv"))
-  
-  output <-
-    NameClusters(
-      SO = seurat.object,
-      #metadata = metadata,
-      cluster.identities.table = identities_diff,
-      cluster.column.from.SO = "SCT_snn_res_0_2",
-      cluster.names = "Cluster_Names",
-      cluster.numbers = "Cluster_Numbers"
-    )
-  expect_s3_class(output$output, "data.frame")
-  
-  output <-
-    NameClusters(
-      SO = seurat.object,
-      cluster.identities.table = identities_oneMore,
-      cluster.column.from.SO = "SCT_snn_res_0_2",
-      cluster.names = "Cluster_Names",
-      cluster.numbers = "Cluster_Numbers"
-    )
-  expect_s3_class(output$output, "data.frame")
-  
-  output <-
-    NameClusters(
-      SO = seurat.object,
-      cluster.identities.table = identities_match,
-      cluster.column.from.SO = "SCT_snn_res_0_2",
-      cluster.names = "Cluster_Names",
-      cluster.numbers = "Cluster_Numbers"
-    )
-  expect_s4_class(output$output, "Seurat")
+  input <- getparams_nameclus("TEC") 
+  input$interactive = TRUE
+  output <- do.call(NameClusters,input)
+
   expect_equal(class(output$plot), c("plotly", "htmlwidget"))
+  saveWidget(as_widget(output$plot),"output/TEC_clusters_plotly.html")
+  expect_snapshot_file("output","TEC_clusters_plotly.html")
+})
+
+test_that("Run Name clusters with ordering celltypes", {
+  
+  input <- getparams_nameclus("TEC") 
+  input$order.celltypes.by = c("B cells","Dendritic cells",
+              "Endothelial cells","Macrophages","Monocytes",
+              "Epithelial cells","Erythrocytes","Fibroblasts",
+              "Hepatocytes","Neurons","T cells")
+  
+  output <- do.call(NameClusters,input)
+  ggsave("output/TEC_clusters_ordered.png",output$plot,width = 10, height = 10)
+  expect_snapshot_file("output","TEC_clusters_ordered.png")
+
+})
+
+test_that("Run Name clusters with ordering warning missing some celltypes", {
+  
+  input <- getparams_nameclus("TEC") 
+  input$order.celltypes.by = c("B cells","Dendritic cells",
+                               "Endothelial cells","Macrophages",
+                               "Monocytes","Epithelial cells",
+                               #"Erythrocytes","Fibroblasts",
+                               "Hepatocytes","Neurons","T cells")
+  
+  expect_warning(output <- do.call(NameClusters,input),
+      "^Some factors were not included in the list")
+  #output <- do.call(NameClusters,input)
+  ggsave("output/TEC_clusters_missing.png",output$plot,width = 10, height = 10)
+  expect_snapshot_file("output","TEC_clusters_missing.png")
   
 })
 
-test_that("Function returns Clusternames column", {
+test_that("Run Name clusters with ordering warning adding some unknown celltypes", {
+  
+  input <- getparams_nameclus("TEC") 
+  input$order.celltypes.by = c("B cells","Dendritic cells",
+                               "Endothelial cells","Macrophages",
+                               "Monocytes","Epithelial cells",
+                               "celltype1","celltype2",
+                               "Erythrocytes","Fibroblasts",
+                               "Hepatocytes","Neurons","T cells")
+  
+  expect_warning(output <- do.call(NameClusters,input),
+                 "^Some factors are not in data")
+  #output <- do.call(NameClusters,input)
+  ggsave("output/TEC_clusters_missing2.png",output$plot,width = 10, height = 10)
+  expect_snapshot_file("output","TEC_clusters_missing2.png")
+  
+})
+
+test_that("Run Name clusters with default parameters - Chariou", {
   
   # load data
-  seurat.object <- readRDS(test_path("fixtures", "SO_moduleScore.rds"))
-  identities_match <- read.csv(test_path("fixtures", "ClusterNames_match.csv"))
- 
-  colname = "Clusternames"
+  input <- getparams_nameclus("Chariou") 
+  output <- do.call(NameClusters,input)
   
-  output <-
-    NameClusters(
-      SO = seurat.object,
-      cluster.identities.table = identities_match,
-      cluster.column.from.SO = "SCT_snn_res_0_2",
-      cluster.names = "Cluster_Names",
-      cluster.numbers = "Cluster_Numbers"
-    )
+  #Test output values and plot:
+  newclus <- output$object@meta.data$clusternames
+  expect_equal(sort(unique(newclus)),sort(input$cluster.names))
   
-  expect_named(output$output@meta.data[, intersect(colname, colnames(output$output@meta.data)), drop=FALSE])
+  ggsave("output/Chariou_clusters.png",output$plot, width = 10, height = 10)
+  expect_snapshot_file("output","Chariou_clusters.png")
+  
+  expect_type(output,"list")
+  expected.elements = c("object","table", "plot")
+  expect_s4_class(output$object, "Seurat")
+  expect_s3_class(output$table, "gtable")
+  expect_equal(length(setdiff(expected.elements, names(output))), 0)
   
 })
 
-
+test_that("Run Name clusters with default parameters - NSCLC single", {
+  
+  # load data
+  input <- getparams_nameclus("nsclc-single") 
+  output <- do.call(NameClusters,input)
+  
+  #Test output values and plot:
+  newclus <- output$object@meta.data$clusternames
+  expect_equal(sort(unique(newclus)),sort(input$cluster.names))
+  
+  ggsave("output/NSCLC_single_clusters.png",output$plot, width = 10, height = 10)
+  expect_snapshot_file("output","NSCLC_single_clusters.png")
+  
+  expect_type(output,"list")
+  expected.elements = c("object","table", "plot")
+  expect_s4_class(output$object, "Seurat")
+  expect_s3_class(output$table, "gtable")
+  expect_equal(length(setdiff(expected.elements, names(output))), 0)
+  
+})
