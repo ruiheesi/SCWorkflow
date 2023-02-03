@@ -3,11 +3,14 @@
 #' Maps cluster IDs to cluster names and adds a new metadata column called *Clusternames*. Seurat object is returned if all provided cluster IDs and cluster number from the Seurat Object meta.data match, otherwise a data.frame with counts of *Likely_CellTypes* within each cluster is returned from the Seurat object.
 #' 
 #' 
-#' @param SO Seurat-class object with cluster a cluster IDs column and "Likely_CellTypes" column present
-#' @param cluster.identities.table a data.frame with 2 columns - one with Cluster IDs (numeric) and the other with Cluster names
-#' @param cluster.column.from.SO name of the cluster ID column present in the meta.data slot in the Seurat Object
-#' @param cluster.names column containing cluster labels
-#' @param cluster.numbers column containing cluster ID's (numeric)
+#' @param object Seurat-class object with cluster a cluster IDs column and "Likely_CellTypes" column present
+#' @param cluster.numbers vector containing cluster ID's (numeric)
+#' @param cluster.names vector containing cluster labels
+#' @param cluster.column column name containing cluster ID in the meta.data slot in the Seurat Object
+#' @param labels.column column name containing labels (usually cell type) in the meta.data slot in the Seurat Object
+#' @param order.clusters.by vector containing order of clusters in graph (default is NULL)
+#' @param order.celltypes.by vector containing order of celltypes in graph (default is NULL)
+#' @param interactive if TRUE, draw plotly plot (default is FALSE)
 #' 
 #' @importFrom dplyr pull
 #' @importFrom reshape2 melt
@@ -17,24 +20,55 @@
 #' @importFrom tibble deframe tibble
 #' 
 #' @export
-#' @return Returns Seurat-class object with updated meta.data slot containing custom cluster annotation or extracts a data.frame from the Seurat meta.data slot with already annotated cell types
+#' @return Returns Seurat-class object with updated meta.data slot containing custom cluster annotation 
 
 NameClusters <-
-  function(SO = seurat.object,
-           cluster.identities.table,
-           cluster.column.from.SO,
+  function(object,
+           cluster.numbers,
            cluster.names,
-           cluster.numbers)
+           cluster.column,
+           labels.column,
+           order.clusters.by = NULL,
+           order.celltypes.by = NULL,
+           interactive = FALSE)
   {
+    
     # set metadata
-    df <- cluster.identities.table
-    metadata.df <- SO@meta.data
-    colnames(metadata.df) <- gsub("\\.", "_", colnames(metadata.df))
-    colval <- metadata.df[, cluster.column.from.SO]
-    seurat.cluster <-
-      colnames(SO@meta.data)[which(colnames(metadata.df) == cluster.column.from.SO)]
+    metadata.df <- object@meta.data
+    colval <- metadata.df[[cluster.column]]
+    names(cluster.names) <- cluster.numbers
+    
+    # If cluster numbers on input table match the cluster numbers selected:
+    
+    if (length(cluster.numbers) == length(unique(colval))) {
+      if (all(as.numeric(cluster.numbers) == sort(unique(colval)))) {
+        cat('\nAdding "Clusternames" column to metadata in the Seurat Object\n\n')
+        clusternames <- cluster.names[object@meta.data[[cluster.column]]]
+        object <- AddMetaData(object, metadata = clusternames,col.name="clusternames")
+        metatable <- object@meta.data
+        contable <- as.data.frame.matrix(table(metatable$clusternames, metatable[[labels.column]]))
+        table <- tableGrob(contable)
+      } else {
+        table <- cluster.num
+        cat(
+          sprintf(
+            "\n\nNo update in the Seurat Object - Cluster numbers in the metadata table are not identical with the Seurat Object's %s.\n\n",
+            cluster.column
+          )
+        )
+      }
+    } else {
+      table <- cluster.num
+      cat(
+        sprintf(
+          "\n\nNo update in the Seurat Object - The number of clusters in the metadata table is not the same as in the Seurat Object's %s column.\n\n",
+          cluster.column
+        )
+      )
+    }
+    
     cluster.num <-
-      as.data.frame.matrix(table(colval, SO@meta.data$Likely_CellType))
+      as.data.frame.matrix(table(colval, object@meta.data[[labels.column]]))
     clusnum.df <- melt(as.matrix(cluster.num))
     sums <- rowSums(cluster.num)
     cluster.perc <- (cluster.num / sums) * 100
@@ -43,82 +77,76 @@ NameClusters <-
     clus.df <- melt(as.matrix(cluster.perc))
     clus.df$num <- clusnum.df$value
     colnames(clus.df) <- c("cluster", "celltype", "percent", "number")
-    minclus <- min(clus.df$cluster)
-    maxclus <- max(clus.df$cluster)
-    numclus <- length(unique(clus.df$cluster))
+    clus.df$cluster <- cluster.names[as.character(clus.df$cluster)]
+ 
+    # ## cluster identities
+    # cat("\noriginal clusters:\n")
+    # cat(cluster.numbers, sep = "\n")
+    # ## New cluster names
+    # clus.df %>% pull(cluster) %>% unique() %>% as.character() -> clus
+    # cat("New cluster names:\n")
+    # cat(clus, sep = "\n")
+    # ## cell types
+    # clus.df %>% pull(celltype) %>% unique() %>% as.character() -> celltypes
+    # cat("\ncelltypes in Seurat Object:\n")
+    # cat(celltypes, sep = "\n")
+
     
-    # log
-    ## clusters
-    clus.df %>% pull(cluster) %>% unique() %>% as.character() -> clus
-    cat("clusters in Seurat Object:\n")
-    cat(clus, sep = "\n")
-    ## cell types
-    clus.df %>% pull(celltype) %>% unique() %>% as.character() -> celltypes
-    cat("\ncelltypes in Seurat Object:\n")
-    cat(celltypes, sep = "\n")
-    ## cluster identities
-    cat("\nclusters in cluster identities table:\n")
-    cat(df[, cluster.numbers], sep = "\n")
-    
-    
-    # do plot
-    suppressMessages(g <-
-      ggplot(clus.df,
-             aes(
-               x = celltype,
-               y = cluster,
-               size = percent,
-               color = celltype,
-               label = number
-             )) +
-      theme_classic() +
-      geom_point(alpha = 0.5) +
-      ylim(c(minclus, maxclus)) +
-      scale_y_reverse(n.breaks = numclus) +
-      theme(axis.text.x = element_text(
-        angle = 90,
-        vjust = 0.5,
-        hjust = 1
-      )) +
-      ggtitle("Percentage of Cell Type within Clusters")
-    )
-    
-    g <- ggplotly(g)
-    print(g)
-    
-    # If cluster numbers on input table match the cluster numbers selected:
-    
-    if (nrow(df) == length(unique(colval))) {
-      if (all(as.numeric(df[, cluster.numbers]) == sort(unique(colval)))) {
-        cat('\nAdding "Clusternames" column to metadata in the Seurat Object\n\n')
-        
-        output <-
-          AddMetaData(SO, metadata = deframe(tibble(df[, cluster.numbers], df[, cluster.names]))[as.character(colval)], col.name = "Clusternames")
-        print(table(output$Clusternames, output@meta.data[, seurat.cluster]))
-        print(table(output$Clusternames, output$Likely_CellType))
-        
-      } else {
-        output <- cluster.num
-        cat(
-          sprintf(
-            "\n\nNo update in the Seurat Object - Cluster numbers in the metadata table are not identical with the Seurat Object's %s.\n\n",
-            seurat.cluster
-          )
-        )
+    if(length(order.celltypes.by) > 0){
+      #Check for factors not present in dataset
+      add <- order.celltypes.by[!order.celltypes.by %in% levels(clus.df$celltype)]
+      if(length(add) > 0){
+        add <- paste(add,collapse = ", ")
+        warning(paste("Some factors are not in data: ",add))
       }
-      
+      clus.dat <- unique(clus.df$celltype)
+      minus <- clus.dat[!clus.dat %in% order.celltypes.by]
+      if(length(minus)> 0){
+        minus <- paste(minus,collapse = ", ")
+        warning(paste("Some factors were not included in the list: ",minus))
+      }
+      clus.df %>% filter(celltype %in% order.celltypes.by) -> clus.df
+      clus.df$celltype <- factor(clus.df$celltype,levels = order.celltypes.by)
+    } 
+    if(length(order.clusters.by) > 0){
+      add2 <- order.clusters.by[!order.clusters.by %in% levels(clus.df$celltype)]
+      if(length(add2) > 0){
+        add2 <- paste(add2,collapse = ", ")
+        warning(paste("Some factors are not in data: ",add2))
+      }
+      clus.dat2 <- unique(clus.df$cluster)
+      minus2 <- clus.dat2[!clus.dat2 %in% order.clusters.by]
+      if(length(minus2) > 0){
+        minus2 <- paste(minus2,collapse = ", ")
+        warning(paste("Some factors were not included in the list: ",minus2))
+      }
+      clus.df %>% filter(cluster %in% order.clusters.by) -> clus.df
+      clus.df$cluster <- factor(clus.df$cluster,levels = order.clusters.by)
     } else {
-      output <- cluster.num
-      cat(
-        sprintf(
-          "\n\nNo update in the Seurat Object - The number of clusters in the metadata table is not the same as in the Seurat Object's %s column.\n\n",
-          seurat.cluster
-        )
-      )
+      clus.df$cluster <- factor(clus.df$cluster,levels = str_sort(cluster.names,numeric = TRUE))
     }
     
-    cat("\nReturning dataset:\n\n")
-    print(output)
-    invisible(list(output = output, plot = g))
+    # do plot (suppressMessages for ggplot2 scale replacemnt)
+    suppressMessages(
+      g <- ggplot(clus.df, aes(
+              x = celltype,
+              y = cluster,
+              size = percent,
+              color = celltype,
+              label = number)) +
+              theme_classic() +
+              geom_point(alpha = 0.5) +
+              theme(axis.text.x = element_text(
+                angle = 90,
+                vjust = 0.5,
+                hjust = 1)) +
+              ggtitle("Percentage of Cell Type within Clusters")
+    )
+    
+    if(interactive == TRUE){
+      g <- ggplotly(g)
+    }
+    
+    invisible(list(object = object, table = table, plot = g))
     
   }
