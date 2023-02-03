@@ -29,6 +29,7 @@
 
 #' @import Seurat 
 #' @import reshape2
+#' @import tidyverse
 #' @import cowplot
 #' @import rlang
 #' @import ggplot2
@@ -61,12 +62,12 @@ ViolinPlot <- function(so,
   ## Error Messages ##
   ## ---------------##
   
-  gene_filter <- genes_of_interest %in% rownames(x = GetAssayData(object = so, slot = slot, assay = assay))
-  genes_of_interest <- genes_of_interest[gene_filter]
+  gene_filter <- genes_of_interest %in% rownames(GetAssayData(object = so, slot = slot, assay = assay))
   missing_genes <- genes_of_interest[!gene_filter]
+  genes_of_interest <- genes_of_interest[gene_filter]
+  
   if(length(missing_genes) > 0){
-    cat("The following genes are missing from the dataset:\n")
-    print(missing_genes)
+    print(paste("The following genes are missing from the dataset:", missing_genes, sep = " "))
   }
   
   if(length(genes_of_interest) == 0){
@@ -188,7 +189,7 @@ ViolinPlot <- function(so,
   
   data[[ident_of_interest]] <- so.sub@meta.data[row.names(data),ident_of_interest]
   
-  df.melt <- melt(data)
+  df.melt <- reshape2::melt(data)
   
   if(!is.empty(rename_ident)){
     ident_of_interest <- rename_ident
