@@ -24,21 +24,38 @@
 
 harmony_batch_correct <- function(so, 
                                   variable_features = 2000, 
-                                  genes_to_add,
+                                  genes_to_add = c(),
                                   group.by.vars) {
+  
+  ## -------------------------- ##
+  ## Error and Warning Messages ##
+  ## -------------------------- ##
+  
+  if(is.null(genes_to_add)){
+    print("no genes will be added")
+  } else if (all(!genes_to_add %in% rownames(so))){
+    warning("specified genes were not found and therefore cannot be added")
+  }
+  
+  if (variable_features > length(VariableFeatures(so))){
+    stop("Number of variable features to subset by cannot exceed the total number of variable genes in the data")
+  }
   
   ## --------------- ##
   ## Main Code Block ##
   ## --------------- ##
   
   seur.SCT <- so@assays$SCT@scale.data
-  seur.SCT[1:10, 1:10]
   
   genes_of_interest <- genes_to_add[genes_to_add %in% rownames(so@assays$SCT@scale.data)]
   
   # Add more genes to analyze
   VariableFeatures(so) <- c(VariableFeatures(so), genes_of_interest) 
   mvf <- VariableFeatures(so)[1:(variable_features + length(genes_of_interest))] 
+  
+  # Check if variable genes are found in scale data genes
+  mvf <- mvf[mvf %in% rownames(seur.SCT)]
+  
   print(dim(so@assays$SCT@scale.data))
   seur.SCT <- seur.SCT[mvf,]
   seur.SCT <- t(seur.SCT) 

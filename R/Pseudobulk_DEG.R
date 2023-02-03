@@ -40,6 +40,14 @@ Pseudobulk_DEG <- function(so,
                                min_num_features = 0,
                                subdivide_data = FALSE) {
   
+  ## -------------- ##
+  ## Error Messages ##
+  ## -------------- ##
+  check_contrasts <- unlist(strsplit(contrasts, "-"))
+  if(sum(check_contrasts %in% so@meta.data[,eval(parse(text = "label"))]) < 2){
+    stop("contrasts not found amongst <label> metadata column")
+  }
+  
   ## ---------------- ##
   ## Helper Functions ##
   ## ---------------- ##
