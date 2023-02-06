@@ -15,19 +15,19 @@ select_crobject <- function(dataset) {
   } else if (dataset == "nsclc-single"){
     
     print("selected NSCLC Single dataset")
-    inputObject <- readRDS(test_path("fixtures/NSCLC_Single]",
-    "NSCLCsingle_Combine_and_Renormalize_SO_downsample.rds"))
+    inputObject <- readRDS(test_path("fixtures/NSCLC_Single",
+    "NSCLCsingle_Cell_Types_SingleR_SO_downsample.rds"))
     
   } else if (dataset == "nsclc-multi"){
     
     print("selected NSCLC Multi dataset")
-    inputObject <- readRDS(test_path("fixtures/NSCLC_Multi]",
+    inputObject <- readRDS(test_path("fixtures/NSCLC_Multi",
     "NSCLCmulti_Combine_and_Renormalize_SO_downsample.rds"))
   
   } else if (dataset == "BRCA"){
     
     print("selected BRCA dataset")
-    inputObject <- readRDS(test_path("fixtures/BRCA]",
+    inputObject <- readRDS(test_path("fixtures/BRCA",
         "BRCA_Combine_and_Renormalize_SO_downsample.rds"))
   }
   return(inputObject) 
@@ -56,15 +56,10 @@ select_srobject <- function(dataset){
   
   } else if (dataset == "nsclc-multi"){
     
-    print("selected Chariou dataset")
-    inputObject <- readRDS(test_path("fixtures/NSCLCmulti", 
+    print("selected NSCLCmulti dataset")
+    inputObject <- readRDS(test_path("fixtures/NSCLC_Multi", 
        "NSCLCmulti_Cell_Types_SingleR_SO_downsample.rds"))
   
-  } else if (dataset == "BRCA"){
-    
-    print("selected BRCA dataset")
-    inputObject <- readRDS(test_path("fixtures/BRCA", 
-        "BRCA_Cell_Types_SingleR_SO_downsample.rds"))
-  }
-  
+  } 
 }
+  
