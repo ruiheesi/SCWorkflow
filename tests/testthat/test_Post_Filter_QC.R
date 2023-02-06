@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 for (data in c('TEC','Chariou','NSCLC_Single','NSCLC_Multi')) {
   # data='NSCLC_Single'
@@ -6,6 +7,17 @@ for (data in c('TEC','Chariou','NSCLC_Single','NSCLC_Multi')) {
          
   Seurat_Object <- readRDS(test_path(paste0("fixtures/",data), paste0(data,"_Filtered_SO_downsample.rds")))
   Post_filter_QC_out <- Post_filter_QC(Seurat_Object$so,
+=======
+test_that("Load testing dataset", {
+  # Seurat_Object <- readRDS('/rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/otherData/FilterQC.rds')
+  # Seurat_Object <- readRDS("/rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/otherData/CombNorm.rds")
+         
+  Seurat_Object <- readRDS(test_path("fixtures", "SO_moduleScore.rds"))
+  
+  
+  Post_filter_QC_out <- Post_filter_QC(Seurat_Object,
+                                 Parallelize_Computation = F, 
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
                                  Image_type = 'png'
                                  )
                             
@@ -17,7 +29,11 @@ for (data in c('TEC','Chariou','NSCLC_Single','NSCLC_Multi')) {
   expected.elements = c("so","plot")
   expect_setequal(names(Post_filter_QC_out), expected.elements)
   # SO contains object same length as input
+<<<<<<< HEAD
   expect_equal(length(Post_filter_QC_out$so),length(Seurat_Object$so))
+=======
+  expect_equal(length(Post_filter_QC_out$so),length(Seurat_Object))
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   # figure slot is a grob
   expect_equal(class(Post_filter_QC_out$plot)[3], 'grob')
   # SO slot contains data
@@ -27,7 +43,10 @@ for (data in c('TEC','Chariou','NSCLC_Single','NSCLC_Multi')) {
   
 })
 
+<<<<<<< HEAD
 }
+=======
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
 # 
 # library(devtools)
 # document()

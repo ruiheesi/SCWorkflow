@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Need to test HTO/split data data
 ## should I remove Protein data option
 
@@ -14,6 +15,17 @@ print(paste0("\n Test Filter and QC - Standard (",data," dataset)"))
 
   filter_qc_out <- Filter_and_QC(localFilePaths,
                                  organism = org,
+=======
+test_that("Load testing dataset", {
+
+  datadir <- readRDS(test_path("fixtures","filter_qc_test_in.rds"))
+
+  localFilePaths=(test_path("fixtures", "filter_qc_test_h5.h5"))
+  
+  
+  filter_qc_out <- Filter_and_QC(localFilePaths,
+                                 organism = "Mouse",
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
                                  rename = F,
                                  New_Sample_Names = c("Sample_1", "Sample_2"),
                                  mincells = 10,
@@ -34,13 +46,21 @@ print(paste0("\n Test Filter and QC - Standard (",data," dataset)"))
                                  Cell_hash = FALSE,
                                  imageType = "png",
                                  plot_histogram = FALSE
+<<<<<<< HEAD
                                  )%>%suppressMessages()%>%suppressWarnings()
+=======
+                                 )
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
                             
   
   # ggsave(file=paste0("/rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/otherData/test_FilterQC.pdf"),
          # filter_qc_out$plot)
   # plot(filter_qc_out$plot)
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   # create output
   expected.elements = c("so","plot")
   expect_setequal(names(filter_qc_out), expected.elements)
@@ -52,6 +72,7 @@ print(paste0("\n Test Filter and QC - Standard (",data," dataset)"))
   expect( object.size(filter_qc_out$so[[1]]@assays$RNA@counts),'> 0' )
   # plot slot contains data
   expect( object.size(filter_qc_out$plot),'> 0' )
+<<<<<<< HEAD
 
 })
 
@@ -288,6 +309,11 @@ for (data in c('TEC','Chariou','NSCLC_Single','NSCLC_Multi')) {
   
 }
 
+=======
+  
+})
+
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
 
 # library(devtools)
 # document()
