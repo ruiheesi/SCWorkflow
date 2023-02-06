@@ -22,7 +22,7 @@
 #' 
 #' @return Dotplot with markers and cell types. 
 
-DotplotMet <- function(object,
+dotPlotMet <- function(object,
                        metadata, 
                        cells,
                        markers,
