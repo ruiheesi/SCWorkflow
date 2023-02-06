@@ -13,7 +13,7 @@ ModuleScore(
   celltypes_to_analyze,
   manual_threshold = c(0),
   general_class,
-  multi_level_class,
+  multi_level_class = FALSE,
   levels_dataframe,
   reduction = "tsne",
   nbins = 24,

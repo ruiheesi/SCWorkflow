@@ -111,7 +111,7 @@ Filter_and_QC <- function(localFilePaths,
         print(allGenes[grepl(j, allGenes)])
         allGenes = allGenes[!grepl(j, allGenes)]  
       }
-      so <- SubsetData(so,features = allGenes,assay="RNA")
+      so <- subset(so,features = allGenes)
     }
     
     cat("\n\n")
@@ -304,7 +304,8 @@ Filter_and_QC <- function(localFilePaths,
   }
   
   ## Remove Sample files
-  subsetRegex = eval(parse(text=gsub('\\[\\]','c()',File_Filter_Regex)))
+  # subsetRegex = eval(parse(text=gsub('\\[\\]','c()',File_Filter_Regex)))
+  subsetRegex=File_Filter_Regex
   if (length(subsetRegex) > 0) {
     if (Keep == TRUE){
       for (i in length(subsetRegex)) {
@@ -376,28 +377,28 @@ Filter_and_QC <- function(localFilePaths,
   #############################
   ## Plot Image 
   
-  ## Set Image Size
-  imageWidth = min(1000*length(so.list[[1]][[3]]),15000)
-  imageHeight = min(1000*length(so.grobs.list)*2,24000)
-  dpi = 300
-  if (imageType == 'png') {
-    png(
-      # filename=graphicsFile,
-      width=imageWidth,
-      height=imageHeight,
-      units="px",
-      pointsize=4,
-      bg="white",
-      res=dpi,
-      type="cairo")
-  } else {
-    svglite::svglite(
-      # file=graphicsFile,
-      width=round(imageWidth/dpi,digits=2),
-      height=round(imageHeight/dpi,digits=2),
-      pointsize=1,
-      bg="white")
-  }
+  # ## Set Image Size
+  # imageWidth = min(1000*length(so.list[[1]][[3]]),15000)
+  # imageHeight = min(1000*length(so.grobs.list)*2,24000)
+  # dpi = 300
+  # if (imageType == 'png') {
+  #   png(
+  #     # filename=graphicsFile,
+  #     width=imageWidth,
+  #     height=imageHeight,
+  #     units="px",
+  #     pointsize=4,
+  #     bg="white",
+  #     res=dpi,
+  #     type="cairo")
+  # } else {
+  #   svglite::svglite(
+  #     # file=graphicsFile,
+  #     width=round(imageWidth/dpi,digits=2),
+  #     height=round(imageHeight/dpi,digits=2),
+  #     pointsize=1,
+  #     bg="white")
+  # }
   
   #grid.arrange(grobs = so.grobs.list, nrow = length(so.grobs.list))
   grobdat = list()

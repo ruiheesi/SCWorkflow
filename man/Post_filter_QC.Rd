@@ -4,12 +4,10 @@
 \alias{Post_filter_QC}
 \title{Post-filter QC Plots}
 \usage{
-Post_filter_QC(Seurat_Object, Parallelize_Computation = F, Image_type = "png")
+Post_filter_QC(Seurat_Object, Image_type = "png")
 }
 \arguments{
 \item{Seurat_Object}{Please input a filtered Seurat Object. This should be the output from the Initial QC template.}
-
-\item{Parallelize_Computation}{Toggle true to parallelize your computations using Spark. Recommended for large datasets.}
 
 \item{Image_type}{Remember that svgs are much larger than pngs, so we recommend doing everything first in png, then rerunning to output specific svgs as needed.}
 }
