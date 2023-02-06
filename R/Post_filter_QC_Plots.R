@@ -5,8 +5,9 @@
 #' @description This set of plots compares several QC parameters across samples after initial QC and filtering. This template is Step 2 in the basic Single-Cell RNA-seq workflow. 
 #' @details 
 #'
-#' @param object Please input a filtered Seurat Object. This should be the output from the Initial QC template.
-#' @param imagetype Remember that svgs are much larger than pngs, so we recommend doing everything first in png, then rerunning to output specific svgs as needed.
+#' @param Seurat_Object Please input a filtered Seurat Object. This should be the output from the Initial QC template.
+#' @param Parallelize_Computation Toggle true to parallelize your computations using Spark. Recommended for large datasets.
+#' @param Image_type Remember that svgs are much larger than pngs, so we recommend doing everything first in png, then rerunning to output specific svgs as needed.
 #' 
 #' 
 #' @import Seurat
@@ -28,8 +29,14 @@
 #' 
 #' @return Seurat Objects and QC plots that compares several QC parameters across samples after initial QC and filtering. This template is Step 2 in the basic Single-Cell RNA-seq workflow.
   
+<<<<<<< HEAD
 Post_filter_QC <- function(object,
                            imagetype = 'png'
+=======
+Post_filter_QC <- function(Seurat_Object,
+                           Parallelize_Computation = F,
+                           Image_type = 'png'
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
                            ){
   
   ##--------------- ##
@@ -118,22 +125,39 @@ Post_filter_QC <- function(object,
   ## Create SO object
   
   # load data
+<<<<<<< HEAD
   # object.class <- getClass(class(object))
+=======
+  # object.class <- getClass(class(Seurat_Object))
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   # 
   # if(object.class@className == "RFoundryObject") {
   #   cat("1. Reading Seurat Object from dataset: RObjectdata.rds\n\n")
   #   
+<<<<<<< HEAD
   #   SO = object$value
   # } else {
   #   cat("1. Reading Seurat Object from dataset: object.rds\n\n")
   #   
   #   fs <- object$fileSystem()
   #   path <- fs$get_path("object.rds", 'r')
+=======
+  #   SO = Seurat_Object$value
+  # } else {
+  #   cat("1. Reading Seurat Object from dataset: seurat_object.rds\n\n")
+  #   
+  #   fs <- Seurat_Object$fileSystem()
+  #   path <- fs$get_path("seurat_object.rds", 'r')
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   #   SO <- readRDS(path)
   #   
   # }
   
+<<<<<<< HEAD
   SO <- object
+=======
+  SO <- Seurat_Object
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   
   #in case you want to redo this on a merged SO
   if (class(SO) =="Seurat") {
@@ -173,6 +197,7 @@ Post_filter_QC <- function(object,
   #############################
   ## Plot Image 
   
+<<<<<<< HEAD
   # ## Set Image Size   
   # imageWidth = 5000
   # imageHeight = 1000*length(grobs)
@@ -196,6 +221,31 @@ Post_filter_QC <- function(object,
   #     pointsize=1,
   #     bg="white")
   # }
+=======
+  ## Set Image Size   
+  imageWidth = 5000
+  imageHeight = 1000*length(grobs)
+  dpi = 300
+  
+  if (Image_type == 'png') {
+    png(
+      # filename=graphicsFile,
+      width=imageWidth,
+      height=imageHeight,
+      units="px",
+      pointsize=4,
+      bg="white",
+      res=dpi,
+      type="cairo")
+  } else {
+    svglite::svglite(
+      # file=graphicsFile,
+      width=round(imageWidth/dpi,digits=2),
+      height=round(imageHeight/dpi,digits=2),
+      pointsize=1,
+      bg="white")
+  }
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   
   
   # grobs= grid.arrange(grobs = grobs, nrow = length(grobs))
@@ -204,14 +254,23 @@ Post_filter_QC <- function(object,
   
   # so@meta.data %>% rownames_to_column("Barcode") -> meta.df
   
+<<<<<<< HEAD
   # cat("\nReturn objects checksum:\n")
   # print(digest::digest(so))
+=======
+  cat("\nReturn objects checksum:\n")
+  print(digest::digest(so))
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   
   return(list(so=SO,plot=grobs))
          
   # output <- new.output()
   # output_fs <- output$fileSystem()
+<<<<<<< HEAD
   # saveRDS(SO, output_fs$get_path("object.rds", 'w'))
+=======
+  # saveRDS(SO, output_fs$get_path("seurat_object.rds", 'w'))
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   # 
   # return(output_fs)
   

@@ -6,6 +6,7 @@
 #' @details
 #' 
 #'
+<<<<<<< HEAD
 #' @param object Please input a post-Filter QC Seurat Object to do your reduction on.
 #' @param vars.to.regress Subtract (‘regress out’) this source of heterogeneity from the data. For example, to regress out mitochondrial effects, input "percent.mt." Options: percent.mt, nCount_RNA, S.Score, G2M.Score, CC.Difference
 #' @param vars.to.plot Choose variables to visualize on PCA plot (maximum = 3)
@@ -21,6 +22,23 @@
 #' @param methods.PCA Methods available: Marchenko-Pastur: use eigenvalue null upper bound from URD, Elbow: Find threshold where percent change in variation between consecutive PCs is less than X% (set below)
 #' @param var.threshold For Elbow method, set percent change threshold in variation between consecutive PCs
 #' @param imagetype Remember that svgs are much larger than pngs, so we recommend doing everything first in png, then rerunning to output specific svgs as needed. Options: png, svg
+=======
+#' @param Seurat_Object Please input a post-Filter QC Seurat Object to do your reduction on.
+#' @param vars_to_regress Subtract (‘regress out’) this source of heterogeneity from the data. For example, to regress out mitochondrial effects, input "percent.mt." Options: percent.mt, nCount_RNA, S.Score, G2M.Score, CC.Difference
+#' @param vars_to_plot Choose variables to visualize on PCA plot (maximum = 3)
+#' @param npcs Select initial set of principal components
+#' @param nfeatures Number of variable features
+#' @param low_cut description.
+#' @param high_cut description.
+#' @param low_cut_disp description.
+#' @param high_cut_disp description.
+#' @param selection_method Method to choose top variable features. Options: vst, mean.var.plot, dispersion
+#' @param doJackStraw Opt to visualize your data in a Jackstraw plot (sometimes more description than an elbow plot).
+#' @param JackStraw_dims Recommended max 10
+#' @param methods_PCA Methods available: Marchenko-Pastur: use eigenvalue null upper bound from URD, Elbow: Find threshold where percent change in variation between consecutive PCs is less than X% (set below)
+#' @param var_threshold For Elbow method, set percent change threshold in variation between consecutive PCs
+#' @param imageType Remember that svgs are much larger than pngs, so we recommend doing everything first in png, then rerunning to output specific svgs as needed. Options: png, svg
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
 #' 
 #' 
 #' @import Seurat
@@ -37,22 +55,21 @@
 #' 
 #' @return Seurat Objects and QC plots. This template normalizes each sample and plots Seurat PCAs and Elbow Plots for each sample to aid in selecting the number of PCs to carry forward in your analysis (see next template in workflow). PCA plots before and after regression will be shown for each variable chosen. The elbow plot will show reduction in variance (y-axis) as a function of PC count (x-axis). It is recommended to pick the number of PCs where variance is reduced by 98% (i.e. the first point where y coord = 0.02). This is Step 3 in the basic Single-Cell RNA-seq workflow.
 
-
-PCA_and_Normalization <- function(object,
-                           vars.to.regress = NULL,
-                           vars.to.plot = c('percent.mt','Phase'),
+PCA_and_Normalization <- function(Seurat_Object,
+                           vars_to_regress = NULL,
+                           vars_to_plot = c('percent.mt','Phase'),
                            npcs = 30,
                            nfeatures = 2000,
-                           low.cut = 1,
-                           high.cut = 8,
-                           low.cut.disp = 1,
-                           high.cut.disp = 100000,
-                           selection.method = 'vst',
-                           jackstraw = FALSE,
-                           jackstraw.dims = 5,
-                           methods.PCA = c('Elbow','Marchenko-Pastur'),
-                           var.threshold = 0.1,
-                           imagetype = 'png'
+                           low_cut = 1,
+                           high_cut = 8,
+                           low_cut_disp = 1,
+                           high_cut_disp = 100000,
+                           selection_method = 'vst',
+                           doJackStraw = FALSE,
+                           JackStraw_dims = 5,
+                           methods_PCA = c('Elbow','Marchenko-Pastur'),
+                           var_threshold = 0.1,
+                           imageType = 'png'
                            ){
     
   
@@ -70,17 +87,19 @@ PCA_and_Normalization <- function(object,
   
   ################################
   # Cell Cycle Scoring and Find Variable Features
-  CC.FVF.so <- function(so){
+
+  CC_FVF_so <- function(so){
     # so <- CellCycleScoring(object = so, g2m.features = cc.genes$g2m.genes,s.features = cc.genes$s.genes)
     # so$CC.Difference <- so$S.Score - so$G2M.Score
-    so <- FindVariableFeatures(object = so, nfeatures = nfeatures, mean.cutoff = c(low.cut, high.cut), dispersion.cutoff = c(low.cut.disp, high.cut.disp), selection.method = selection.method)
+    so <- FindVariableFeatures(object = so, nfeatures = nfeatures, mean.cutoff = c(low_cut, high_cut), dispersion.cutoff = c(low_cut_disp, high_cut_disp), selection.method = selection_method)
     all.genes <- rownames(so)
     return(so)
   }
   
   ################################
   # Make PCA without regressing anything, and using only SCTransform().
-  pca.noregress <- function(so) {
+
+  pca_noregress <- function(so) {
     so <- SCTransform(so,do.correct.umi = FALSE,return.only.var.genes = FALSE)
     so <- RunPCA(object = so, features = VariableFeatures(object = so), npcs = npcs)
     return(so)
@@ -91,7 +110,11 @@ PCA_and_Normalization <- function(object,
   pca <- function(so) {
     
     # Run SCTransform().        
+<<<<<<< HEAD
     so <- SCTransform(so,do.correct.umi = TRUE, vars.to.regress = vars.to.regress, return.only.var.genes = FALSE)
+=======
+    so <- SCTransform(so,do.correct.umi = TRUE, vars.to.regress = vars_to_regress, return.only.var.genes = FALSE)
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
     
     # Make PCA using last transform run, which will always be that from
     # SCTransform().
@@ -172,19 +195,31 @@ PCA_and_Normalization <- function(object,
   
   plotElbow <- function(so){
     
+<<<<<<< HEAD
     if("Elbow" %in% methods.PCA){
+=======
+    if("Elbow" %in% methods_PCA){
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
       #Find Elbow:
       sumpcsd = sum(so@reductions$pca@stdev)
       pcvar = (so@reductions$pca@stdev/sumpcsd)*100
       cumu <- cumsum(pcvar)
       co1 <- which(cumu > 80 & pcvar < 5)[1]
+<<<<<<< HEAD
       co2 <- sort(which((pcvar[1:length(pcvar) - 1] - pcvar[2:length(pcvar)]) > var.threshold), decreasing = T)[1] + 1
+=======
+      co2 <- sort(which((pcvar[1:length(pcvar) - 1] - pcvar[2:length(pcvar)]) > var_threshold), decreasing = T)[1] + 1
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
       pcs = min(co1,co2)
       lab = paste0("Elbow = ", pcs)
       xpos = pcs + 4
     }
     
+<<<<<<< HEAD
     if("Marchenko-Pastur" %in% methods.PCA){
+=======
+    if("Marchenko-Pastur" %in% methods_PCA){
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
       #Using code from URD (https://rdrr.io/github/farrellja/URD/src/R/pca.R)
       pcaMarchenkoPastur <- function(M, N, pca.sdev, factor=1, do.print=T) {
         pca.eigenvalue <- (pca.sdev)^2
@@ -242,12 +277,20 @@ PCA_and_Normalization <- function(object,
   #   cat("1. Reading Seurat Object from dataset: SO.rds\n\n")
   #   
   #   fs <- SO$fileSystem()
+<<<<<<< HEAD
   #   path <- fs$get_path("object.rds", 'r')
+=======
+  #   path <- fs$get_path("seurat_object.rds", 'r')
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   #   SO <- readRDS(path)
   #   
   # }
   
+<<<<<<< HEAD
   SO <- object
+=======
+  SO <- Seurat_Object
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   
   #in case you want to redo this on a merged SO
   if (class(SO) =="Seurat") {
@@ -259,15 +302,22 @@ PCA_and_Normalization <- function(object,
   ################################
   # Do transformation with and without regression using SCTransform().
   
+<<<<<<< HEAD
   so.prep <- lapply(SO, CC.FVF.so) 
   so.orig <- lapply(so.prep, pca.noregress)
   so.list <- lapply(so.prep, pca) 
+=======
+  so_prep <- lapply(SO, CC_FVF_so) 
+  so_orig <- lapply(so_prep, pca_noregress)
+  so_list <- lapply(so_prep, pca) 
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   
   
   ################################
   # Create Plots 
   
   imageCols = 2
+<<<<<<< HEAD
   if (length(vars.to.plot) > 0) {
     imageCols <- imageCols + length(vars.to.plot)
   }   
@@ -276,6 +326,16 @@ PCA_and_Normalization <- function(object,
     vars.to.plot = "nCount_RNA"
   }
   len <- length(vars.to.plot)*2
+=======
+  if (length(vars_to_plot) > 0) {
+    imageCols <- imageCols + length(vars_to_plot)
+  }   
+  
+  if(is.null(vars_to_plot)){
+    vars_to_plot = "nCount_RNA"
+  }
+  len <- length(vars_to_plot)*2
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   grobsList <- vector(mode = "list", length = len)
   
   
@@ -283,11 +343,19 @@ PCA_and_Normalization <- function(object,
   ## PCA plots
   
   k=1
+<<<<<<< HEAD
   for (i in 1:length(vars.to.plot)){ 
     grob <- lapply(so.orig, function(x) plotPCA(x,vars.to.plot[i]))
     grob=grid.arrange(grobs=grob,nrow=length(grob))
     grobsList[[k]] <- grob
     grob2 <- lapply(so.list, function(x) plotPCA(x,vars.to.plot[i]))
+=======
+  for (i in 1:length(vars_to_plot)){ 
+    grob <- lapply(so_orig, function(x) plotPCA(x,vars_to_plot[i]))
+    grob=grid.arrange(grobs=grob,nrow=length(grob))
+    grobsList[[k]] <- grob
+    grob2 <- lapply(so_list, function(x) plotPCA(x,vars_to_plot[i]))
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
     grob2=grid.arrange(grobs=grob2,nrow=length(grob2))
     l=k+1
     grobsList[[l]] <- grob2
@@ -296,7 +364,11 @@ PCA_and_Normalization <- function(object,
   
   ## Elbow Plot
   
+<<<<<<< HEAD
   grob3 <- lapply(so.list, function(x) plotElbow(x))
+=======
+  grob3 <- lapply(so_list, function(x) plotElbow(x))
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   grob3=grid.arrange(grobs=grob3,nrow=length(grob3))
   
   grobsList[[length(grobsList)+1]] <- grob3
@@ -304,6 +376,7 @@ PCA_and_Normalization <- function(object,
   
   ## Jakstraw plot
   
+<<<<<<< HEAD
   if (jackstraw) {
     imageCols <- imageCols + 2
   }   
@@ -313,6 +386,17 @@ PCA_and_Normalization <- function(object,
                                                   maxit = 1000))
     grob4 <- lapply(grob4, function(x) ScoreJackStraw(x, dims = 1:jackstraw.dims))
     grob4 <- lapply(grob4, function(x) JackStrawPlot(x, dims = 1:jackstraw.dims))
+=======
+  if (doJackStraw) {
+    imageCols <- imageCols + 2
+  }   
+  if (doJackStraw) {
+    grob4 <-lapply(so_list, function(x) JackStraw(x, reduction = "pca", dims = JackStraw_dims,
+                                                  num.replicate = 100, prop.freq = 0.01, verbose = TRUE,
+                                                  maxit = 1000))
+    grob4 <- lapply(grob4, function(x) ScoreJackStraw(x, dims = 1:JackStraw_dims))
+    grob4 <- lapply(grob4, function(x) JackStrawPlot(x, dims = 1:JackStraw_dims))
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
     grob4=grid.arrange(grobs=grob4,nrow=length(grob4))
     grobsList[[length(grobsList)+1]] <- grob4
   }
@@ -324,6 +408,7 @@ PCA_and_Normalization <- function(object,
   # Create Figure Output 
   
   
+<<<<<<< HEAD
   # imageWidth = 1000*2*imageCols
   # imageHeight = 1000*length(so.list)
   # dpi = 300
@@ -346,6 +431,30 @@ PCA_and_Normalization <- function(object,
   #     pointsize=1,
   #     bg="white")
   # }
+=======
+  imageWidth = 1000*2*imageCols
+  imageHeight = 1000*length(so_list)
+  dpi = 300
+  
+  if (imageType == "png") {
+    png(
+      # filename=graphicsFile,
+      width=imageWidth,
+      height=imageHeight,
+      units="px",
+      pointsize=4,
+      bg="white",
+      res=dpi,
+      type="cairo")
+  } else {
+    svglite::svglite(
+      # file=graphicsFile,
+      width=round(imageWidth/dpi,digits=2),
+      height=round(imageHeight/dpi,digits=2),
+      pointsize=1,
+      bg="white")
+  }
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   
   # plot(grobs)
   # grobs = arrangeGrob(grobs=grobs,nrow=1)
@@ -353,14 +462,26 @@ PCA_and_Normalization <- function(object,
   grobs=grobs
   
   
+<<<<<<< HEAD
   # cat("\nPCA Object Checksum:\n")
   #print(digest::digest(so.list))
+=======
+  cat("\nPCA Object Checksum:\n")
+  #print(digest::digest(so_list))
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   
   return(list(so=SO,plot=grobs))
   
   # output <- new.output()
+<<<<<<< HEAD
   # output.fs <- output$fileSystem()
   # saveRDS(so.list, output.fs$get.path("object.rds", 'w'))
   # 
   # return(output.fs)
+=======
+  # output_fs <- output$fileSystem()
+  # saveRDS(so_list, output_fs$get_path("seurat_object.rds", 'w'))
+  # 
+  # return(output_fs)
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
 }
