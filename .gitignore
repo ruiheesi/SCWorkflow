@@ -6,3 +6,4 @@ Rcheck.txt
 tests/testthat/otherData/
 .Rproj.user
 *.txt
+*.h5
