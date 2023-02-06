@@ -22,7 +22,7 @@
 #' @export
 #' @return Returns Seurat-class object with updated meta.data slot containing custom cluster annotation 
 
-NameClusters <-
+nameClusters <-
   function(object,
            cluster.numbers,
            cluster.names,
@@ -36,7 +36,7 @@ NameClusters <-
     # set metadata
     metadata.df <- object@meta.data
     colval <- metadata.df[[cluster.column]]
-    names(cluster.names) <- cluster.numbers
+    names(cluster.names) <- as.character(cluster.numbers)
     
     # If cluster numbers on input table match the cluster numbers selected:
     
@@ -71,6 +71,14 @@ NameClusters <-
       as.data.frame.matrix(table(colval, object@meta.data[[labels.column]]))
     clusnum.df <- melt(as.matrix(cluster.num))
     sums <- rowSums(cluster.num)
+    zero <- sums == 0
+    if(sum(zero) > 0){
+      empty <- paste(names(sums[zero]),collapse = ",")
+      sums <- sums[!zero]
+      cluster.num <- cluster.num[!zero,]
+      clusnum.df %>% filter(Var1 %in% names(zero[zero==FALSE])) -> clusnum.df
+      warning(paste0("Some clusters had no detected cell types: ",empty))
+    }
     cluster.perc <- (cluster.num / sums) * 100
     
     # draw plot with Likely cell type numbers per cluster
@@ -127,7 +135,6 @@ NameClusters <-
     }
     
     # do plot (suppressMessages for ggplot2 scale replacemnt)
-    suppressMessages(
       g <- ggplot(clus.df, aes(
               x = celltype,
               y = cluster,
@@ -141,7 +148,6 @@ NameClusters <-
                 vjust = 0.5,
                 hjust = 1)) +
               ggtitle("Percentage of Cell Type within Clusters")
-    )
     
     if(interactive == TRUE){
       g <- ggplotly(g)

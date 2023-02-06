@@ -7,7 +7,7 @@
 #' @param object Seurat-class object
 #' @param color.variable Metadata column to use for color
 #' @param label.variable Metadata column to use for label
-#' @param fileName Filename for saving plot (default is "plot.html")
+#' @param filename Filename for saving plot (default is "plot.html")
 #' @param npcs Number of PC's (default is 15)
 #' @param save.plot Save plot (default is FALSE)
 #' 
@@ -20,14 +20,12 @@
 tSNE3D <- function(object,
                    color.variable,
                    label.variable,
-                   fileName = "plot.html",
+                   filename = "plot.html",
                    save.plot = FALSE,
                    npcs = 15){
   
-  color.variable <- sub("orig_ident","orig.ident",color.variable)
-  label.variable <- sub("orig_ident","orig.ident",label.variable)
-  cols=c("blue","green","red","orange","purple4","darkcyan","magenta2",
-         "darkred","darkorange")
+  cols=c("darkblue","purple4","green","red","darkcyan","magenta2","orange",
+         "yellow","black")
   
   #Run TSNE again to get 3d coordinates:
   object <- RunTSNE(object, assay="SCT",
@@ -36,6 +34,15 @@ tSNE3D <- function(object,
                 seed.use=1)
   
   tsne.coord <- as.data.frame(object@reductions$tsne@cell.embeddings)
+  
+  if(is.null(object@meta.data[[label.variable]])){
+    stop(paste0("The metadata variable selected for labeling ",label.variable,
+                " is not available in the seurat object"))
+  }
+  if(is.null(object@meta.data[[color.variable]])){
+    stop(paste0("The metadata variable selected for color ",color.variable,
+                " is not available in the seurat object"))
+  }
   
   tsne.df <- data.frame(TSNE1=tsne.coord$tSNE_1,
                         TSNE2=tsne.coord$tSNE_2,
@@ -60,7 +67,7 @@ tSNE3D <- function(object,
   }
   
   if(save.plot == TRUE){
-    htmlwidgets::saveWidget(as_widget(fig), fileName, selfcontained=TRUE)
+    htmlwidgets::saveWidget(as_widget(fig), filename, selfcontained=TRUE)
   }
   
   tsne.results <- list("plot"  = fig, "data" = tsne.df)
