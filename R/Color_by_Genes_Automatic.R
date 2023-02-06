@@ -41,6 +41,16 @@ color_by_genes <- function(SO,
                              point_shape = 16,
                              number_of_rows = 0,
                              doCiteSeq = FALSE){
+  
+  ## -------------- ##
+  ## Error Messages ##
+  ## -------------- ##
+  
+  if(!assay %in% Assays(SO)){
+    stop("assay type not found in seurat")
+  } else if (!reduction_type %in% Reductions(SO)){
+    stop("reduction type not found in seurat")
+  }
     
   ## --------- ##
   ## Functions ##
@@ -161,7 +171,7 @@ color_by_genes <- function(SO,
   
   # Padd processed list containing only the present genes
   padded_list <- lapply(Present_Markers_ls, `length<-`, max(lengths(Present_Markers_ls)))
-  Markers_from_list <- as.data.frame.matrix(do.call(cbind, padded_list))
+  Markers_from_list <- do.call(cbind, padded_list)
   
   # Recognize any markers designated as proteins and insert protein expression data into slot where plots are created
   if (protein_presence){
@@ -217,17 +227,15 @@ color_by_genes <- function(SO,
     
     title <- cell
     
-    markers_to_analyze <- as.character(Markers_from_list[[cell]])
+    markers_to_analyze <- as.character(Markers_from_list[,cell])
     
     grob <- lapply(markers_to_analyze,function(x) plotMarkers(x))
     gg_storage[[cell]] <- gridExtra::arrangeGrob(grobs=grob,ncol = 1,newpage=F, as.table = F, top = text_grob(title,size = 15, face = "bold"))
     
   }
   
-  #pdf("Color_by_Genes.pdf", 12, 15)
-  final_figures <- do.call(grid.arrange, c(gg_storage, ncol = ncol(Markers_from_list)))
-  #dev.off()
-  
+  final_figures <- do.call(arrangeGrob, c(gg_storage, ncol = ncol(Markers_from_list)))
+
   return(final_figures)
 }
   

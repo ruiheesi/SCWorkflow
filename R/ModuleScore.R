@@ -46,7 +46,7 @@ ModuleScore <- function(SO,
                          celltypes_to_analyze,
                          manual_threshold = c(0), 
                          general_class, 
-                         multi_level_class, 
+                         multi_level_class = FALSE, 
                          levels_dataframe, 
                          reduction = "tsne",
                          nbins = 24,
@@ -191,7 +191,7 @@ ModuleScore <- function(SO,
   for (h in seq_along(marker.list)) {
     print(names(marker.list[h]))
     present=lapply(marker.list[[h]], function(x) x %in% rownames(SO.sub)) # apply function(x) x %in% rownames(SO.sub) to each element of marker.list
-    absentgenes = unlist(marker.list[[h]])[present==FALSE];     absentgenes=absentgenes[is.na(absentgenes)==F]
+    absentgenes = unlist(marker.list[[h]])[present==FALSE];absentgenes=absentgenes[is.na(absentgenes)==F]
     presentgenes = unlist(marker.list[[h]])[present==TRUE];presentgenes=presentgenes[is.na(presentgenes)==F]
     print(paste0("Genes not present: ",paste0(absentgenes,collapse=",")))
     print(paste0("Genes present: ",paste0(presentgenes,collapse=",")))
@@ -265,8 +265,8 @@ ModuleScore <- function(SO,
       geom_segment(aes(xend = d$x, yend = 0, colour = x)) + scale_y_log10() +
       scale_color_gradientn(colours = c("blue4","lightgrey", "red"), values = scales::rescale(c(0,manual_threshold[i]/2,manual_threshold[i],(manual_threshold[i]+1)/2,1), limits = c(0, 1))) + geom_vline(xintercept = manual_threshold[i], linetype = "dashed", color = "red3") + geom_vline(xintercept = manual_threshold[i], linetype = "dashed", color = "red3") + scale_x_continuous(breaks = seq(0,1,step_size)) + theme(legend.title = element_blank(), axis.text.x = element_text(size = 6))
     
-    # Set title for grid.arranged final figure
-    figures[[i]] = grid.arrange(g,g1,g2,g3, ncol=2, top=textGrob(names(marker.list[i]), gp = gpar(fontsize = 14, fontface = "bold")))
+    # Set title for arrangeGrob final figure
+    figures[[i]] = arrangeGrob(g,g1,g2,g3, ncol=2, top=textGrob(names(marker.list[i]), gp = gpar(fontsize = 14, fontface = "bold")))
     }
   
   # Get rid of "1" at the end of MS columns
@@ -349,7 +349,7 @@ ModuleScore <- function(SO,
   ## Updating CellType(s) in metadata with subclass calls
   SO.sub@meta.data$Likely_CellType <- Calls_output$Likely_CellType[match(SO.sub@meta.data$Barcode,Calls_output$Barcode)]
   
-  modscore_res <- list(Arranged_figures <- do.call("grid.arrange", c(figures)),
+  modscore_res <- list(Arranged_figures = do.call(arrangeGrob, c(figures)),
                        Seurat_Object = SO.sub)
   
   return(modscore_res)
