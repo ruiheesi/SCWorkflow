@@ -1,7 +1,7 @@
 #' Combine_and_Renormalize template in single-cell-rna-seq-r4 NIDAP environment
 #' from v178
 #' 
-#' 
+#'  
 #' @title Combine & Renormalize 
 #' @description Combines samples, rescales and renormalizes, runs Dimensional Reduction, and returns a combined Seurat Object. This template will summarize the multi-dimensionality of your data into a set of "principal components" to allow for easier analysis. There is an option to use this template to perform Integration, as well. This is Step 4 in the canonical Single Cell pipeline after elbow plots and regression.   
 #' @details
