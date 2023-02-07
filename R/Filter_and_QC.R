@@ -111,7 +111,15 @@ Filter_and_QC <- function(local.file.paths,
         print(allGenes[grepl(j, allGenes)])
         allGenes = allGenes[!grepl(j, allGenes)]  
       }
+<<<<<<< HEAD
+<<<<<<< HEAD
       so <- subset(so,features = allGenes)
+=======
+      so <- SubsetData(so,features = allGenes,assay="RNA")
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
+=======
+      so <- SubsetData(so,features = allGenes,assay="RNA")
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
     }
     
     cat("\n\n")
@@ -304,8 +312,16 @@ Filter_and_QC <- function(local.file.paths,
   }
   
   ## Remove Sample files
-  # subsetRegex = eval(parse(text=gsub('\\[\\]','c()',file.filter.regex)))
-  subsetRegex=file.filter.regex
+<<<<<<< HEAD
+<<<<<<< HEAD
+  # subsetRegex = eval(parse(text=gsub('\\[\\]','c()',File_Filter_Regex)))
+  subsetRegex=File_Filter_Regex
+=======
+  subsetRegex = eval(parse(text=gsub('\\[\\]','c()',File_Filter_Regex)))
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
+=======
+  subsetRegex = eval(parse(text=gsub('\\[\\]','c()',File_Filter_Regex)))
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   if (length(subsetRegex) > 0) {
     if (keep == TRUE){
       for (i in length(subsetRegex)) {
@@ -377,6 +393,8 @@ Filter_and_QC <- function(local.file.paths,
   #############################
   ## Plot Image 
   
+<<<<<<< HEAD
+<<<<<<< HEAD
   # ## Set Image Size
   # imageWidth = min(1000*length(so.list[[1]][[3]]),15000)
   # imageHeight = min(1000*length(so.grobs.list)*2,24000)
@@ -399,6 +417,35 @@ Filter_and_QC <- function(local.file.paths,
   #     pointsize=1,
   #     bg="white")
   # }
+=======
+=======
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
+  ## Set Image Size
+  imageWidth = min(1000*length(so.list[[1]][[3]]),15000)
+  imageHeight = min(1000*length(so.grobs.list)*2,24000)
+  dpi = 300
+  if (imageType == 'png') {
+    png(
+      # filename=graphicsFile,
+      width=imageWidth,
+      height=imageHeight,
+      units="px",
+      pointsize=4,
+      bg="white",
+      res=dpi,
+      type="cairo")
+  } else {
+    svglite::svglite(
+      # file=graphicsFile,
+      width=round(imageWidth/dpi,digits=2),
+      height=round(imageHeight/dpi,digits=2),
+      pointsize=1,
+      bg="white")
+  }
+<<<<<<< HEAD
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
+=======
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   
   #grid.arrange(grobs = so.grobs.list, nrow = length(so.grobs.list))
   grobdat = list()

@@ -8,7 +8,11 @@ tSNE3D(
   object,
   color.variable,
   label.variable,
+<<<<<<< HEAD
   filename = "plot.html",
+=======
+  fileName = "plot.html",
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   save.plot = FALSE,
   npcs = 15
 )
@@ -20,7 +24,11 @@ tSNE3D(
 
 \item{label.variable}{Metadata column to use for label}
 
+<<<<<<< HEAD
 \item{filename}{Filename for saving plot (default is "plot.html")}
+=======
+\item{fileName}{Filename for saving plot (default is "plot.html")}
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
 
 \item{save.plot}{Save plot (default is FALSE)}
 

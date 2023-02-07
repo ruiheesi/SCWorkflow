@@ -37,6 +37,10 @@
 #' 
 #' @return Seurat Objects and QC plots. This template normalizes each sample and plots Seurat PCAs and Elbow Plots for each sample to aid in selecting the number of PCs to carry forward in your analysis (see next template in workflow). PCA plots before and after regression will be shown for each variable chosen. The elbow plot will show reduction in variance (y-axis) as a function of PC count (x-axis). It is recommended to pick the number of PCs where variance is reduced by 98% (i.e. the first point where y coord = 0.02). This is Step 3 in the basic Single-Cell RNA-seq workflow.
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
 PCA_and_Normalization <- function(Seurat_Object,
                            vars_to_regress = NULL,
                            vars_to_plot = c('percent.mt','Phase'),
@@ -69,7 +73,10 @@ PCA_and_Normalization <- function(Seurat_Object,
   
   ################################
   # Cell Cycle Scoring and Find Variable Features
+<<<<<<< HEAD
 
+=======
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   CC_FVF_so <- function(so){
     # so <- CellCycleScoring(object = so, g2m.features = cc.genes$g2m.genes,s.features = cc.genes$s.genes)
     # so$CC.Difference <- so$S.Score - so$G2M.Score
@@ -80,7 +87,10 @@ PCA_and_Normalization <- function(Seurat_Object,
   
   ################################
   # Make PCA without regressing anything, and using only SCTransform().
+<<<<<<< HEAD
 
+=======
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   pca_noregress <- function(so) {
     so <- SCTransform(so,do.correct.umi = FALSE,return.only.var.genes = FALSE)
     so <- RunPCA(object = so, features = VariableFeatures(object = so), npcs = npcs)
@@ -249,7 +259,10 @@ PCA_and_Normalization <- function(Seurat_Object,
   # }
   
   SO <- Seurat_Object
+<<<<<<< HEAD
 
+=======
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   
   #in case you want to redo this on a merged SO
   if (class(SO) =="Seurat") {
@@ -260,7 +273,11 @@ PCA_and_Normalization <- function(Seurat_Object,
   
   ################################
   # Do transformation with and without regression using SCTransform().
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   so_prep <- lapply(SO, CC_FVF_so) 
   so_orig <- lapply(so_prep, pca_noregress)
   so_list <- lapply(so_prep, pca) 
@@ -285,7 +302,10 @@ PCA_and_Normalization <- function(Seurat_Object,
   ## PCA plots
   
   k=1
+<<<<<<< HEAD
 
+=======
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   for (i in 1:length(vars_to_plot)){ 
     grob <- lapply(so_orig, function(x) plotPCA(x,vars_to_plot[i]))
     grob=grid.arrange(grobs=grob,nrow=length(grob))
@@ -299,7 +319,10 @@ PCA_and_Normalization <- function(Seurat_Object,
   
   ## Elbow Plot
   
+<<<<<<< HEAD
 
+=======
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   grob3 <- lapply(so_list, function(x) plotElbow(x))
   grob3=grid.arrange(grobs=grob3,nrow=length(grob3))
   
@@ -350,17 +373,26 @@ PCA_and_Normalization <- function(Seurat_Object,
       pointsize=1,
       bg="white")
   }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   
   # plot(grobs)
   # grobs = arrangeGrob(grobs=grobs,nrow=1)
   # grid.arrange(grobs)
   grobs=grobs
   
+<<<<<<< HEAD
 
   cat("\nPCA Object Checksum:\n")
   #print(digest::digest(so_list))
 
+=======
+  
+  cat("\nPCA Object Checksum:\n")
+  #print(digest::digest(so_list))
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   
   return(list(so=SO,plot=grobs))
   
