@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 ## Need to test HTO/split data data
 ## should I remove Protein data option
 
@@ -16,6 +17,8 @@ print(paste0("\n Test Filter and QC - Standard (",data," dataset)"))
   filter_qc_out <- Filter_and_QC(localFilePaths,
                                  organism = org,
 =======
+=======
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
 test_that("Load testing dataset", {
 
   datadir <- readRDS(test_path("fixtures","filter_qc_test_in.rds"))
@@ -25,6 +28,9 @@ test_that("Load testing dataset", {
   
   filter_qc_out <- Filter_and_QC(localFilePaths,
                                  organism = "Mouse",
+<<<<<<< HEAD
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
+=======
 >>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
                                  rename = F,
                                  New_Sample_Names = c("Sample_1", "Sample_2"),
@@ -47,7 +53,11 @@ test_that("Load testing dataset", {
                                  imageType = "png",
                                  plot_histogram = FALSE
 <<<<<<< HEAD
+<<<<<<< HEAD
                                  )%>%suppressMessages()%>%suppressWarnings()
+=======
+                                 )
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
 =======
                                  )
 >>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
@@ -57,7 +67,11 @@ test_that("Load testing dataset", {
          # filter_qc_out$plot)
   # plot(filter_qc_out$plot)
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
 =======
   
 >>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
@@ -72,6 +86,7 @@ test_that("Load testing dataset", {
   expect( object.size(filter_qc_out$so[[1]]@assays$RNA@counts),'> 0' )
   # plot slot contains data
   expect( object.size(filter_qc_out$plot),'> 0' )
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 })
@@ -309,6 +324,11 @@ for (data in c('TEC','Chariou','NSCLC_Single','NSCLC_Multi')) {
   
 }
 
+=======
+  
+})
+
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
 =======
   
 })

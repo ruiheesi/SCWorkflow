@@ -112,7 +112,11 @@ Filter_and_QC <- function(localFilePaths,
         allGenes = allGenes[!grepl(j, allGenes)]  
       }
 <<<<<<< HEAD
+<<<<<<< HEAD
       so <- subset(so,features = allGenes)
+=======
+      so <- SubsetData(so,features = allGenes,assay="RNA")
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
 =======
       so <- SubsetData(so,features = allGenes,assay="RNA")
 >>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
@@ -309,8 +313,12 @@ Filter_and_QC <- function(localFilePaths,
   
   ## Remove Sample files
 <<<<<<< HEAD
+<<<<<<< HEAD
   # subsetRegex = eval(parse(text=gsub('\\[\\]','c()',File_Filter_Regex)))
   subsetRegex=File_Filter_Regex
+=======
+  subsetRegex = eval(parse(text=gsub('\\[\\]','c()',File_Filter_Regex)))
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
 =======
   subsetRegex = eval(parse(text=gsub('\\[\\]','c()',File_Filter_Regex)))
 >>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
@@ -386,6 +394,7 @@ Filter_and_QC <- function(localFilePaths,
   ## Plot Image 
   
 <<<<<<< HEAD
+<<<<<<< HEAD
   # ## Set Image Size
   # imageWidth = min(1000*length(so.list[[1]][[3]]),15000)
   # imageHeight = min(1000*length(so.grobs.list)*2,24000)
@@ -409,6 +418,8 @@ Filter_and_QC <- function(localFilePaths,
   #     bg="white")
   # }
 =======
+=======
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   ## Set Image Size
   imageWidth = min(1000*length(so.list[[1]][[3]]),15000)
   imageHeight = min(1000*length(so.grobs.list)*2,24000)
@@ -431,6 +442,9 @@ Filter_and_QC <- function(localFilePaths,
       pointsize=1,
       bg="white")
   }
+<<<<<<< HEAD
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
+=======
 >>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   
   #grid.arrange(grobs = so.grobs.list, nrow = length(so.grobs.list))

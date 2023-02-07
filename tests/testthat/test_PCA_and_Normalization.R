@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 for (data in c('TEC','Chariou','NSCLC_Single','NSCLC_Multi')) {
   # data='NSCLC_Multi'
   
@@ -23,6 +24,8 @@ for (data in c('TEC','Chariou','NSCLC_Single','NSCLC_Multi')) {
                                                      imagetype = "png"
                                  )
 =======
+=======
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
 test_that("Load testing dataset", {
   # Seurat_Object <- readRDS('./otherData/PostFilterQC.rds')
   # Seurat_Object <- readRDS('./fixtures/SO_moduleScore.rds')
@@ -51,25 +54,38 @@ test_that("Load testing dataset", {
   
   
   
+<<<<<<< HEAD
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
+=======
 >>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   # ggsave(file=paste0("/rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/otherData/test_PCAnorm.pdf"),
          # PCA_and_Normalization_out$plot)
   # plot(PCA_and_Normalization_out$plot)
   
 <<<<<<< HEAD
+<<<<<<< HEAD
   ### Test parameters
 =======
+=======
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   
   
   ### Test parameters
   
+<<<<<<< HEAD
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
+=======
 >>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   # create output
   expected.elements = c("so","plot")
   expect_setequal(names(PCA_and_Normalization_out), expected.elements)
   # SO contains object same length as input
 <<<<<<< HEAD
+<<<<<<< HEAD
   expect_equal(length(PCA_and_Normalization_out$so),length(object$so)) 
+=======
+  expect_equal(length(PCA_and_Normalization_out$so),length(Seurat_Object)) 
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
 =======
   expect_equal(length(PCA_and_Normalization_out$so),length(Seurat_Object)) 
 >>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
@@ -82,6 +98,7 @@ test_that("Load testing dataset", {
   
 })
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 }
 
@@ -328,12 +345,15 @@ for (data in c('TEC','Chariou','NSCLC_Single','NSCLC_Multi')) {
 
 =======
 >>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
+=======
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
 
 # library(devtools)
 # document()
 # load_all()
 # test_active_file()
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 # vars.to.regress = c('percent.mt')
 # vars.to.plot = c('percent.mt','nCount_RNA')
@@ -350,6 +370,8 @@ for (data in c('TEC','Chariou','NSCLC_Single','NSCLC_Multi')) {
 # var.threshold = 0.1
 # imagetype = 'png'
 =======
+=======
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
 # vars_to_regress = c('percent.mt')
 # vars_to_plot = c('percent.mt','nCount_RNA')
 # npcs = 30
@@ -364,6 +386,9 @@ for (data in c('TEC','Chariou','NSCLC_Single','NSCLC_Multi')) {
 # methods_PCA = c('Elbow','Marchenko-Pastur')
 # var_threshold = 0.1
 # imageType = 'png'
+<<<<<<< HEAD
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
+=======
 >>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
 
 # saveRDS(PCA_and_Normalization_out$so,'/rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/otherData/PCAnorm.rds')
