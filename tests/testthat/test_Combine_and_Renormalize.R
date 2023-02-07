@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # doMergeData doesn't do anything last used in vesion 34 so removed as parameter
 
 
@@ -37,6 +38,8 @@ for (data in c('TEC','Chariou','NSCLC_Single','NSCLC_Multi')) {
                                                      exclude.sample = ""
                                  )
 =======
+=======
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
 test_that("Load testing dataset", {
   # Seurat_Object <- readRDS('./otherData/PCAnorm.rds')
   
@@ -74,6 +77,9 @@ test_that("Load testing dataset", {
 
   
   
+<<<<<<< HEAD
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
+=======
 >>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   
   # ggsave(file=paste0("/rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/otherData/test_CombNorm.pdf"),
@@ -84,6 +90,10 @@ test_that("Load testing dataset", {
   expected.elements = c("so","plot")
   expect_setequal(names(Combine_and_Renormalize_out), expected.elements)
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
 =======
 
 >>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
@@ -96,6 +106,7 @@ test_that("Load testing dataset", {
   
 })
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 }
  
@@ -363,6 +374,8 @@ for (data in c('TEC','Chariou','NSCLC_Single','NSCLC_Multi')) {
 
 =======
 >>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
+=======
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
 
 # library(devtools)
 # document()
@@ -370,6 +383,7 @@ for (data in c('TEC','Chariou','NSCLC_Single','NSCLC_Multi')) {
 # test_active_file()
 # check()
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 
@@ -399,6 +413,8 @@ for (data in c('TEC','Chariou','NSCLC_Single','NSCLC_Multi')) {
 # SCTransform = TRUE
 # exclude.sample = ""
 =======
+=======
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
 # ## Basic
 # SO = PCA_and_Elbow_Plots
 # npcs = 15
@@ -434,4 +450,7 @@ for (data in c('TEC','Chariou','NSCLC_Single','NSCLC_Multi')) {
 
 
 # saveRDS(Combine_and_Renormalize_out$so,'/rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/otherData/CombNorm.rds')
+<<<<<<< HEAD
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
+=======
 >>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de

@@ -7,7 +7,11 @@
 harmony_batch_correct(
   so,
   variable_features = 2000,
+<<<<<<< HEAD
   genes_to_add = c(),
+=======
+  genes_to_add,
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   group.by.vars
 )
 }
