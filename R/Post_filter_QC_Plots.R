@@ -28,11 +28,7 @@
 #' @export
 #' 
 #' @return Seurat Objects and QC plots that compares several QC parameters across samples after initial QC and filtering. This template is Step 2 in the basic Single-Cell RNA-seq workflow.
-  
-<<<<<<< HEAD
 
-=======
->>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
 Post_filter_QC <- function(Seurat_Object,
                            Parallelize_Computation = F,
                            Image_type = 'png'
@@ -129,31 +125,21 @@ Post_filter_QC <- function(Seurat_Object,
   # if(object.class@className == "RFoundryObject") {
   #   cat("1. Reading Seurat Object from dataset: RObjectdata.rds\n\n")
   #   
-<<<<<<< HEAD
 
-=======
->>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   #   SO = Seurat_Object$value
   # } else {
   #   cat("1. Reading Seurat Object from dataset: seurat_object.rds\n\n")
   #   
   #   fs <- Seurat_Object$fileSystem()
   #   path <- fs$get_path("seurat_object.rds", 'r')
-<<<<<<< HEAD
 
-=======
->>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   #   SO <- readRDS(path)
   #   
   # }
   
-<<<<<<< HEAD
-=
+
   SO <- Seurat_Object
 
-=======
-  SO <- Seurat_Object
->>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   
   #in case you want to redo this on a merged SO
   if (class(SO) =="Seurat") {
@@ -193,10 +179,7 @@ Post_filter_QC <- function(Seurat_Object,
   #############################
   ## Plot Image 
   
-<<<<<<< HEAD
 
-=======
->>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   ## Set Image Size   
   imageWidth = 5000
   imageHeight = 1000*length(grobs)
@@ -220,10 +203,7 @@ Post_filter_QC <- function(Seurat_Object,
       pointsize=1,
       bg="white")
   }
-<<<<<<< HEAD
 
-=======
->>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   
   
   # grobs= grid.arrange(grobs = grobs, nrow = length(grobs))
@@ -232,15 +212,10 @@ Post_filter_QC <- function(Seurat_Object,
   
   # so@meta.data %>% rownames_to_column("Barcode") -> meta.df
   
-<<<<<<< HEAD
 
   cat("\nReturn objects checksum:\n")
   print(digest::digest(so))
 
-=======
-  cat("\nReturn objects checksum:\n")
-  print(digest::digest(so))
->>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   
   return(list(so=SO,plot=grobs))
          
