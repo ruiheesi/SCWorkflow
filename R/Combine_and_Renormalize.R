@@ -202,10 +202,6 @@ Combine_and_Renormalize <- function(Seurat_Object,
   ## Integrate data
   
   if (length(SO)>1) {
-<<<<<<< HEAD
-
-=======
->>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
     all_features <- lapply(SO, row.names) %>% Reduce(intersect, .)
     if(integratedata==TRUE){
       integ_features <- SelectIntegrationFeatures(object.list = SO, nfeatures = 3000) 
@@ -342,10 +338,7 @@ Combine_and_Renormalize <- function(Seurat_Object,
       pointsize=1,
       bg="white")
   }
-<<<<<<< HEAD
 
-=======
->>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   
   # plot(grobs)
   
@@ -361,8 +354,5 @@ Combine_and_Renormalize <- function(Seurat_Object,
   # saveRDS(SO_merge, output_fs$get_path("seurat_object.rds", 'w'))
   # 
   # return(output_fs)
-<<<<<<< HEAD
 
-=======
->>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
 }
