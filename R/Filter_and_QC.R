@@ -6,28 +6,28 @@
 #' @details 
 #' 
 #' 
-#' @param local.file.paths Please input your h5 files that have been uploaded to a single dataset. If you uploaded your h5 files through the Uploader page, this dataset should be the only node in the graph of your code workbook when you first launch a new analysis.
+#' @param localFilePaths Please input your h5 files that have been uploaded to a single dataset. If you uploaded your h5 files through the Uploader page, this dataset should be the only node in the graph of your code workbook when you first launch a new analysis.
 #' @param organism Please select what species your data comes from.
 #' @param rename If FALSE, keep original sample names.  If TRUE, rename samples (see below to input your new sample names).
-#' @param new.sample.names Input a list of new sample names to name your samples. Note: number of new names MUST match the number of samples. For reference, consult log output for Filter QC template for a list of old sample names in order.
+#' @param New_Sample_Names Input a list of new sample names to name your samples. Note: number of new names MUST match the number of samples. For reference, consult log output for Filter QC template for a list of old sample names in order.
 #' @param mincells Filter out genes found in less than this number of cells. E.g. Setting to 3 will remove genes found in fewer than three cells of a sample.
 #' @param mingenes Filter out cells with less than this number of genes found in them. E.g. setting to 200 will remove cells that have fewer than 200 genes from those analyzed for each sample.
 #' @param complexity Number of genes detected per UMI. The more genes detected per UMI, the more complex the data. Cells that have a high number of UMIs but only a low number of genes could be dying cells, but also could represent a population of a low complexity cell type (i.e red blood cells). We suggest that you increase to 0.8 if samples have suspected RBC contamination.
-#' @param mad.genes.value How many Median Absolute Deviations do you want to use to filter out cells with too many genes? For example, entering "3" will remove all cells with 3 absolute deviations greater a number of genes than the median cell is calculated to have.
-#' @param mad.mitoch.value How many Median Absolute Deviations do you want to use to filter out cells with too high a percentage of mitochondrial RNA? For example, entering "3" will remove all cells with 3 absolute deviations greater a percent mitonchondrial content than the median cell is calculated to have.
-#' @param min.umi Filter out cells with low number of reads
-#' @param mad.gene Filter by number of genes: If TRUE, uses median absolute deviation to detect outliers. If FALSE, uses an absolute threshold set below (see Filter maximum number of genes)
-#' @param mad.mitoch Filter by mitochondrial percentage: If TRUE, uses median absolute deviation to remove outliers. If FALSE, uses set value (below, Filter maximum percentage mitochondrial content)
+#' @param MAD_genes_value How many Median Absolute Deviations do you want to use to filter out cells with too many genes? For example, entering "3" will remove all cells with 3 absolute deviations greater a number of genes than the median cell is calculated to have.
+#' @param MAD_mitoch_value How many Median Absolute Deviations do you want to use to filter out cells with too high a percentage of mitochondrial RNA? For example, entering "3" will remove all cells with 3 absolute deviations greater a percent mitonchondrial content than the median cell is calculated to have.
+#' @param minUMI Filter out cells with low number of reads
+#' @param MAD_gene Filter by number of genes: If TRUE, uses median absolute deviation to detect outliers. If FALSE, uses an absolute threshold set below (see Filter maximum number of genes)
+#' @param MAD_mitoch Filter by mitochondrial percentage: If TRUE, uses median absolute deviation to remove outliers. If FALSE, uses set value (below, Filter maximum percentage mitochondrial content)
 #' @param maxgenes To remove potential doublets, set maximum number of genes per cell. E.g. Setting to 2,500 will remove cells with more than 2,500 genes.
 #' @param maxmitoch Filter out cells whose proportion of mitochondrial genes exceed this threshold. E.g. setting to 10 removes cells with more than 10% mitochondrial RNA.
-#' @param filter.vdj.genes Toggle off to remove VDJ genes from the scRNA transcriptome assay. This is to prevent clustering bias in T-cells of the same clonotype. Only recommended if you are also doing TCR-seq.
-#' @param keep TRUE is keep, FALSE is Remove when pattern is found in the sample name. The pattern is set in the File Filter Regex parameter (above).
-#' @param file.filter.regex Filter for pattern or regular expression in file name. Using this, you can filter on the name of the input files. Use the keep or Remove parameter (below) to choose to keep or remove sample files whose names match this pattern.
-#' @param split.h5 If TRUE, split H5 into individual files.  By default FALSE
-#' @param protein Does this dataset contain CITE-Seq antibodies? Set to TRUE if your dataset does contain CITE-Seq antibodies. Set to FALSE if your dataset does not. The default is FALSE.
-#' @param cell.hash Does this dataset contain Cell Hashing Tags? set to TRUE if your dataset does contain Cell Hashing Tags. Set to FALSE if your dataset does not. The default is FALSE.
-#' @param imagetype Remember that svgs are much larger than pngs, so we recommend doing everything first in png, then rerunning to output specific svgs as needed.
-#' @param plot.histogram Set to TRUE to plot QC graphs as histograms. keep as FALSE to plot as violin plots.
+#' @param Filter_VDJ_Genes Toggle off to remove VDJ genes from the scRNA transcriptome assay. This is to prevent clustering bias in T-cells of the same clonotype. Only recommended if you are also doing TCR-seq.
+#' @param Keep TRUE is Keep, FALSE is Remove when pattern is found in the sample name. The pattern is set in the File Filter Regex parameter (above).
+#' @param File_Filter_Regex Filter for pattern or regular expression in file name. Using this, you can filter on the name of the input files. Use the Keep or Remove parameter (below) to choose to keep or remove sample files whose names match this pattern.
+#' @param Split_H5 If TRUE, split H5 into individual files.  By default FALSE
+#' @param Protein Does this dataset contain CITE-Seq antibodies? Set to TRUE if your dataset does contain CITE-Seq antibodies. Set to FALSE if your dataset does not. The default is FALSE.
+#' @param Cell_hash Does this dataset contain Cell Hashing Tags? set to TRUE if your dataset does contain Cell Hashing Tags. Set to FALSE if your dataset does not. The default is FALSE.
+#' @param imageType Remember that svgs are much larger than pngs, so we recommend doing everything first in png, then rerunning to output specific svgs as needed.
+#' @param plot_histogram Set to TRUE to plot QC graphs as histograms. Keep as FALSE to plot as violin plots.
 #' 
 #' 
 #' @import Seurat 
@@ -53,28 +53,28 @@
 #' @return Seurat Objects, Filters and Plots QC (before and after filtering) on samples. Takes a dataset of filtered h5 files (each representing one sample), and performs basic QC across several metrics. Also puts the data into a Seurat Object, the basic data structure for Seurat Single Cell analysis. This template is Step 1 of the basic Single-Cell RNA-seq workflow.
 
 
-Filter_and_QC <- function(local.file.paths,
-                          organism = "Human",
-                          rename = FALSE,
-                          new.sample.names = c("Sample_1", "Sample_2", "Sample_3"),
-                          mincells = 3,
-                          mingenes = 200,
-                          complexity = 0.5,
-                          mad.genes.value = 3,
-                          mad.mitoch.value = NA,
-                          min.umi = 500,
-                          mad.gene = TRUE,
-                          mad.mitoch = TRUE,
-                          maxgenes = 2500,
-                          maxmitoch = 10,
-                          filter.vdj.genes = FALSE,
-                          keep = TRUE,
-                          file.filter.regex = "",
-                          split.h5 = FALSE,
-                          protein = FALSE,
-                          cell.hash = FALSE,
-                          imagetype = "png",
-                          plot.histogram = FALSE
+Filter_and_QC <- function(localFilePaths,
+                               organism = "Human",
+                               rename = FALSE,
+                               New_Sample_Names = c("Sample_1", "Sample_2", "Sample_3"),
+                               mincells = 3,
+                               mingenes = 200,
+                               complexity = 0.5,
+                               MAD_genes_value = 3,
+                               MAD_mitoch_value = NA,
+                               minUMI = 500,
+                               MAD_gene = TRUE,
+                               MAD_mitoch = TRUE,
+                               maxgenes = 2500,
+                               maxmitoch = 10,
+                               Filter_VDJ_Genes = FALSE,
+                               Keep = TRUE,
+                               File_Filter_Regex = "",
+                               Split_H5 = FALSE,
+                               Protein = FALSE,
+                               Cell_hash = FALSE,
+                               imageType = "png",
+                               plot_histogram = FALSE
 ){
   
   
@@ -93,8 +93,8 @@ Filter_and_QC <- function(local.file.paths,
     so.nf[["percent.mt"]] <- PercentageFeatureSet(object = so.nf, pattern = mitoch)
     so.nf$log10GenesPerUMI <- log10(so.nf$nFeature_RNA) / log10(so.nf$nCount_RNA)
     
-    if ("protein" %in% names(so.nf)){
-      so.nf <- NormalizeData(so.nf, assay = "protein", normalization.method = "CLR")
+    if ("Protein" %in% names(so.nf)){
+      so.nf <- NormalizeData(so.nf, assay = "Protein", normalization.method = "CLR")
     }
     
     if ("HTO" %in% names(so.nf)){
@@ -103,7 +103,7 @@ Filter_and_QC <- function(local.file.paths,
     
     so <- so.nf
     
-    if (filter.vdj.genes==TRUE) {
+    if (Filter_VDJ_Genes==TRUE) {
       allGenes = rownames(so)
       VDJgenes = c("TRBV","TRAV","TRBD","TRAJ","TRBJ")
       print("Removing VDJ genes. Genes removed...")
@@ -111,9 +111,7 @@ Filter_and_QC <- function(local.file.paths,
         print(allGenes[grepl(j, allGenes)])
         allGenes = allGenes[!grepl(j, allGenes)]  
       }
-
-      so <- SubsetData(so,features = allGenes,assay="RNA")
-
+      so <- subset(so,features = allGenes)
     }
     
     cat("\n\n")
@@ -126,16 +124,16 @@ Filter_and_QC <- function(local.file.paths,
     
     ngenestdev <- mad(so@meta.data$nFeature_RNA)
     ngenemed <- median(so@meta.data$nFeature_RNA)
-    ngenemaxlim <- ngenemed+(mad.genes.value*ngenestdev)
+    ngenemaxlim <- ngenemed+(MAD_genes_value*ngenestdev)
     gl = format(round(ngenemaxlim,0),nsmall=0)
     
     
     mitostdev <- mad(so@meta.data$percent.mt)
     mitomed <- median(so@meta.data$percent.mt)
-    mitomaxlim <- mitomed+(mad.mitoch.value*mitostdev)
+    mitomaxlim <- mitomed+(MAD_mitoch_value*mitostdev)
     ml = format(round(mitomaxlim,2),nsmall=2)
     
-    if (mad.gene == TRUE & mad.mitoch == TRUE) {
+    if (MAD_gene == TRUE & MAD_mitoch == TRUE) {
       cat(paste0("Gene Count Filter = low:",mingenes," high:",gl),"\n")
       cat(paste0("Mitochondrial Percentage Filter =",ml,"\n"))
       cat(paste0("Complexity Filter =",complexity,"\n"))
@@ -144,18 +142,18 @@ Filter_and_QC <- function(local.file.paths,
       perc.remain=formatC(perc.remain,format = "g",digits=3)
       cat(paste0("Filtered Cell Count=" ,dim(so)[2]),"\n")
       cat(paste0("Percent Remaining=" ,perc.remain,"%\n\n"))
-    } else if (mad.gene == FALSE & mad.mitoch == TRUE) {
+    } else if (MAD_gene == FALSE & MAD_mitoch == TRUE) {
       cat(paste0("Gene Count Filter = low:", mingenes," high:", maxgenes),"\n")
       cat(paste0("Mitochondrial Percentage Filter =",ml,"\n"))
-      so <- subset(so, cells = rownames(so@meta.data[which(so@meta.data$nFeature_RNA < maxgenes & so@meta.data$percent.mt <= mitomaxlim & so@meta.data$log10GenesPerUMI > complexity & so@meta.data$nCount_RNA > min.umi), ]))
+      so <- subset(so, cells = rownames(so@meta.data[which(so@meta.data$nFeature_RNA < maxgenes & so@meta.data$percent.mt <= mitomaxlim & so@meta.data$log10GenesPerUMI > complexity & so@meta.data$nCount_RNA > minUMI), ]))
       perc.remain = (dim(so)[2]/so.origcount)*100
       perc.remain=formatC(perc.remain,format = "g",digits=3)
       cat(paste0("Filtered Cell Count=" ,dim(so)[2]),"\n")
       cat(paste0("Percent Remaining=" ,perc.remain,"%\n\n"))
-    } else if (mad.gene == TRUE & mad.mitoch == FALSE){
+    } else if (MAD_gene == TRUE & MAD_mitoch == FALSE){
       cat(paste0("Gene Count Filter = low:",mingenes," high:",gl),"\n")
       cat(paste0("Mitochondrial Percentage Filter =", maxmitoch,"\n"))
-      so <- subset(so, cells = rownames(so@meta.data[which(so@meta.data$nFeature_RNA < ngenemaxlim & so@meta.data$nFeature_RNA > mingenes & so@meta.data$percent.mt < maxmitoch & so@meta.data$log10GenesPerUMI > complexity & so@meta.data$nCount_RNA > min.umi), ]))
+      so <- subset(so, cells = rownames(so@meta.data[which(so@meta.data$nFeature_RNA < ngenemaxlim & so@meta.data$nFeature_RNA > mingenes & so@meta.data$percent.mt < maxmitoch & so@meta.data$log10GenesPerUMI > complexity & so@meta.data$nCount_RNA > minUMI), ]))
       perc.remain = (dim(so)[2]/so.origcount)*100
       perc.remain=formatC(perc.remain,format = "g",digits=3)
       cat(paste0("Filtered Cell Count=" ,dim(so)[2]),"\n")
@@ -163,7 +161,7 @@ Filter_and_QC <- function(local.file.paths,
     } else {
       cat(paste0("Gene Count Filter = low:", mingenes," high:", maxgenes),"\n")
       cat(paste0("Mitochondrial Percentage Filter =", maxmitoch,"\n"))
-      so <- subset(so, cells = rownames(so@meta.data[which(so@meta.data$nFeature_RNA < maxgenes & so@meta.data$nFeature_RNA > mingenes & so@meta.data$percent.mt < maxmitoch & so@meta.data$log10GenesPerUMI > complexity & so@meta.data$nCount_RNA > min.umi), ]))
+      so <- subset(so, cells = rownames(so@meta.data[which(so@meta.data$nFeature_RNA < maxgenes & so@meta.data$nFeature_RNA > mingenes & so@meta.data$percent.mt < maxmitoch & so@meta.data$log10GenesPerUMI > complexity & so@meta.data$nCount_RNA > minUMI), ]))
       perc.remain = (dim(so)[2]/so.origcount)*100
       perc.remain=formatC(perc.remain,format = "g",digits=3)
       cat(paste0("Filtered Cell Count=" ,dim(so)[2]),"\n")
@@ -177,9 +175,9 @@ Filter_and_QC <- function(local.file.paths,
       df2.m %>% dplyr::filter(variable == x) -> count2.df
       qc.df <- array(0,dim=c(0,4))
       qc.df <- rbind(qc.df,count2.df,count.df)
-      if(plot.histogram==TRUE){
+      if(plot_histogram==TRUE){
         gg <- plothist(qc.df,name)
-      } else{
+        } else{
         gg <- plotviolin(qc.df,name)
       }
     }
@@ -278,39 +276,38 @@ Filter_and_QC <- function(local.file.paths,
   ###################################
   ## Process H5 files
   
-  # if(class(local.file.paths)=='RFilePaths'){
-  #   print(paste0('File Type: ',class(local.file.paths)))
-  #   local.file.paths <- h5_files$value[grepl(".h5",h5_files$value)]
+  # if(class(localFilePaths)=='RFilePaths'){
+  #   print(paste0('File Type: ',class(localFilePaths)))
+  #   localFilePaths <- h5_files$value[grepl(".h5",h5_files$value)]
   #   
-  # }else if(class(local.file.paths)=='FoundryTransformInput'){
-  #   print(paste0('File Type: ',class(local.file.paths)))
-  #   fs <- local.file.paths$fileSystem()
-  #   local.file.paths <- fs$ls(glob="*.h5")
-  #   local.file.paths <- lapply(local.file.paths, function(file) { return(fs$get_path(file$path, 'r')) })
+  # }else if(class(localFilePaths)=='FoundryTransformInput'){
+  #   print(paste0('File Type: ',class(localFilePaths)))
+  #   fs <- localFilePaths$fileSystem()
+  #   localFilePaths <- fs$ls(glob="*.h5")
+  #   localFilePaths <- lapply(localFilePaths, function(file) { return(fs$get_path(file$path, 'r')) })
   #   
   # }else{
   #   stop("\n \n h5 files not correctly imported into Workbook")
   # }
   
-  obj.list <- lapply(local.file.paths, function(x) { return(Read10X_h5(x, use.names=TRUE)) })
+  obj.list <- lapply(localFilePaths, function(x) { return(Read10X_h5(x, use.names=TRUE)) })
   
   
   ## Rename    
   if (rename == FALSE){
-    names(obj.list) <- lapply(local.file.paths, basename)
+    names(obj.list) <- lapply(localFilePaths, basename)
     names(obj.list) <- sapply(names(obj.list), function(x) gsub("_filtered(\\w+)?.h5","", x))
     names(obj.list) <- sapply(names(obj.list), function(x) gsub("\\.(\\w+)?","", x))
   }else{
-    names(obj.list) <- new.sample.names
+    names(obj.list) <- New_Sample_Names
     obj.list <- obj.list[sort(names(obj.list))]
   }
   
   ## Remove Sample files
-
-  subsetRegex = eval(parse(text=gsub('\\[\\]','c()',File_Filter_Regex)))
-
+  # subsetRegex = eval(parse(text=gsub('\\[\\]','c()',File_Filter_Regex)))
+  subsetRegex=File_Filter_Regex
   if (length(subsetRegex) > 0) {
-    if (keep == TRUE){
+    if (Keep == TRUE){
       for (i in length(subsetRegex)) {
         obj.list <- obj.list[grepl(subsetRegex[[i]],names(obj.list))]
       }
@@ -324,7 +321,7 @@ Filter_and_QC <- function(local.file.paths,
   
   ## Create Seurat Object from original H5, splitting to multiple ones as necessary.  For splitting H5's only RNA slot is expected and supported.
   
-  if(split.h5 == TRUE){
+  if(Split_H5 == TRUE){
     i = 1
     if (class(obj.list[[i]]) == "dgCMatrix"){
       so.orig.nf <- CreateSeuratObject(counts = obj.list[[i]], assay = "RNA", project=names(obj.list)[[i]], min.cells = mincells)
@@ -343,9 +340,9 @@ Filter_and_QC <- function(local.file.paths,
           if(names(obj.list[[i]][j]) == "Gene Expression"){
             so.orig.nf[[i]] <- CreateSeuratObject(counts = obj.list[[i]][k][[j]], assay = "RNA", project=names(obj.list)[[i]], min.cells = mincells)
           } else if(names(obj.list[[i]][j]) == "Antibody Capture"){
-            protein = rownames(obj.list[[i]][k][[j]])[!grepl("HTO*",rownames(obj.list[[i]][k][[j]]))]
+            Protein = rownames(obj.list[[i]][k][[j]])[!grepl("HTO*",rownames(obj.list[[i]][k][[j]]))]
             HTO = rownames(obj.list[[i]][k][[j]])[grepl("HTO*",rownames(obj.list[[i]][k][[j]]))]
-            so.orig.nf[[i]][["protein"]] <- CreateAssayObject(obj.list[[i]][k][[j]][protein, colnames(so.orig.nf[[i]])])
+            so.orig.nf[[i]][["Protein"]] <- CreateAssayObject(obj.list[[i]][k][[j]][Protein, colnames(so.orig.nf[[i]])])
             if(length(HTO)>0){
               so.orig.nf[[i]][['HTO']] <- CreateAssayObject(counts = obj.list[[i]][k][[j]][HTO, colnames(so.orig.nf[[i]])])}
           } else{
@@ -380,29 +377,28 @@ Filter_and_QC <- function(local.file.paths,
   #############################
   ## Plot Image 
   
-  ## Set Image Size
-  imageWidth = min(1000*length(so.list[[1]][[3]]),15000)
-  imageHeight = min(1000*length(so.grobs.list)*2,24000)
-  dpi = 300
-  if (imageType == 'png') {
-    png(
-      # filename=graphicsFile,
-      width=imageWidth,
-      height=imageHeight,
-      units="px",
-      pointsize=4,
-      bg="white",
-      res=dpi,
-      type="cairo")
-  } else {
-    svglite::svglite(
-      # file=graphicsFile,
-      width=round(imageWidth/dpi,digits=2),
-      height=round(imageHeight/dpi,digits=2),
-      pointsize=1,
-      bg="white")
-  }
-
+  # ## Set Image Size
+  # imageWidth = min(1000*length(so.list[[1]][[3]]),15000)
+  # imageHeight = min(1000*length(so.grobs.list)*2,24000)
+  # dpi = 300
+  # if (imageType == 'png') {
+  #   png(
+  #     # filename=graphicsFile,
+  #     width=imageWidth,
+  #     height=imageHeight,
+  #     units="px",
+  #     pointsize=4,
+  #     bg="white",
+  #     res=dpi,
+  #     type="cairo")
+  # } else {
+  #   svglite::svglite(
+  #     # file=graphicsFile,
+  #     width=round(imageWidth/dpi,digits=2),
+  #     height=round(imageHeight/dpi,digits=2),
+  #     pointsize=1,
+  #     bg="white")
+  # }
   
   #grid.arrange(grobs = so.grobs.list, nrow = length(so.grobs.list))
   grobdat = list()
@@ -410,8 +406,8 @@ Filter_and_QC <- function(local.file.paths,
   for(i in 1:length(so.grobs2.list)){grobdat=append(grobdat,list(so.grobs2.list[[i]]))}
   
   # grid.arrange(
-  grob = arrangeGrob(grobs=grobdat,nrow=length(grobdat))
-  # ,nrow=1)
+    grob = arrangeGrob(grobs=grobdat,nrow=length(grobdat))
+    # ,nrow=1)
   
   #############################
   ## Output
