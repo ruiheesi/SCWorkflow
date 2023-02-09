@@ -32,13 +32,13 @@
 #'   
 #' @export
 #'   
-Heatmap <- function(object,
+heatmapSC <- function(object,
                     sample.names,
                     metadata,
                     transcripts,
                     proteins = NULL,
                     plot.title = "Heatmap",
-                    add.gene.or.protein = TRUE,
+                    add.gene.or.protein = FALSE,
                     protein.annotations = NULL,
                     rna.annotations = NULL,
                     arrange.by.metadata = TRUE,
@@ -212,10 +212,6 @@ Heatmap <- function(object,
     }
   }
   
-  #Remove spaces in transcript entries:
-  
-  transcripts <- gsub("[[:space:]]", "", transcripts)
-  
   l1 <- length(transcripts)
   dups <- transcripts[duplicated(transcripts)]
   transcripts <- transcripts[!duplicated(transcripts)]
@@ -234,7 +230,6 @@ Heatmap <- function(object,
                             ". Possible reasons are that gene is not official gene symbol",
                             " or gene is not highly expressed and has been filtered.\n "))}
   transcripts <- transcripts[transcripts %in% rownames(object)]
-  
   
   
   #Clean up protein names and print missing proteins:
@@ -372,8 +367,10 @@ Heatmap <- function(object,
   
  q=0
   for(i in 1:dim(annotation_col)[2]){
-    if(class(annot[[groups[i]]]) != "numeric")
-    q = q+length(unique(annotation_col[,i]))
+    if(class(annot[[groups[i]]]) != "numeric"){
+      annotation_col[,i] = factor(annotation_col[,i])
+      q = q+length(levels(annotation_col[,i]))
+    }
   }
 
   colors=distinctColorPalette(q,5)

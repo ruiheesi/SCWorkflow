@@ -338,6 +338,7 @@ Combine_and_Renormalize <- function(Seurat_Object,
       pointsize=1,
       bg="white")
   }
+
   
   # plot(grobs)
   
@@ -353,4 +354,5 @@ Combine_and_Renormalize <- function(Seurat_Object,
   # saveRDS(SO_merge, output_fs$get_path("seurat_object.rds", 'w'))
   # 
   # return(output_fs)
+
 }
