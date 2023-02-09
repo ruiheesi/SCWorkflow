@@ -28,12 +28,8 @@ test_that("Load testing dataset", {
                                  imageType = "png",
                                  plot_histogram = FALSE
                                  )
+
                             
-  
-  # ggsave(file=paste0("/rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/otherData/test_FilterQC.pdf"),
-         # filter_qc_out$plot)
-  # plot(filter_qc_out$plot)
-  
   # create output
   expected.elements = c("so","plot")
   expect_setequal(names(filter_qc_out), expected.elements)
@@ -45,9 +41,8 @@ test_that("Load testing dataset", {
   expect( object.size(filter_qc_out$so[[1]]@assays$RNA@counts),'> 0' )
   # plot slot contains data
   expect( object.size(filter_qc_out$plot),'> 0' )
-  
-})
 
+})
 
 # library(devtools)
 # document()

@@ -28,7 +28,7 @@
 #' @export
 #' 
 #' @return Seurat Objects and QC plots that compares several QC parameters across samples after initial QC and filtering. This template is Step 2 in the basic Single-Cell RNA-seq workflow.
-  
+
 Post_filter_QC <- function(Seurat_Object,
                            Parallelize_Computation = F,
                            Image_type = 'png'
@@ -125,17 +125,21 @@ Post_filter_QC <- function(Seurat_Object,
   # if(object.class@className == "RFoundryObject") {
   #   cat("1. Reading Seurat Object from dataset: RObjectdata.rds\n\n")
   #   
+
   #   SO = Seurat_Object$value
   # } else {
   #   cat("1. Reading Seurat Object from dataset: seurat_object.rds\n\n")
   #   
   #   fs <- Seurat_Object$fileSystem()
   #   path <- fs$get_path("seurat_object.rds", 'r')
+
   #   SO <- readRDS(path)
   #   
   # }
   
+
   SO <- Seurat_Object
+
   
   #in case you want to redo this on a merged SO
   if (class(SO) =="Seurat") {
@@ -175,6 +179,7 @@ Post_filter_QC <- function(Seurat_Object,
   #############################
   ## Plot Image 
   
+
   ## Set Image Size   
   imageWidth = 5000
   imageHeight = 1000*length(grobs)
@@ -198,6 +203,7 @@ Post_filter_QC <- function(Seurat_Object,
       pointsize=1,
       bg="white")
   }
+
   
   
   # grobs= grid.arrange(grobs = grobs, nrow = length(grobs))
@@ -206,8 +212,10 @@ Post_filter_QC <- function(Seurat_Object,
   
   # so@meta.data %>% rownames_to_column("Barcode") -> meta.df
   
+
   cat("\nReturn objects checksum:\n")
   print(digest::digest(so))
+
   
   return(list(so=SO,plot=grobs))
          

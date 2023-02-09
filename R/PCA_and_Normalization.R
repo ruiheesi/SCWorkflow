@@ -70,6 +70,7 @@ PCA_and_Normalization <- function(Seurat_Object,
   
   ################################
   # Cell Cycle Scoring and Find Variable Features
+
   CC_FVF_so <- function(so){
     # so <- CellCycleScoring(object = so, g2m.features = cc.genes$g2m.genes,s.features = cc.genes$s.genes)
     # so$CC.Difference <- so$S.Score - so$G2M.Score
@@ -80,6 +81,7 @@ PCA_and_Normalization <- function(Seurat_Object,
   
   ################################
   # Make PCA without regressing anything, and using only SCTransform().
+
   pca_noregress <- function(so) {
     so <- SCTransform(so,do.correct.umi = FALSE,return.only.var.genes = FALSE)
     so <- RunPCA(object = so, features = VariableFeatures(object = so), npcs = npcs)
@@ -248,6 +250,7 @@ PCA_and_Normalization <- function(Seurat_Object,
   # }
   
   SO <- Seurat_Object
+
   
   #in case you want to redo this on a merged SO
   if (class(SO) =="Seurat") {
@@ -258,7 +261,7 @@ PCA_and_Normalization <- function(Seurat_Object,
   
   ################################
   # Do transformation with and without regression using SCTransform().
-  
+
   so_prep <- lapply(SO, CC_FVF_so) 
   so_orig <- lapply(so_prep, pca_noregress)
   so_list <- lapply(so_prep, pca) 
@@ -283,6 +286,7 @@ PCA_and_Normalization <- function(Seurat_Object,
   ## PCA plots
   
   k=1
+
   for (i in 1:length(vars_to_plot)){ 
     grob <- lapply(so_orig, function(x) plotPCA(x,vars_to_plot[i]))
     grob=grid.arrange(grobs=grob,nrow=length(grob))
@@ -296,6 +300,7 @@ PCA_and_Normalization <- function(Seurat_Object,
   
   ## Elbow Plot
   
+
   grob3 <- lapply(so_list, function(x) plotElbow(x))
   grob3=grid.arrange(grobs=grob3,nrow=length(grob3))
   
@@ -346,16 +351,17 @@ PCA_and_Normalization <- function(Seurat_Object,
       pointsize=1,
       bg="white")
   }
+
   
   # plot(grobs)
   # grobs = arrangeGrob(grobs=grobs,nrow=1)
   # grid.arrange(grobs)
   grobs=grobs
   
+
   
   cat("\nPCA Object Checksum:\n")
-  #print(digest::digest(so_list))
-  
+
   return(list(so=SO,plot=grobs))
   
   # output <- new.output()

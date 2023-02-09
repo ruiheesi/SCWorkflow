@@ -35,6 +35,7 @@ test_that("Load testing dataset", {
 
   
   
+
   
   # ggsave(file=paste0("/rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/otherData/test_CombNorm.pdf"),
   #        Combine_and_Renormalize_out$plot)
@@ -60,38 +61,3 @@ test_that("Load testing dataset", {
 # test_active_file()
 # check()
 
-# ## Basic
-# SO = PCA_and_Elbow_Plots
-# npcs = 15
-# vars_to_regress = c("percent.mt")
-# integratedata = FALSE
-# clust_res_low=0.2
-# clust_res_high = 1.2
-# clust_res_bin = 0.2
-# only_var_genes = FALSE 
-# ## Visualization Parameters
-# draw_umap = TRUE
-# draw_t_sne = TRUE
-# imageType = "png"
-# ## Variable Features
-# nfeatures = 2000
-# low_cut = 0.1
-# high_cut = 8
-# low_cut_disp = 1
-# high_cut_disp = 100000
-# selection_method = "vst"
-# ##Advanced
-# cell_hashing_data = FALSE
-# project_name = "scRNAProject"
-# doMergeData = TRUE
-# seed_for_PCA = 42
-# seed_for_TSNE = 1
-# seed_for_UMAP = 42
-# Do_SCTransform = TRUE
-# Exclude_sample = 0
-
-
-
-
-
-# saveRDS(Combine_and_Renormalize_out$so,'/rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/otherData/CombNorm.rds')

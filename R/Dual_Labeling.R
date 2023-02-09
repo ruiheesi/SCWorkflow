@@ -42,7 +42,7 @@
 #' 
 #' @return a seurat object with optional additional metadata for cells that are positive or negative for gene markers and a coexpression plot.
 
-DualLabeling <- function(object,
+dualLabeling <- function(object,
                          samples,
                          marker1,
                          marker.1.type,

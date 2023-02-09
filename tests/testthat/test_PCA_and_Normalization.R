@@ -38,7 +38,9 @@ test_that("Load testing dataset", {
   expected.elements = c("so","plot")
   expect_setequal(names(PCA_and_Normalization_out), expected.elements)
   # SO contains object same length as input
+
   expect_equal(length(PCA_and_Normalization_out$so),length(Seurat_Object)) 
+
   # figure slot is a grob
   expect_equal(class(PCA_and_Normalization_out$plot)[3], 'grob')
   # SO slot contains data
@@ -53,7 +55,20 @@ test_that("Load testing dataset", {
 # document()
 # load_all()
 # test_active_file()
-
+# vars.to.regress = c('percent.mt')
+# vars.to.plot = c('percent.mt','nCount_RNA')
+# npcs = 30
+# nfeatures = 2000
+# low.cut = 1
+# high.cut = 8
+# low.cut.disp = 1
+# high.cut.disp = 100000
+# selection.method = 'vst'
+# jackstraw = FALSE
+# jackstraw.dims = 5
+# methods.PCA = c('Elbow','Marchenko-Pastur')
+# var.threshold = 0.1
+# imagetype = 'png'
 # vars_to_regress = c('percent.mt')
 # vars_to_plot = c('percent.mt','nCount_RNA')
 # npcs = 30

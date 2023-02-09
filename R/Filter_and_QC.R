@@ -111,7 +111,9 @@ Filter_and_QC <- function(localFilePaths,
         print(allGenes[grepl(j, allGenes)])
         allGenes = allGenes[!grepl(j, allGenes)]  
       }
+
       so <- SubsetData(so,features = allGenes,assay="RNA")
+
     }
     
     cat("\n\n")
@@ -304,7 +306,9 @@ Filter_and_QC <- function(localFilePaths,
   }
   
   ## Remove Sample files
+
   subsetRegex = eval(parse(text=gsub('\\[\\]','c()',File_Filter_Regex)))
+
   if (length(subsetRegex) > 0) {
     if (Keep == TRUE){
       for (i in length(subsetRegex)) {
@@ -398,6 +402,7 @@ Filter_and_QC <- function(localFilePaths,
       pointsize=1,
       bg="white")
   }
+
   
   #grid.arrange(grobs = so.grobs.list, nrow = length(so.grobs.list))
   grobdat = list()

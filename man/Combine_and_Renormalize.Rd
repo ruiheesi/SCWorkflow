@@ -24,12 +24,19 @@ Combine_and_Renormalize(
   selection_method = "vst",
   cell_hashing_data = FALSE,
   project_name = "scRNAProject",
+<<<<<<< HEAD
+=======
   doMergeData = TRUE,
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   seed_for_PCA = 42,
   seed_for_TSNE = 1,
   seed_for_UMAP = 42,
   Do_SCTransform = TRUE,
+<<<<<<< HEAD
+  Exclude_sample = ""
+=======
   Exclude_sample = 0
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
 )
 }
 \arguments{
@@ -71,8 +78,11 @@ Combine_and_Renormalize(
 
 \item{project_name}{description.}
 
+<<<<<<< HEAD
+=======
 \item{doMergeData}{Toggle FALSE to stop metadata from merging. Not recommended for standard pipeline.}
 
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
 \item{seed_for_PCA}{description.}
 
 \item{seed_for_TSNE}{description.}
@@ -81,7 +91,11 @@ Combine_and_Renormalize(
 
 \item{Do_SCTransform}{Set to TRUE to run SCTransform (recommended current v3 Seurat default). Set to FALSE to run ScaleData (previous v2 Seurat default) instead.}
 
+<<<<<<< HEAD
+\item{Exclude_sample}{Exclude unwanted samples from the merge step. Include sample names to be removed. If you want to exclude several samples, separate each sample number by comma (e.g. sample1,sample2,sample3,sample4).}
+=======
 \item{Exclude_sample}{Exclude unwanted samples from the merge step. The number will correspond to the order in which they appear. Leave as 0 if you want to use all samples. If you want to exclude one or several samples, separate each sample number by comma (e.g. 1,2,3,4).}
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
 }
 \value{
 Seurat Objects and QC plots. Combines samples, rescales and renormalizes, runs Dimensional Reduction, and returns a combined Seurat Object. This template will summarize the multi-dimensionality of your data into a set of "principal components" to allow for easier analysis. There is an option to use this template to perform Integration, as well. This is Step 4 in the canonical Single Cell pipeline after elbow plots and regression.
