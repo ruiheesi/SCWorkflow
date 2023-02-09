@@ -10,11 +10,11 @@
 #' @param so Seurat-class object
 #' @param contrasts Choose the groups (group1-group2) to compare transcription profiles against, positive Fold Change values indicate upregulation in group1
 #' @param replicate Column of metadata containing replicate information, gene expression will first be aggregated based on this column before differential analysis is ran
-#' @param comparison_level Name of metadata column containing information on the sub-levels you want to divide your data into. 
+#' @param comparison.level Name of metadata column containing information on the sub-levels you want to divide your data into. 
 #' @param label Name of metadata column containing information on the groups (contrasts) you want to compare.
-#' @param min_num_cells Filters a comparison level based on the minimum number of cells at that level.
-#' @param min_num_reps Filters a comparison level based on the minimum number of replicates at that level.
-#' @param min_num_features Filters out genes if they are expressed in fewer than X number of cells.
+#' @param min.num.cells Filters a comparison level based on the minimum number of cells at that level.
+#' @param min.num.reps Filters a comparison level based on the minimum number of replicates at that level.
+#' @param min.num.features Filters out genes if they are expressed in fewer than X number of cells.
 #' @param subdivide_data Toggle to TRUE if you want to make comparisons across different levels within your data.
 #' 
 #' @import Seurat
@@ -30,14 +30,14 @@
 
 #' @return data.frame of differentially expressed genes across comparisons
 
-Pseudobulk_DEG <- function(so,
+pseudobulkDEG <- function(so,
                                contrasts,
                                replicate,
-                               comparison_level,
+                               comparison.level,
                                label,
-                               min_num_cells = 3,
-                               min_num_reps = 1,
-                               min_num_features = 0,
+                               min.num.cells = 3,
+                               min.num.reps = 1,
+                               min.num.features = 0,
                                subdivide_data = FALSE) {
   
   ## -------------- ##
@@ -226,12 +226,12 @@ Pseudobulk_DEG <- function(so,
     
     # convert to characters
     meta$replicate <- as.character(meta[,eval(parse(text = "replicate"))])
-    meta$cell_type <- as.character(meta[,eval(parse(text = "comparison_level"))])
+    meta$cell_type <- as.character(meta[,eval(parse(text = "comparison.level"))])
     meta$label <- as.character(meta[,eval(parse(text = "label"))])
     
     ## Code from v20 ~ not working when using variable to subset
     #meta %<>% mutate(replicate = as.character(meta[,replicate]),
-    #                 cell_type = as.character(meta[,comparison_level]),
+    #                 cell_type = as.character(meta[,comparison.level]),
     #                 label = as.character(meta[,label]))
     
     # keep only cell types with enough cells
@@ -361,11 +361,11 @@ Pseudobulk_DEG <- function(so,
   pseudobulk_de = function(input, 
                            meta = NULL, 
                            replicate_col = replicate,
-                           cell_type_col = comparison_level,
+                           cell_type_col = comparison.level,
                            label_col = label,
-                           min_cells = min_num_cells,
-                           min_reps = min_num_reps,
-                           min_features = min_num_features,
+                           min_cells = min.num.cells,
+                           min_reps = min.num.reps,
+                           min_features = min.num.features,
                            de_family = 'pseudobulk',
                            de_method = 'limma',
                            de_type = 'LRT',

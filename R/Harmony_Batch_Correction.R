@@ -7,8 +7,8 @@
 #' @details Takes in a list of genes inputted by the user, displays gene expression information in particular slot-assay with (optional) outliers removed
 #' 
 #' @param seurat_object Seurat-class object
-#' @param variable_features Number of most variable genes to subset the gene expression data by
-#' @param genes_to_add Add genes that might not be found among variably expressed genes
+#' @param variable.features Number of most variable genes to subset the gene expression data by
+#' @param genes.to.add Add genes that might not be found among variably expressed genes
 #' @param group.by.vars which variable should be accountted for when running batch correction
 
 #' @import Seurat 
@@ -22,22 +22,22 @@
 #' @return Seurat-class Object with Harmony-adjusted gene expression (SCT slot) and tSNE cell embedding
 
 
-harmony_batch_correct <- function(so, 
-                                  variable_features = 2000, 
-                                  genes_to_add = c(),
+harmonyBatchcorrect <- function(so, 
+                                  variable.features = 2000, 
+                                  genes.to.add = c(),
                                   group.by.vars) {
   
   ## -------------------------- ##
   ## Error and Warning Messages ##
   ## -------------------------- ##
   
-  if(is.null(genes_to_add)){
+  if(is.null(genes.to.add)){
     print("no genes will be added")
-  } else if (all(!genes_to_add %in% rownames(so))){
+  } else if (all(!genes.to.add %in% rownames(so))){
     warning("specified genes were not found and therefore cannot be added")
   }
   
-  if (variable_features > length(VariableFeatures(so))){
+  if (variable.features > length(VariableFeatures(so))){
     stop("Number of variable features to subset by cannot exceed the total number of variable genes in the data")
   }
   
@@ -47,11 +47,11 @@ harmony_batch_correct <- function(so,
   
   seur.SCT <- so@assays$SCT@scale.data
   
-  genes_of_interest <- genes_to_add[genes_to_add %in% rownames(so@assays$SCT@scale.data)]
+  genes_of_interest <- genes.to.add[genes.to.add %in% rownames(so@assays$SCT@scale.data)]
   
   # Add more genes to analyze
   VariableFeatures(so) <- c(VariableFeatures(so), genes_of_interest) 
-  mvf <- VariableFeatures(so)[1:(variable_features + length(genes_of_interest))] 
+  mvf <- VariableFeatures(so)[1:(variable.features + length(genes_of_interest))] 
   
   # Check if variable genes are found in scale data genes
   mvf <- mvf[mvf %in% rownames(seur.SCT)]
@@ -67,7 +67,7 @@ harmony_batch_correct <- function(so,
   
   # SVD on scaled counts
   
-  variable_features <- length(mvf)
+  variable.features <- length(mvf)
   Sys.time()
   pppca <- svd(seur.SCT) 
   Sys.time() 

@@ -7,17 +7,17 @@
 #' @details Takes in a list of genes inputted by the user, displays gene expression information on tsne, umap, or pca
 #' 
 #' @param SO Seurat-class object
-#' @param samples_to_include List of samples to subset the data by
-#' @param samples_to_display List of samples to depict on dimension plot, samples not in the list would be colored gray in the background
-#' @param marker_list Table of marker genes for each celltype (column names of the table), append "_prot" or "_neg" for proteins or negative markers
-#' @param cells_of_interest Vector of celltypes from geneset_dataframe to screen for
-#' @param protein_presence Set to TRUE if there are CITE-seq markers in geneset_dataframe
+#' @param samples.to.include List of samples to subset the data by
+#' @param samples.to.display List of samples to depict on dimension plot, samples not in the list would be colored gray in the background
+#' @param marker.list Table of marker genes for each celltype (column names of the table), append "_prot" or "_neg" for proteins or negative markers
+#' @param cells.of.interest Vector of celltypes from geneset_dataframe to screen for
+#' @param protein.presence Set to TRUE if there are CITE-seq markers in geneset_dataframe
 #' @param assay Name of the assay to extract gene expression data from
-#' @param reduction_type Choose among tsne, umap, and pca
-#' @param point_transparency Set to lower value for more see through points on dimension plot
-#' @param point_shape Change the shape of points for between visualization
-#' @param number_of_rows Set the number of rows to be displayed on the compiled gene expression dimension plot
-#' @param doCiteSeq Set to TRUE if using Cite-seq data
+#' @param reduction.type Choose among tsne, umap, and pca
+#' @param point.transparency Set to lower value for more see through points on dimension plot
+#' @param point.shape Change the shape of points for between visualization
+#' @param number.of.rows Set the number of rows to be displayed on the compiled gene expression dimension plot
+#' @param do.cite.seq Set to TRUE if using Cite-seq data
 #' 
 #' @import Seurat 
 #' @import tidyverse
@@ -29,18 +29,18 @@
 
 #' @return compiled dimension plots of markers, in the same layout as the user-inputted marker table
 
-color_by_genes <- function(SO, 
-                             samples_to_include,
-                             samples_to_display,
-                             marker_list,
-                             cells_of_interest,
-                             protein_presence = FALSE,
+colorbyGenes <- function(SO, 
+                             samples.to.include,
+                             samples.to.display,
+                             marker.list,
+                             cells.of.interest,
+                             protein.presence = FALSE,
                              assay = "SCT",
-                             reduction_type = "umap",
-                             point_transparency = 0.5,
-                             point_shape = 16,
-                             number_of_rows = 0,
-                             doCiteSeq = FALSE){
+                             reduction.type = "umap",
+                             point.transparency = 0.5,
+                             point.shape = 16,
+                             number.of.rows = 0,
+                             do.cite.seq = FALSE){
   
   ## -------------- ##
   ## Error Messages ##
@@ -48,7 +48,7 @@ color_by_genes <- function(SO,
   
   if(!assay %in% Assays(SO)){
     stop("assay type not found in seurat")
-  } else if (!reduction_type %in% Reductions(SO)){
+  } else if (!reduction.type %in% Reductions(SO)){
     stop("reduction type not found in seurat")
   }
     
@@ -66,12 +66,12 @@ color_by_genes <- function(SO,
       Markers.mat[Markers.mat>Markers.quant[3]]=Markers.quant[3]
       Markers.mat[Markers.mat<Markers.quant[1]]=0
       
-      if (!(doCiteSeq)) {
-        if(reduction_type == "tsne"){
+      if (!(do.cite.seq)) {
+        if(reduction.type == "tsne"){
           p1 <- DimPlot(SO.sub, reduction = "tsne", group.by = "ident")
           clusmat=data.frame(umap1=p1$data$tSNE_1,umap2=p1$data$tSNE_2, Markers=Markers.mat, ident = as.factor(p1$data$ident))
         }
-        else if(reduction_type == "umap"){
+        else if(reduction.type == "umap"){
           p1 <- DimPlot(SO.sub, reduction = "umap", group.by = "ident")
           clusmat=data.frame(umap1=p1$data$UMAP_1,umap2=p1$data$UMAP_2, Markers=Markers.mat,ident = as.factor(p1$data$ident))
         }
@@ -80,11 +80,11 @@ color_by_genes <- function(SO,
           clusmat=data.frame(umap1=p1$data$PC_1,umap2=p1$data$PC_2, Markers=Markers.mat,ident = as.factor(p1$data$ident))
         } #if CITEseq is chosen then:
       } else {
-        if(reduction_type == "tsne"){
+        if(reduction.type == "tsne"){
           p1 <- DimPlot(SO.sub, reduction = "protein_tsne", group.by = "ident")
           clusmat=data.frame(umap1=p1$data$protein_tsne_1,umap2=p1$data$protein_tsne_2, Markers=Markers.mat,ident = as.factor(p1$data$ident))
         }
-        else if(reduction_type == "umap"){
+        else if(reduction.type == "umap"){
           p1 <- DimPlot(SO.sub, reduction = "protein_umap", group.by = "ident")
           clusmat=data.frame(umap1=p1$data$protein_umap_1,umap2=p1$data$protein_umap_2, Markers=Markers.mat,ident = as.factor(p1$data$ident))
         }
@@ -95,10 +95,10 @@ color_by_genes <- function(SO,
       }
       
       # Samples caption
-      samples_displayed_message <- paste(samples_to_display, sep = "", collapse = "\n")
+      samples_displayed_message <- paste(samples.to.display, sep = "", collapse = "\n")
       final_caption <- paste("Samples Displayed: ", samples_displayed_message, sep = "", collapse = "\n")
       
-      clusmat <- mutate(clusmat, sample_Markers = clusmat$Markers * grepl(paste(samples_to_display, collapse = "|"), clusmat$ident))
+      clusmat <- mutate(clusmat, sample_Markers = clusmat$Markers * grepl(paste(samples.to.display, collapse = "|"), clusmat$ident))
       
       clusmat %>% dplyr::arrange(sample_Markers) -> clusmat
       if (grepl("_neg",Markers) == TRUE){
@@ -108,7 +108,7 @@ color_by_genes <- function(SO,
           theme_bw() +
           theme(legend.title=element_blank()) +
           ggtitle(Markers) +
-          geom_point(aes(color=sample_Markers, shape=ident),alpha=point_transparency,shape=point_shape, size=1) +
+          geom_point(aes(color=sample_Markers, shape=ident),alpha=point.transparency,shape=point.shape, size=1) +
           theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
                 panel.background = element_blank(),legend.text=element_text(size=rel(0.5)) )+
           scale_color_gradient(limits = c(0, Markers.quant[3]),low = "lightgrey", high = "red") +
@@ -120,7 +120,7 @@ color_by_genes <- function(SO,
           theme_bw() +
           theme(legend.title=element_blank()) +
           ggtitle(Markers) +
-          geom_point(aes(color=sample_Markers, shape=ident),alpha=point_transparency,shape=point_shape, size=1) +
+          geom_point(aes(color=sample_Markers, shape=ident),alpha=point.transparency,shape=point.shape, size=1) +
           theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
                 panel.background = element_blank(),legend.text=element_text(size=rel(0.5)) )+
           scale_color_gradient(limits = c(0, Markers.quant[3]),low = "lightgrey", high = "red") +
@@ -133,8 +133,8 @@ color_by_genes <- function(SO,
   ## Main Code Block ##
   ## --------------- ##
   
-  if (length(samples_to_include) == 0) {
-    samples_to_include = unique(SO@meta.data$sample_name)
+  if (length(samples.to.include) == 0) {
+    samples.to.include = unique(SO@meta.data$sample_name)
   }
   
   if("active.ident" %in% slotNames(SO)){
@@ -142,30 +142,30 @@ color_by_genes <- function(SO,
     names(sample_name)=names(SO@active.ident)
     SO@active.ident <- as.factor(vector())
     SO@active.ident <- sample_name
-    SO.sub = subset(SO, ident = samples_to_include)
+    SO.sub = subset(SO, ident = samples.to.include)
   } else {
     sample_name = as.factor(SO@meta.data$orig.ident)
     names(sample_name)=names(SO@active.ident)
     SO@active.ident <- as.factor(vector())
     SO@active.ident <- sample_name
-    SO.sub = subset(SO, ident = samples_to_include)
+    SO.sub = subset(SO, ident = samples.to.include)
   }
   
-  marker_list <- marker_list[cells_of_interest]
+  marker.list <- marker.list[cells.of.interest]
   
   # Remove columns with all missing values
   Present_Markers_ls <- list()
   
-  for (celltype in colnames(marker_list)) {
-    print(names(marker_list[celltype]))
-    present=lapply(marker_list[[celltype]], function(x) x %in% rownames(SO.sub$SCT@scale.data)) 
-    absentgenes = unlist(marker_list[[celltype]])[present==FALSE]
-    presentgenes = unlist(marker_list[[celltype]])[present==TRUE]
+  for (celltype in colnames(marker.list)) {
+    print(names(marker.list[celltype]))
+    present=lapply(marker.list[[celltype]], function(x) x %in% rownames(SO.sub$SCT@scale.data)) 
+    absentgenes = unlist(marker.list[[celltype]])[present==FALSE]
+    presentgenes = unlist(marker.list[[celltype]])[present==TRUE]
     print(paste0("Genes not present: ",paste0(absentgenes,collapse=",")))
     print(paste0("Genes present: ",paste0(presentgenes,collapse=",")))
     
     if(length(presentgenes) == 0){
-      print(paste0(names(marker_list[celltype]), " genes were not found in SO and will not be analyzed"))
+      print(paste0(names(marker.list[celltype]), " genes were not found in SO and will not be analyzed"))
     } else {Present_Markers_ls[[celltype]] <- presentgenes}
   }
   
@@ -174,7 +174,7 @@ color_by_genes <- function(SO,
   Markers_from_list <- do.call(cbind, padded_list)
   
   # Recognize any markers designated as proteins and insert protein expression data into slot where plots are created
-  if (protein_presence){
+  if (protein.presence){
     protein_markers <- Markers_from_list[grepl("_prot",Markers_from_list)]
     
     protein_orig_markers <- gsub("_prot.*","",protein_markers)
