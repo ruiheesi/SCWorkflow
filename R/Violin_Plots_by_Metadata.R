@@ -10,22 +10,22 @@
 #' @param seurat_object Seurat-class object
 #' @param assay Name of the assay to extract gene expression data from
 #' @param slot Name of the slot within the assay to extract gene expression data from
-#' @param ident_of_interest Split violin plot based on a column from the seurat object metadata
-#' @param groups_of_interest Include only a specific subset from ident_of_interest
-#' @param genes_of_interest Genes to visualize on the violin plot
-#' @param filter_outliers Filter outliers from the data (TRUE/FALSE)
-#' @param scale_data Scale data from 0 to 1 (TRUE/FALSE)
-#' @param log_scale_data Transform data onto a log10 scale (TRUE/FALSE)
-#' @param reorder_ident Numeric data will be ordered naturally by default. Toggling this option will order the groups to match the group list if non-numeric, and will have no effect if otherwise.
-#' @param rename_ident Give alternative names to ident_of_interest displayed on the graph
+#' @param ident.of.interest Split violin plot based on a column from the seurat object metadata
+#' @param groups.of.interest Include only a specific subset from ident.of.interest
+#' @param genes.of.interest Genes to visualize on the violin plot
+#' @param filter.outliers Filter outliers from the data (TRUE/FALSE)
+#' @param scale.data Scale data from 0 to 1 (TRUE/FALSE)
+#' @param log.scale.data Transform data onto a log10 scale (TRUE/FALSE)
+#' @param reorder.ident Numeric data will be ordered naturally by default. Toggling this option will order the groups to match the group list if non-numeric, and will have no effect if otherwise.
+#' @param rename.ident Give alternative names to ident.of.interest displayed on the graph
 #' @param ylimit Y-axis limit
-#' @param plot_style Choose between grid, labeled, and row
-#' @param outlier_low_lim Filter lower bound outliers (default = bottom 10 percentile)
-#' @param outlier_up_lim Filter upper bound outliers (default = bottom 90 percentile)
-#' @param jitter_points Scatter points on the plot (TRUE/FALSE)
-#' @param jitter_width Set spread of jittered points 
-#' @param jitter_dot_size Set size of individual points
-#' @param print_outliers Print outliers as points in your graph that may be redundant to jitter 
+#' @param plot.style Choose between grid, labeled, and row
+#' @param outlier.low.lim Filter lower bound outliers (default = bottom 10 percentile)
+#' @param outlier.up.lim Filter upper bound outliers (default = bottom 90 percentile)
+#' @param jitter.points Scatter points on the plot (TRUE/FALSE)
+#' @param jitter.width Set spread of jittered points 
+#' @param jitter.dot.size Set size of individual points
+#' @param print.outliers Print outliers as points in your graph that may be redundant to jitter 
 
 #' @import Seurat 
 #' @import reshape2
@@ -38,62 +38,62 @@
 
 #' @return violin ggplot2 object
 
-ViolinPlot <- function(so, 
+violinPlot <- function(so, 
                        assay = "SCT", 
                        slot = "scale.data", 
-                       ident_of_interest, 
-                       groups_of_interest, 
-                       genes_of_interest,
-                       filter_outliers = FALSE, 
-                       scale_data = TRUE, 
-                       log_scale_data = FALSE, 
-                       reorder_ident = TRUE,
-                       rename_ident = "", 
+                       ident.of.interest, 
+                       groups.of.interest, 
+                       genes.of.interest,
+                       filter.outliers = FALSE, 
+                       scale.data = TRUE, 
+                       log.scale.data = FALSE, 
+                       reorder.ident = TRUE,
+                       rename.ident = "", 
                        ylimit = 0, 
-                       plot_style = "grid", 
-                       outlier_low_lim = 0.1, 
-                       outlier_up_lim = 0.9, 
-                       jitter_points = FALSE,
-                       jitter_width = 0.05, 
-                       jitter_dot_size = 0.5, 
-                       print_outliers = TRUE){
+                       plot.style = "grid", 
+                       outlier.low.lim = 0.1, 
+                       outlier.up.lim = 0.9, 
+                       jitter.points = FALSE,
+                       jitter.width = 0.05, 
+                       jitter.dot.size = 0.5, 
+                       print.outliers = TRUE){
 
   ## ---------------##
   ## Error Messages ##
   ## ---------------##
   
-  gene_filter <- genes_of_interest %in% rownames(GetAssayData(object = so, slot = slot, assay = assay))
-  missing_genes <- genes_of_interest[!gene_filter]
-  genes_of_interest <- genes_of_interest[gene_filter]
+  gene_filter <- genes.of.interest %in% rownames(GetAssayData(object = so, slot = slot, assay = assay))
+  missing_genes <- genes.of.interest[!gene_filter]
+  genes.of.interest <- genes.of.interest[gene_filter]
   
   if(length(missing_genes) > 0){
     print(paste("The following genes are missing from the dataset:", missing_genes, sep = " "))
   }
   
-  if(length(genes_of_interest) == 0){
+  if(length(genes.of.interest) == 0){
     stop("No query genes were found in the dataset.")
   }
   
-  if(!ident_of_interest %in% colnames(so@meta.data)){
+  if(!ident.of.interest %in% colnames(so@meta.data)){
     colnames(so@meta.data) <- gsub("\\.","_",colnames(so@meta.data))
-    if(!ident_of_interest %in% colnames(so@meta.data)){
+    if(!ident.of.interest %in% colnames(so@meta.data)){
       stop("Unable to find ident of interest in metadata.")
     }
   }
   
-  group_filter <- groups_of_interest %in% so@meta.data[[ident_of_interest]]
-  groups_of_interest <- groups_of_interest[group_filter]
-  missing_groups <- groups_of_interest[!group_filter]
+  group_filter <- groups.of.interest %in% so@meta.data[[ident.of.interest]]
+  groups.of.interest <- groups.of.interest[group_filter]
+  missing_groups <- groups.of.interest[!group_filter]
   if(length(missing_groups) > 0){
     cat("The following groups are missing from the selected ident:\n")
     print(missing_groups)
   }
   
-  if(length(groups_of_interest) == 0){
+  if(length(groups.of.interest) == 0){
     stop("No groups were found in the selected ident.")
   }
   
-  if(rename_ident %in% c("Gene","Expression","scaled")){
+  if(rename.ident %in% c("Gene","Expression","scaled")){
     stop("New ident name cannot be one of Gene, Expression, or scaled.")
   }
   
@@ -152,7 +152,7 @@ ViolinPlot <- function(so,
   }
   
   remove_outliers_func <- function(x, na.rm = TRUE){
-    qnt <- quantile(x, probs=c(outlier_low_lim,outlier_up_lim), na.rm = na.rm)
+    qnt <- quantile(x, probs=c(outlier.low.lim,outlier.up.lim), na.rm = na.rm)
     H <- 1.5*IQR(x, na.rm = na.rm)
     y <- x
     y[x < (qnt[1] - H)] <- NA
@@ -171,53 +171,53 @@ ViolinPlot <- function(so,
   
   #set idents
   if("active.ident" %in% slotNames(so)){
-    new_idents = as.factor(so@meta.data[[ident_of_interest]])
+    new_idents = as.factor(so@meta.data[[ident.of.interest]])
     names(new_idents) = names(so@active.ident)
     so@active.ident <- as.factor(vector())
     so@active.ident <- new_idents
-    so.sub = subset(so, ident = groups_of_interest)
+    so.sub = subset(so, ident = groups.of.interest)
   } else {
-    new_idents = as.factor(so@meta.data[[ident_of_interest]])
+    new_idents = as.factor(so@meta.data[[ident.of.interest]])
     names(sample_name)=so@meta.data[["Barcode"]]
     so@active.ident <- as.factor(vector())
     so@active.ident <- new_idents
-    so.sub = subset(so, ident = groups_of_interest)
+    so.sub = subset(so, ident = groups.of.interest)
   }
   
   DefaultAssay(object = so) <- assay
-  data <- FetchData(object = so.sub, vars = genes_of_interest, slot = slot)
+  data <- FetchData(object = so.sub, vars = genes.of.interest, slot = slot)
   
-  data[[ident_of_interest]] <- so.sub@meta.data[row.names(data),ident_of_interest]
+  data[[ident.of.interest]] <- so.sub@meta.data[row.names(data),ident.of.interest]
   
   df.melt <- reshape2::melt(data)
   
-  if(!is.empty(rename_ident)){
-    ident_of_interest <- rename_ident
+  if(!is.empty(rename.ident)){
+    ident.of.interest <- rename.ident
   }
-  colnames(df.melt) <- c(ident_of_interest,"Gene","Expression")
+  colnames(df.melt) <- c(ident.of.interest,"Gene","Expression")
   
   #check to see if ident of interest looks numeric
-  if(suppressWarnings(all(!is.na(as.numeric(as.character(df.melt[[ident_of_interest]])))))){
-    ident.values <- strtoi(df.melt[[ident_of_interest]])
+  if(suppressWarnings(all(!is.na(as.numeric(as.character(df.melt[[ident.of.interest]])))))){
+    ident.values <- strtoi(df.melt[[ident.of.interest]])
     ident.levels <- unique(ident.values)[order(unique(ident.values))]
-    df.melt[[ident_of_interest]] <- factor(ident.values, levels = ident.levels)
-  }else if(reorder_ident){
+    df.melt[[ident.of.interest]] <- factor(ident.values, levels = ident.levels)
+  }else if(reorder.ident){
     # if non-numeric, place in order of groups of interests
-    df.melt[[ident_of_interest]] <- factor(df.melt[[ident_of_interest]], levels = groups_of_interest)        
+    df.melt[[ident.of.interest]] <- factor(df.melt[[ident.of.interest]], levels = groups.of.interest)        
   }
   
   # Filter outliers
-  if(filter_outliers){
-    for(gene in genes_of_interest){
-      for(group in groups_of_interest){
-        current.ind <- which(df.melt[["Gene"]] == gene & df.melt[[ident_of_interest]] == group)
+  if(filter.outliers){
+    for(gene in genes.of.interest){
+      for(group in groups.of.interest){
+        current.ind <- which(df.melt[["Gene"]] == gene & df.melt[[ident.of.interest]] == group)
         df.melt[current.ind,"Expression"] <- remove_outliers_func(df.melt[current.ind,"Expression", drop = TRUE])
       }
     }
   }
   
   # Scale data to y limit
-  if(scale_data){
+  if(scale.data){
     expression_data = "scaled"
     axis.title.y = "Expression (scaled)"
     ylimit <- ylimit %||% 1
@@ -226,8 +226,8 @@ ViolinPlot <- function(so,
     expression_data <- axis.title.y <- "Expression"
   }
   
-  g <- ggplot(df.melt, aes_string(x=ident_of_interest, y=expression_data)) +
-    geom_violin(aes_string(fill = ident_of_interest), scale="width", trim = FALSE, show.legend = FALSE) + 
+  g <- ggplot(df.melt, aes_string(x=ident.of.interest, y=expression_data)) +
+    geom_violin(aes_string(fill = ident.of.interest), scale="width", trim = FALSE, show.legend = FALSE) + 
     #geom_jitter(height = 0, width = 0.05, size=0.1) +
     theme_classic() + 
     #scale_fill_manual(values=cols) + 
@@ -240,27 +240,27 @@ ViolinPlot <- function(so,
     g <- g + ylim(0,ylimit)
   }
   
-  if(jitter_points){
-    g <- g + geom_jitter(height = 0, width = jitter_width, size=jitter_dot_size)
+  if(jitter.points){
+    g <- g + geom_jitter(height = 0, width = jitter.width, size=jitter.dot.size)
   }
   
-  if(log_scale_data){
+  if(log.scale.data){
     g <- g + scale_y_log10()
   }
   
   # Plot after jitter if wanted
-  g <- g + geom_boxplot(width=0.1, fill="white", outlier.shape = ifelse(print_outliers,19,NA))
+  g <- g + geom_boxplot(width=0.1, fill="white", outlier.shape = ifelse(print.outliers,19,NA))
   
   # Plot styles
   ncol = ceiling(length(unique(df.melt$Gene))^0.5)
   nrow = ceiling(length(unique(df.melt$Gene)) / ncol)
-  if(plot_style == "rows"){
+  if(plot.style == "rows"){
     g <- g + facet_grid(rows = vars(Gene))
   }else{
     g <- g + facet_wrap(~Gene, nrow = nrow, ncol = ncol)
-    if(plot_style == "labeled"){
+    if(plot.style == "labeled"){
       plots <- splitFacet(g)
-      plots <- lapply(seq_along(plots), function(i) plots[[i]] + ggtitle(genes_of_interest[i]) + theme(plot.title = element_text(hjust = 0.5)) )
+      plots <- lapply(seq_along(plots), function(i) plots[[i]] + ggtitle(genes.of.interest[i]) + theme(plot.title = element_text(hjust = 0.5)) )
       g <- plot_grid(plotlist = plots, nrow = nrow, ncol = ncol, labels = LETTERS[seq( from = 1, to = length(plots) )])
     }
   }
