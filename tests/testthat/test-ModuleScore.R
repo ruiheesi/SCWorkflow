@@ -1,93 +1,93 @@
-test_that("ModuleScore returns metadata with scores and cell calls for TEC", {
+test_that("moduleScore returns metadata with scores and cell calls for TEC", {
   
-  TEC <- getparam_ModuleScore("TEC")
+  TEC <- getparam_moduleScore("TEC")
 
-  suppressWarnings(modscore_demo <- ModuleScore(SO = TEC$object, 
-              sample_names = TEC$sample_names,
-              sample_to_display = TEC$sample_to_display,
-              geneset_dataframe = TEC$geneset_dataframe,
-              celltypes_to_analyze = TEC$celltypes_to_analyze,
-              general_class = TEC$general_class,
-              levels_dataframe = TEC$levels_df_demo,
+  suppressWarnings(modscore_demo <- moduleScore(SO = TEC$object, 
+              sample.names = TEC$sample.names,
+              sample.to.display = TEC$sample.to.display,
+              geneset.dataframe = TEC$geneset.dataframe,
+              celltypes.to.analyze = TEC$celltypes.to.analyze,
+              general.class = TEC$general.class,
+              levels.dataframe = TEC$levels_df_demo,
               nbins = 10))
   
-  expected_elements <- c("Likely_CellType",TEC$celltypes_to_analyze)
+  expected_elements <- c("Likely_CellType",TEC$celltypes.to.analyze)
   expect(all(expected_elements %in% colnames(modscore_demo$Seurat_Object@meta.data)), 
                           failure_message = "modscore results not found")
   
 })
 
-test_that("ModuleScore returns metadata with scores and cell calls for Chariou", {
+test_that("moduleScore returns metadata with scores and cell calls for Chariou", {
   
-  Chariou <- getparam_ModuleScore("Chariou")
+  Chariou <- getparam_moduleScore("Chariou")
   
-  suppressWarnings(modscore_demo <- ModuleScore(SO = Chariou$object, 
-                                                sample_names = Chariou$sample_names,
-                                                sample_to_display = Chariou$sample_to_display,
-                                                geneset_dataframe = Chariou$geneset_dataframe,
-                                                celltypes_to_analyze = Chariou$celltypes_to_analyze,
-                                                general_class = Chariou$general_class,
-                                                levels_dataframe = Chariou$levels_df_demo,
+  suppressWarnings(modscore_demo <- moduleScore(SO = Chariou$object, 
+                                                sample.names = Chariou$sample.names,
+                                                sample.to.display = Chariou$sample.to.display,
+                                                geneset.dataframe = Chariou$geneset.dataframe,
+                                                celltypes.to.analyze = Chariou$celltypes.to.analyze,
+                                                general.class = Chariou$general.class,
+                                                levels.dataframe = Chariou$levels_df_demo,
                                                 nbins = 10))
   
-  expected_elements <- c("Likely_CellType",Chariou$celltypes_to_analyze)
+  expected_elements <- c("Likely_CellType",Chariou$celltypes.to.analyze)
   expect(all(expected_elements %in% colnames(modscore_demo$Seurat_Object@meta.data)), 
          failure_message = "modscore results not found")
   
 })
 
-test_that("ModuleScore returns metadata with scores and cell calls for NSCLC_Single", {
+test_that("moduleScore returns metadata with scores and cell calls for NSCLC_Single", {
   
-  NSCLC_Single <- getparam_ModuleScore("NSCLC_Single")
+  NSCLC_Single <- getparam_moduleScore("NSCLC_Single")
   
-  suppressWarnings(modscore_demo <- ModuleScore(SO = NSCLC_Single$object, 
-                                                sample_names = NSCLC_Single$sample_names,
-                                                sample_to_display = NSCLC_Single$sample_to_display,
-                                                geneset_dataframe = NSCLC_Single$geneset_dataframe,
-                                                celltypes_to_analyze = NSCLC_Single$celltypes_to_analyze,
-                                                general_class = NSCLC_Single$general_class,
-                                                levels_dataframe = NSCLC_Single$levels_df_demo,
+  suppressWarnings(modscore_demo <- moduleScore(SO = NSCLC_Single$object, 
+                                                sample.names = NSCLC_Single$sample.names,
+                                                sample.to.display = NSCLC_Single$sample.to.display,
+                                                geneset.dataframe = NSCLC_Single$geneset.dataframe,
+                                                celltypes.to.analyze = NSCLC_Single$celltypes.to.analyze,
+                                                general.class = NSCLC_Single$general.class,
+                                                levels.dataframe = NSCLC_Single$levels_df_demo,
                                                 nbins = 10))
   
-  expected_elements <- c("Likely_CellType",NSCLC_Single$celltypes_to_analyze)
+  expected_elements <- c("Likely_CellType",NSCLC_Single$celltypes.to.analyze)
   expect(all(expected_elements %in% colnames(modscore_demo$Seurat_Object@meta.data)), 
          failure_message = "modscore results not found")
   
 })
 
-test_that("ModuleScore returns metadata with scores and cell calls for NSCLC_Multi", {
+test_that("moduleScore returns metadata with scores and cell calls for NSCLC_Multi", {
   
-  NSCLC_Multi <- getparam_ModuleScore("NSCLC_Multi")
+  NSCLC_Multi <- getparam_moduleScore("NSCLC_Multi")
   
-  suppressWarnings(modscore_demo <- ModuleScore(SO = NSCLC_Multi$object, 
-                                                sample_names = NSCLC_Multi$sample_names,
-                                                sample_to_display = NSCLC_Multi$sample_to_display,
-                                                geneset_dataframe = NSCLC_Multi$geneset_dataframe,
-                                                celltypes_to_analyze = NSCLC_Multi$celltypes_to_analyze,
-                                                general_class = NSCLC_Multi$general_class,
-                                                levels_dataframe = NSCLC_Multi$levels_df_demo,
+  suppressWarnings(modscore_demo <- moduleScore(SO = NSCLC_Multi$object, 
+                                                sample.names = NSCLC_Multi$sample.names,
+                                                sample.to.display = NSCLC_Multi$sample.to.display,
+                                                geneset.dataframe = NSCLC_Multi$geneset.dataframe,
+                                                celltypes.to.analyze = NSCLC_Multi$celltypes.to.analyze,
+                                                general.class = NSCLC_Multi$general.class,
+                                                levels.dataframe = NSCLC_Multi$levels_df_demo,
                                                 nbins = 10))
   
-  expected_elements <- c("Likely_CellType",NSCLC_Multi$celltypes_to_analyze)
+  expected_elements <- c("Likely_CellType",NSCLC_Multi$celltypes.to.analyze)
   expect(all(expected_elements %in% colnames(modscore_demo$Seurat_Object@meta.data)), 
          failure_message = "modscore results not found")
   
 })
 
-test_that("ModuleScore returns metadata with scores and cell calls for BRCA", {
+test_that("moduleScore returns metadata with scores and cell calls for BRCA", {
   
-  BRCA <- getparam_ModuleScore("BRCA")
+  BRCA <- getparam_moduleScore("BRCA")
   
-  suppressWarnings(modscore_demo <- ModuleScore(SO = BRCA$object, 
-                                                sample_names = BRCA$sample_names,
-                                                sample_to_display = BRCA$sample_to_display,
-                                                geneset_dataframe = BRCA$geneset_dataframe,
-                                                celltypes_to_analyze = BRCA$celltypes_to_analyze,
-                                                general_class = BRCA$general_class,
-                                                levels_dataframe = BRCA$levels_df_demo,
+  suppressWarnings(modscore_demo <- moduleScore(SO = BRCA$object, 
+                                                sample.names = BRCA$sample.names,
+                                                sample.to.display = BRCA$sample.to.display,
+                                                geneset.dataframe = BRCA$geneset.dataframe,
+                                                celltypes.to.analyze = BRCA$celltypes.to.analyze,
+                                                general.class = BRCA$general.class,
+                                                levels.dataframe = BRCA$levels_df_demo,
                                                 nbins = 10))
   
-  expected_elements <- c("Likely_CellType",BRCA$celltypes_to_analyze)
+  expected_elements <- c("Likely_CellType",BRCA$celltypes.to.analyze)
   expect(all(expected_elements %in% colnames(modscore_demo$Seurat_Object@meta.data)), 
          failure_message = "modscore results not found")
   
@@ -95,33 +95,33 @@ test_that("ModuleScore returns metadata with scores and cell calls for BRCA", {
 
 ## Error Testings ##
 
-test_that("ModuleScore detects when no genes are found in the data", {
+test_that("moduleScore detects when no genes are found in the data", {
   
-  Chariou <- getparam_ModuleScore("Chariou")
+  Chariou <- getparam_moduleScore("Chariou")
   
-  expect_error(suppressWarnings(modscore_demo <- ModuleScore(SO = Chariou$object, 
-                                                sample_names = Chariou$sample_names,
-                                                sample_to_display = Chariou$sample_to_display,
-                                                geneset_dataframe = apply(Chariou$geneset_dataframe,2, function(x) toupper(x)),
-                                                celltypes_to_analyze = Chariou$celltypes_to_analyze,
-                                                general_class = Chariou$general_class,
-                                                levels_dataframe = Chariou$levels_df_demo,
+  expect_error(suppressWarnings(modscore_demo <- moduleScore(SO = Chariou$object, 
+                                                sample.names = Chariou$sample.names,
+                                                sample.to.display = Chariou$sample.to.display,
+                                                geneset.dataframe = apply(Chariou$geneset.dataframe,2, function(x) toupper(x)),
+                                                celltypes.to.analyze = Chariou$celltypes.to.analyze,
+                                                general.class = Chariou$general.class,
+                                                levels.dataframe = Chariou$levels_df_demo,
                                                 nbins = 10), "No genes from list was found in data"))
   
 })
 
-test_that("ModuleScore detects when threshold number does not match number of cells to analyze", {
+test_that("moduleScore detects when threshold number does not match number of cells to analyze", {
   
-  Chariou <- getparam_ModuleScore("Chariou")
+  Chariou <- getparam_moduleScore("Chariou")
   
-  expect_error(suppressWarnings(modscore_demo <- ModuleScore(SO = Chariou$object, 
-                                                             sample_names = Chariou$sample_names,
-                                                             sample_to_display = Chariou$sample_to_display,
-                                                             geneset_dataframe = Chariou$geneset_dataframe,
-                                                             celltypes_to_analyze = Chariou$celltypes_to_analyze,
-                                                             general_class = Chariou$general_class,
-                                                             levels_dataframe = Chariou$levels_df_demo,
-                                                             manual_threshold = rep(0.1,5),
+  expect_error(suppressWarnings(modscore_demo <- moduleScore(SO = Chariou$object, 
+                                                             sample.names = Chariou$sample.names,
+                                                             sample.to.display = Chariou$sample.to.display,
+                                                             geneset.dataframe = Chariou$geneset.dataframe,
+                                                             celltypes.to.analyze = Chariou$celltypes.to.analyze,
+                                                             general.class = Chariou$general.class,
+                                                             levels.dataframe = Chariou$levels_df_demo,
+                                                             manual.threshold = rep(0.1,5),
                                                              nbins = 10), "Manual threshold length does not match number of celltypes to analyze - please check manual thresholds"))
   
 })

@@ -8,7 +8,7 @@ getparam_Pseudobulk <- function(data){
       object = readRDS(test_path("fixtures/TEC", "TEC_Combine_and_Renormalize_SO_downsample.rds"))
       contrasts = c("F-M")
       replicate = 'orig.ident'
-      comparison_level = 'Gender'
+      comparison.level = 'Gender'
       label = "Gender"
 
   } else if (data == "Chariou") {
@@ -16,7 +16,7 @@ getparam_Pseudobulk <- function(data){
       object = readRDS(test_path("fixtures/Chariou", "Chariou_Combine_and_Renormalize_SO_downsample.rds"))
       contrasts = c("F-M")
       replicate = 'orig.ident'
-      comparison_level = 'Gender'
+      comparison.level = 'Gender'
       label = "Gender"
       
   } else if (data == "NSCLC_Single") {
@@ -25,7 +25,7 @@ getparam_Pseudobulk <- function(data){
       object@meta.data$label_cluster = paste("cluster", object@meta.data$SCT_snn_res.0.2, sep = "_")
       contrasts = c("cluster_1-cluster_2")
       replicate = 'Phase'
-      comparison_level = 'label_cluster'
+      comparison.level = 'label_cluster'
       label = "label_cluster"
     
   } else if (data == "NSCLC_Multi") {
@@ -34,7 +34,7 @@ getparam_Pseudobulk <- function(data){
       object@meta.data$label_cluster = paste("cluster", object@meta.data$SCT_snn_res.0.2, sep = "_")
       contrasts = c("cluster_1-cluster_2")
       replicate = 'Phase'
-      comparison_level = 'label_cluster'
+      comparison.level = 'label_cluster'
       label = "label_cluster"
 
   } else if (data == "BRCA") {
@@ -42,13 +42,13 @@ getparam_Pseudobulk <- function(data){
       object = readRDS(test_path("fixtures/BRCA", "BRCA_Combine_and_Renormalize_SO_downsample.rds"))
       contrasts = c("G2M-S")
       replicate = 'orig.ident'
-      comparison_level = 'Phase'
+      comparison.level = 'Phase'
       label = "Phase"
     
   }
   
   return(list("object" = object, "contrasts"= contrasts, 
               "replicate" = replicate,
-              "comparison_level" = comparison_level,
+              "comparison.level" = comparison.level,
               "label" = label))  
 }
