@@ -47,7 +47,8 @@ reclusterFilteredSeuratObject <- function(object,
                                           cluster.resolution.low.range = 0.2,
                                           cluster.resolution.high.range = 1.2,
                                           cluster.resolution.range.bins = 0.2,
-                                          reduction.type = "tsne") {
+                                          reduction.type = "tsne"
+                                          ) {
 
   ## --------------- ##
   ## Main Code Block ##
@@ -140,6 +141,7 @@ reclusterFilteredSeuratObject <- function(object,
       cluster.resolution.high.range,
       cluster.resolution.range.bins
     )
+  
   for (r in resolutions) {
     object <- FindClusters(object, resolution = r, algorithm = 1)
   }
@@ -165,6 +167,4 @@ reclusterFilteredSeuratObject <- function(object,
   
   # return(list("object"=object, "plot"=plot.list))
   return(list("object" = object, "plot" = g))
-  
 }
-
