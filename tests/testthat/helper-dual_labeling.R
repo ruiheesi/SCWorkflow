@@ -28,7 +28,7 @@ getParamDL <- function(data){
       display.unscaled.values = TRUE
   } else if (data == "pbmc-single") {
       object <- selectCRObject("pbmc-single")
-      samples <- c("NSCLC_Single")
+      samples <- c("PBMC_Single")
       varfeat <- VariableFeatures(object@assays$SCT)[1:100]
       set.seed(254)
       marker1 <- sample(varfeat,1)

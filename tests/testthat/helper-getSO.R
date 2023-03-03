@@ -14,9 +14,9 @@ selectCRObject <- function(dataset) {
     
   } else if (dataset == "pbmc-single"){
     
-    print("selected NSCLC Single dataset")
-    input.object <- readRDS(test_path("fixtures/NSCLC_Single",
-    "NSCLCsingle_Cell_Types_SingleR_SO_downsample.rds"))
+    print("selected PBMC Single dataset")
+    input.object <- readRDS(test_path("fixtures/PBMC_Single",
+    "PBMCsingle_Cell_Types_SingleR_SO_downsample.rds"))
     
   } else if (dataset == "nsclc-multi"){
     
@@ -50,9 +50,9 @@ selectSRObject <- function(dataset){
     
   } else if (dataset == "pbmc-single"){
     
-    print("selected NSCLCsingle dataset")
-    input.object <- readRDS(test_path("fixtures/NSCLC_Single", 
-          "NSCLCsingle_Cell_Types_SingleR_SO_downsample.rds"))
+    print("selected PBMCsingle dataset")
+    input.object <- readRDS(test_path("fixtures/PBMC_Single", 
+          "PBMCsingle_Cell_Types_SingleR_SO_downsample.rds"))
   
   } else if (dataset == "nsclc-multi"){
     
