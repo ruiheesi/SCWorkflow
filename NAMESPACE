@@ -68,6 +68,10 @@ import(utils)
 importFrom(Seurat,AddMetaData)
 importFrom(Seurat,DotPlot)
 importFrom(Seurat,Idents)
+<<<<<<< HEAD
+=======
+importFrom(Seurat,subset)
+>>>>>>> 0c70bdb53af3a78eab291d2a22c3c2de78d113c5
 importFrom(digest,digest)
 importFrom(dplyr,arrange)
 importFrom(dplyr,case_when)
