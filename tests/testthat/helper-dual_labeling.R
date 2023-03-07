@@ -1,8 +1,8 @@
 #This helper script will return parameters for each test dependent on the data input:
-getparamdl <- function(data){
+getParamDL <- function(data){
 
   if(data == "TEC"){
-      object <- select_crobject("TEC") 
+      object <- selectCRObject("TEC") 
       samples <- c("1_Embryo_13_5","2_Embryo_15","3_Newborn","4_Adult")
       set.seed(15)
       marker1 <- sample(rownames(object),1, replace = FALSE)
@@ -14,7 +14,7 @@ getparamdl <- function(data){
       density.heatmap = TRUE
       display.unscaled.values = TRUE
   } else if (data == "Chariou") {
-      object <- select_crobject("Chariou")
+      object <- selectCRObject("Chariou")
       samples <- c("PBS","CD8dep","ENT","NHSIL12","Combo")
       varfeat <- VariableFeatures(object@assays$SCT)[1:100]
       set.seed(254)
@@ -26,9 +26,9 @@ getparamdl <- function(data){
       data.reduction = "tsne"
       density.heatmap = TRUE
       display.unscaled.values = TRUE
-  } else if (data == "nsclc-single") {
-      object <- select_crobject("nsclc-single")
-      samples <- c("NSCLC_Single")
+  } else if (data == "pbmc-single") {
+      object <- selectCRObject("pbmc-single")
+      samples <- c("PBMC_Single")
       varfeat <- VariableFeatures(object@assays$SCT)[1:100]
       set.seed(254)
       marker1 <- sample(varfeat,1)
@@ -40,7 +40,7 @@ getparamdl <- function(data){
       density.heatmap = TRUE
       display.unscaled.values = TRUE
   } else if (data == "nsclc-multi") {
-      object <- select_crobject("nsclc-multi")
+      object <- selectCRObject("nsclc-multi")
       samples <- c("Donor_1","Donor_2","Donor_3")
       varfeat <- VariableFeatures(object@assays$SCT)[1:100]
       set.seed(254)
@@ -53,7 +53,7 @@ getparamdl <- function(data){
       density.heatmap = TRUE
       display.unscaled.values = TRUE
   } else if (data == "BRCA") {
-      object <- select_crobject("BRCA")
+      object <- selectCRObject("BRCA")
       samples <- c("CID4471","CID4290A","CID44971","CID4040","CID4513","CID4535")
       varfeat <- VariableFeatures(object@assays$SCT)
       set.seed(254)

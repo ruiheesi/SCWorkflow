@@ -1,7 +1,7 @@
 test_that("Run Name clusters with default parameters - TEC data", {
   
-  # load data
-  input <- getparams_nameclus("TEC") 
+  # load data 
+  input <- getparams_nameclus("TEC") #loads default parameters for "TEC" dataset
   output <- do.call(nameClusters,input)
   
   #Test output values and plot:
