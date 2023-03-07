@@ -16,19 +16,11 @@
 #' @param cell.reverse.sort Reverse Metadata Categories to plot (default is
 #'FALSE)
 #' @param dot.color Dot color (default is "dark blue")
-
 #' @importFrom tidyr pivot_wider
 #' @importFrom Seurat Idents DotPlot
-
-<<<<<<< HEAD
 #' @export 
 #' ``
 #' @return Dotplot with markers and cell types. 
-=======
-#' @export
-#'
-#' @return Dotplot with markers and cell types.
->>>>>>> 0c70bdb53af3a78eab291d2a22c3c2de78d113c5
 
 dotPlotMet <- function(object,
                        metadata,
