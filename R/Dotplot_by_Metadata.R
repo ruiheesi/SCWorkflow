@@ -16,10 +16,10 @@
 #' @param dot.color Dot color (default is "dark blue")
 
 #' @importFrom tidyr pivot_wider
-#' @importFrom Seurat subset Idents DotPlot
+#' @importFrom Seurat Idents DotPlot
 
 #' @export 
-#' 
+#' ``
 #' @return Dotplot with markers and cell types. 
 
 dotPlotMet <- function(object,
