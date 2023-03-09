@@ -1,35 +1,35 @@
 #' @title Plot coexpression of 2 markers using transcript and/or protein
 #' expression values
-#' @description This method returns individual and combined expression of 2 
-#' genes and allows for filtering (optional) of the Seurat object using 
-#' expression thresholds.
-#' @details This method provides visualization of coexpression of 2 genes (or
-#' proteins) and additional methods for filtering for cells with gene
+#' @description This method provides visualization of coexpression of 2 genes 
+#' (or proteins) and additional methods for filtering for cells with gene
 #' expression values that are above or below thresholds set for one or both
-#' markers.
+#' markers. The method allows for filtering (optional) of the Seurat object 
+#' using manually set expression thresholds.
 #'
 #' @param object Seurat-class object
 #' @param samples Samples to be included in the analysis
-#' @param marker1 First gene/marker for coexpression analysis
-#' @param marker.1.type Slot to use for first marker (choices are "SCT",
-#' "protein","HTO")
-#' @param marker2 Second gene/marker for coexpression analysis
-#' @param marker.2.type Slot to use for second marker (choices are "SCT",
-#' "protein","HTO")
-#' @param data.reduction Dimension Reduction method to use for image (options
-#' are "umap" or "tsne")
+#' @param marker.1 First gene/marker for coexpression analysis
+#' @param marker.2 Second gene/marker for coexpression analysis
+#' @param marker.1.type Slot to use for first marker. Choices are "SCT",
+#' "protein","HTO" (default is "SCT")
+#' @param marker.2.type Slot to use for second marker. Choices are "SCT",
+#' "protein","HTO" (default is "SCT")
+#' @param data.reduction Dimension Reduction method to use for image. Options
+#' are "umap" or "tsne" (default is "umap")
 #' @param point.size Point size for image (default is 0.5)
 #' @param point.shape Point shape for image (default is 16)
 #' @param point.transparency Point transparency for image (default is 0.5)
 #' @param add.marker.thresholds Add marker thresholds (default is FALSE)
 #' @param marker.1.threshold Threshold set for first marker (default is 0.5)
-#' @param marker.2.threshold Threshold set for first marker (default is 0.5)
+#' @param marker.2.threshold Threshold set for second marker (default is 0.5)
 #' @param filter.data Add new parameter to metadata using marker thresholds
 #' (default is FALSE)
-#' @param M1.filter.direction Filter to samples that have greater or less than
-#' marker 1 threshold (default is "greater than")
+#' @param M1.filter.direction Filter to samples that have greater than
+#' marker 1 threshold. Choices are "greater than" or "less than" 
+#' (default is "greater than")
 #' @param M2.filter.direction Filter to samples that have greater or less than
-#' marker 2 threshold (default is "greater than")
+#' marker 2 threshold. Choices are "greater than" or "less than" 
+#' (default is "greater than")
 #' @param apply.filter.1 If TRUE, apply the first filter (default is TRUE)
 #' @param apply.filter.2 If TRUE, apply the second filter (default is TRUE)
 #' @param filter.condition If TRUE, apply both filters 1 and 2 and take
@@ -53,8 +53,10 @@
 #' @importFrom gridExtra arrangeGrob
 #' @importFrom grid grid.draw
 #' @importFrom dplyr arrange mutate case_when
+#' @importFrom magrittr %>%
 #' @importFrom stats quantile
-#' @import ggplot2
+#' @importFrom ggplot2 ggplot geom_point theme_classic xlab ylab geom_vline
+#'  geom_hline scale_color_identity theme_bw coord_fixed ggtitle aes
 #'
 #' @export
 #'
@@ -63,10 +65,10 @@
 
 dualLabeling <- function(object,
                          samples,
-                         marker1,
-                         marker.1.type,
-                         marker2,
-                         marker.2.type,
+                         marker.1,
+                         marker.2,
+                         marker.1.type = "SCT",
+                         marker.2.type = "SCT",
                          data.reduction = "umap",
                          point.size = 0.5,
                          point.shape = 16,
@@ -86,15 +88,15 @@ dualLabeling <- function(object,
                          pre.scale.trim = 0.99,
                          density.heatmap = FALSE,
                          display.unscaled.values = FALSE) {
-  ##--------------- ##
-  ## Error Messages ##
-  ## -------------- ##
+
+  #### Error Messages ####
   
-  if (!(marker1 %in% rownames(object))) {
-    stop(sprintf("%s is not found in dataset", marker1))
+  #Errors for genes not available in dataset/slot
+  if (!(marker.1 %in% rownames(object))) {
+    stop(sprintf("%s is not found in dataset", marker.1))
   }
-  if (!(marker2 %in% rownames(object))) {
-    stop(sprintf("%s is not found in dataset", marker2))
+  if (!(marker.2 %in% rownames(object))) {
+    stop(sprintf("%s is not found in dataset", marker.2))
   }
   if (!(marker.1.type %in% names(object@assays))) {
     stop(sprintf("%s slot is not found in dataset", marker.1.type))
@@ -102,19 +104,17 @@ dualLabeling <- function(object,
   if (!(marker.2.type %in% names(object@assays))) {
     stop(sprintf("%s slot is not found in dataset", marker.2.type))
   }
-  
-  
-  ## --------------- ##
-  ## Functions       ##
-  ## --------------- ##
+
+  #### Functions ####
   
   #Function for drawing overlay images for umap/tsne:
-  .ggOverlay <- function(so.sub, df, marker1, marker2) {
+  .ggOverlay <- function(so.sub, df, marker.1, marker.2) {
     df <- df %>% arrange(mark1.scale)
     
     xmin <- min(df$dr1) - 0.1 * min(df$dr1)
     xmax <- max(df$dr1) + 0.1 * min(df$dr1)
     
+    #ggplot for umap/tsne (marker 1)
     gg.z1 <- ggplot(df, aes(dr1, dr2)) +
       geom_point(
         color = rgb(
@@ -129,11 +129,12 @@ dualLabeling <- function(object,
       theme_classic() +
       xlab(paste0(data.reduction, "-1")) +
       ylab(paste0(data.reduction, "-2")) +
-      ggtitle(marker1) +
+      ggtitle(marker.1) +
       coord_fixed()
     
     df <- df %>% arrange(mark2.scale)
     
+    #ggplot for umap/tsne (marker 2)
     gg.z2 <- ggplot(df, aes(dr1, dr2)) +
       geom_point(
         color = rgb(
@@ -148,13 +149,14 @@ dualLabeling <- function(object,
       theme_classic() +
       xlab(paste0(data.reduction, "-1")) +
       ylab(paste0(data.reduction, "-2")) +
-      ggtitle(marker2) +
+      ggtitle(marker.2) +
       coord_fixed()
     
     df <- df %>%
       mutate(avg = mark2.scale + mark1.scale) %>%
       arrange(avg)
     
+    #ggplot for umap/tsne (marker 1 & marker 2)
     gg <- ggplot(df, aes(dr1, dr2)) +
       geom_point(
         color = rgb(
@@ -176,28 +178,29 @@ dualLabeling <- function(object,
   }
   
   #Function for plotting expression data in xy overlay format:
-  .ggOverlay2 <- function(so.sub, df, marker1, marker2) {
+  .ggOverlay2 <- function(so.sub, df, marker.1, marker.2) {
     df %>% arrange(mark1.scale) -> df
     # Create unscaled axis labels
     
     if (display.unscaled.values == TRUE) {
-      label1_min <- paste("unscaled min:", round(min(mark1), digits = 2))
-      label1_max <-
+      label1.min <- paste("unscaled min:", round(min(mark1), digits = 2))
+      label1.max <-
         paste("unscaled max:", round(max(mark1), digits = 2))
       label1 <-
-        paste(as.character(marker1), label1_min, label1_max, sep = "\n")
+        paste(as.character(marker.1), label1.min, label1.max, sep = "\n")
       
-      label2_min <-
+      label2.min <-
         paste("unscaled min:", round(min(mark2), digits = 2))
-      label2_max <-
+      label2.max <-
         paste("unscaled max:", round(max(mark2), digits = 2))
       label2 <-
-        paste(as.character(marker2), label2_min, label2_max, sep = "\n")
+        paste(as.character(marker.2), label2.min, label2.max, sep = "\n")
     } else {
-      label1 <- as.character(marker1)
-      label2 <- as.character(marker2)
+      label1 <- as.character(marker.1)
+      label2 <- as.character(marker.2)
     }
     
+    #ggplot for scatter plot (marker 1)
     gg.z1 <- ggplot(df, aes(mark1.scale, mark2.scale)) +
       geom_point(
         color = rgb(
@@ -215,6 +218,7 @@ dualLabeling <- function(object,
     
     df <- df %>% arrange(mark2.scale)
     
+    #ggplot for scatter plot (marker 2)
     gg.z2 <- ggplot(df, aes(mark1.scale, mark2.scale)) +
       geom_point(
         color = rgb(
@@ -234,6 +238,7 @@ dualLabeling <- function(object,
       mutate(avg = mark2.scale + mark1.scale) %>%
       arrange(avg)
     
+    #ggplot for scatter plot (marker 1 & marker.2)
     gg <- ggplot(df, aes(mark1.scale, mark2.scale)) +
       geom_point(
         color = rgb(
@@ -271,16 +276,16 @@ dualLabeling <- function(object,
   # Load and subset data using sample names
   
   if ("active.ident" %in% slotNames(object)) {
-    sample_name <- as.factor(object@meta.data$orig.ident)
-    names(sample_name) <- names(object@active.ident)
+    sample.name <- as.factor(object@meta.data$orig.ident)
+    names(sample.name) <- names(object@active.ident)
     object@active.ident <- as.factor(vector())
-    object@active.ident <- sample_name
+    object@active.ident <- sample.name
     so.sub <- subset(object, ident = samples)
   } else {
-    sample_name <- as.factor(object@meta.data$orig.ident)
-    names(sample_name) <- names(object@active.ident)
+    sample.name <- as.factor(object@meta.data$orig.ident)
+    names(sample.name) <- names(object@active.ident)
     object@active.ident <- as.factor(vector())
-    object@active.ident <- sample_name
+    object@active.ident <- sample.name
     so.sub <- subset(object, ident = samples)
   }
   
@@ -288,7 +293,7 @@ dualLabeling <- function(object,
   t2 <- marker.2.threshold
   
   #Select marker 1 values and scale:
-  mark1 <- so.sub@assays[[marker.1.type]]@scale.data[marker1, ]
+  mark1 <- so.sub@assays[[marker.1.type]]@scale.data[marker.1, ]
   if (trim.marker.1 == TRUE) {
     q1 <- quantile(mark1, pre.scale.trim)
     q0 <- quantile(mark1, 1 - pre.scale.trim)
@@ -298,7 +303,7 @@ dualLabeling <- function(object,
   mark1.scale <- rescale(mark1, to = c(0, 1))
   
   #Select marker 2 values and scale:
-  mark2 <- so.sub@assays[[marker.2.type]]@scale.data[marker2, ]
+  mark2 <- so.sub@assays[[marker.2.type]]@scale.data[marker.2, ]
   if (trim.marker.2 == TRUE) {
     q1 <- quantile(mark2, pre.scale.trim)
     q0 <- quantile(mark2, 1 - pre.scale.trim)
@@ -316,8 +321,8 @@ dualLabeling <- function(object,
       mark2.scale
     )
   )
-  gg.list <- .ggOverlay(so.sub, df, marker1, marker2)
-  gg.list2 <- .ggOverlay2(so.sub, df, marker1, marker2)
+  gg.list <- .ggOverlay(so.sub, df, marker.1, marker.2)
+  gg.list2 <- .ggOverlay2(so.sub, df, marker.1, marker.2)
   
   if (density.heatmap == TRUE) {
     x = df$mark1.scale
@@ -332,7 +337,7 @@ dualLabeling <- function(object,
     
     p <- ggplot(df_heatmap) +
       geom_point(aes(x, y, col = d), size = 1) +
-      scale_color_identity() + xlab(marker1) + ylab(marker2) +
+      scale_color_identity() + xlab(marker.1) + ylab(marker.2) +
       theme_bw() +
       geom_vline(xintercept = t1, linetype = "dashed") +
       geom_hline(yintercept = t2, linetype = "dashed")
@@ -399,7 +404,10 @@ dualLabeling <- function(object,
       }
     }
     
-    colnames(df)[3:4] <- c(marker1, marker2)
+    # Print out numbers of cells that meet threshold cutoffs for marker 1, 
+    # marker 2 and for either intersection or union of 2 thresholds:
+    
+    colnames(df)[3:4] <- c(marker.1, marker.2)
     so.sub.df <- so.sub@meta.data %>%
       mutate(x = case_when(
         rownames(so.sub@meta.data) %in% df$cellbarcode ~ TRUE,
@@ -410,7 +418,7 @@ dualLabeling <- function(object,
     
     cat("\n")
     print("Final Breakdown:")
-    print(addmargins(table(so.sub.df[[parameter.name]], so.sub.df$sample_name)))
+    print(addmargins(table(so.sub.df[[parameter.name]], so.sub.df$sample.name)))
     rownames(so.sub.df) <- rownames(so.sub@meta.data)
     so.sub@meta.data <- so.sub.df
     
@@ -419,7 +427,7 @@ dualLabeling <- function(object,
     print(dim(df)[1])
   }
   
-  result.list <- list("so" = so.sub, "plot" = grob)
+  result.list <- list("object" = so.sub, "plot" = grob)
   
   return(result.list)
 }
