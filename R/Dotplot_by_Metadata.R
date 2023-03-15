@@ -9,12 +9,15 @@
 #'        of dot.
 #'
 #' @param object Seurat Object
-#' @param metadata Metadata category to plot
-#' @param cells Metadata category factors to plot
-#' @param markers Column that contains gene names
-#' @param plot.reverse Set Metadata categories to x-axis (default is FALSE)
-#' @param cell.reverse.sort Reverse Metadata Categories to plot (default is
-#'FALSE)
+#' @param metadata Metadata column in Seurat Object to plot
+#' @param cells Vector of metadata category factors to plot and should be found
+#'  in metadata column. Order of plotting will follow exact order as entered. 
+#' @param markers Vector of genes to plot.  Order of plotting will follow exact
+#'  order as entered
+#' @param plot.reverse If TRUE, set metadata categories to x-axis and genes to 
+#'  y-axis (default is FALSE)
+#' @param cell.reverse.sort If TRUE, Reverse plot order of metadata category 
+#'  factors (default is FALSE)
 #' @param dot.color Dot color (default is "dark blue")
 
 #' @importFrom tidyr pivot_wider
@@ -31,11 +34,12 @@ dotPlotMet <- function(object,
                        plot.reverse = FALSE,
                        cell.reverse.sort = FALSE,
                        dot.color = "darkblue") {
-  #Make the metadata match:
+  
+  #Set up metadata as new identity:
   metadata.df <- object@meta.data
   Idents(object) <- metadata.df[[metadata]]
   
-  #Error messages depending on the input celltype category
+  #### Error messages #### 
   
   #Calculate difference in input category elements from metadata column elements
   a <- sum(cells %in% unique(Idents(object)))
@@ -53,10 +57,9 @@ dotPlotMet <- function(object,
     missinglab <-
       unique(Idents(object))[!unique(Idents(object)) %in% cells]
     warning(
-      paste0(
-        "There are ",b,
-        " additional element(s) in the metadata table
-                    category that were missing from your input categories:",
+      sprintf(
+        "There are %s additional element(s) in the metadata table category that 
+        were missing from your input categories: %s", b,
         paste(as.character(missinglab), collapse = "\n")
       )
     )
@@ -65,13 +68,10 @@ dotPlotMet <- function(object,
   if (c > 0) {
     missinglab2 <- celltype[!celltype %in% unique(Idents(object))]
     warning(
-      paste0(
-        "There are ",
-        c,
-        " additional elements in your input categories
-                 that are missing from your metadata table: "
+      sprintf(
+        "There are %s additional elements in your input categories
+          that are missing from your metadata table: ", c)
       )
-    )
     missinglab2 <-
       cat(paste(as.character(missinglab2), collapse = "\n"))
   }
@@ -79,16 +79,16 @@ dotPlotMet <- function(object,
   #Subset object by identity
   object <- subset(object, idents = cells)
   
-  #Bring in input genes and custom names
+  #Clean up input genes and custom names
   markers <- gsub("[[:space:]]", "", markers)
   l1 <- length(markers)
   dups <- markers[duplicated(markers)]
   markers <- markers[!duplicated(markers)]
   
   l2 <- length(markers)
-  print(paste("There are ", l2, " total unique genes in the genelist"))
+  print(sprintf("There are %s total unique genes in the genelist", l2))
   if (l1 > l2) {
-    warning(paste0("\n\nThe following duplicate genes were removed: ",
+    warning(sprintf("\n\nThe following duplicate genes were removed: %s",
                    dups))
   }
   missing.genes <- markers[!markers %in% rownames(object)]
@@ -100,22 +100,20 @@ dotPlotMet <- function(object,
   }
   if (l3 > 0) {
     warning(
-      paste0(
-        "There are ",
-        l3,
-        " gene(s) absent from dataset:",
-        missing.genes,
-        ". Possible reasons are that gene is not official
-                            gene symbol",
-        " or gene is not highly expressed and
-                            has been filtered.\n "
+      sprintf(
+        "There are %s gene(s) absent from dataset: %s. Possible reasons are that
+          gene is not official gene symbol or gene is not highly expressed and
+          has been filtered.\n ", l3, missing.genes) 
       )
-    )
   }
+  
+  #### Main Code: #####
+  
   markers <- markers[markers %in% rownames(object)]
   
   cells <- cells[cells != ""]
   
+  #Run Seurat Dotplot function
   dp <- DotPlot(object,
                 assay = "SCT",
                 features = markers,
@@ -129,14 +127,15 @@ dotPlotMet <- function(object,
   cells.missing <- cells[!cells %in% dp$data$id]
   if (length(cells.missing) > 0) {
     cells.missing <- paste(shQuote(cells.missing), collapse = ", ")
-    warning(paste0(
-      "Some categories are missing from your dataset: ",
+    warning(sprintf(
+      "Some categories are missing from your dataset: %s",
       cells.missing
     ))
   }
+  
+  #Add to ggplot object data created by DotPlot and draw plot
   dp$data$id <- factor(dp$data$id, levels = rev(cells))
-  dp$data$features.plot <-
-    factor(dp$data$features.plot, levels = markers)
+  dp$data$features.plot <- factor(dp$data$features.plot, levels = markers)
   
   plot <- ggplot(data = dp$data,
                  mapping = aes_string(x = "features.plot", y = "id")) +
@@ -145,7 +144,9 @@ dotPlotMet <- function(object,
             scale_color_gradient(low = "lightgrey", high = dot.color) +
             theme_cowplot() +
             theme(axis.title.x = element_blank(),
-                  axis.text.x = element_text(angle = 90)) +
+                  axis.text.x = element_text(angle = 90, 
+                                             vjust = 1,
+                                             hjust = 1)) +
             labs(y = metadata)
   
   if (plot.reverse == TRUE) {
@@ -155,7 +156,7 @@ dotPlotMet <- function(object,
     plot <- plot + scale_y_discrete(limits = rev(levels(dp$data$id)))
   }
   
-  #Tabular format of Dotplot data are provided
+  #Provide Tabular format of Dotplot data 
   dp.pct.tab <- dp$data %>%
     select(features.plot, pct.exp, id) %>%
     tidyr::pivot_wider(names_from = features.plot,
