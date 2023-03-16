@@ -30,7 +30,7 @@
 #' @param row.order Gene vector to set row order. If NULL, use cluster order
 #'  (default is NULL)
 #'
-#' @import Seurat
+#' @importFrom Seurat subset
 #' @importFrom pheatmap pheatmap
 #' @importFrom dendsort dendsort
 #' @importFrom dplyr filter arrange across all_of mutate_if select
@@ -46,7 +46,7 @@
 #' @return This function returns a heatmap plot and the data underlying the 
 #'  heatmap.
 #'
-heatmapSC <- function(object,
+heatmapSCso <- function(object,
                       sample.names,
                       metadata,
                       transcripts,
@@ -488,9 +488,11 @@ heatmapSC <- function(object,
     col = heatmap.color
   )
   
+  object.sub <- subset(object, features = VariableFeatures(object = object))
+  
   #Return expression matrix used in heatmap
   heatmap.df <- as.data.frame(tmean.scale) %>%
     rownames_to_column("gene")
-  heatmap.res <- list("plot" = p, "data" = heatmap.df)
+  heatmap.res <- list("plot" = p, "data" = heatmap.df, "so" = object, "so2" = object.sub)
   return(heatmap.res)
 }
