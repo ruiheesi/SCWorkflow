@@ -22,7 +22,7 @@
 #' @importFrom tidyr pivot_wider
 #' @importFrom Seurat Idents DotPlot
 #' @export 
-#' ``
+#' 
 #' @return Dotplot with markers and cell types. 
 
 dotPlotMet <- function(object,
