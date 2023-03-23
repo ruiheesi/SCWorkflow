@@ -1,54 +1,56 @@
-
-#This helper script will return parameters for each test dependent on the data input:
-
-getparam_Pseudobulk <- function(data){
-
+getPseudobulkParam <- function(data){
+  
   if(data == "TEC"){
     
-      object = readRDS(test_path("fixtures/TEC", "TEC_Combine_and_Renormalize_SO_downsample.rds"))
-      contrasts = c("F-M")
-      replicate = 'orig.ident'
-      comparison.level = 'Gender'
-      label = "Gender"
-
+    object = selectCRObject("TEC")
+    contrasts = c("F-M")
+    replicate = 'orig.ident'
+    subgroup = 'Gender'
+    group = "Gender"
+    
   } else if (data == "Chariou") {
     
-      object = readRDS(test_path("fixtures/Chariou", "Chariou_Combine_and_Renormalize_SO_downsample.rds"))
-      contrasts = c("F-M")
-      replicate = 'orig.ident'
-      comparison.level = 'Gender'
-      label = "Gender"
-      
-  } else if (data == "NSCLC_Single") {
+    object = selectCRObject("Chariou")
+    contrasts = c("F-M")
+    replicate = 'orig.ident'
+    subgroup = 'Gender'
+    group = "Gender"
     
-      object = readRDS(test_path("fixtures/NSCLC_Single", "NSCLCsingle_Combine_and_Renormalize_SO_downsample.rds"))
-      object@meta.data$label_cluster = paste("cluster", object@meta.data$SCT_snn_res.0.2, sep = "_")
-      contrasts = c("cluster_1-cluster_2")
-      replicate = 'Phase'
-      comparison.level = 'label_cluster'
-      label = "label_cluster"
+  } else if (data == "pbmc.single") {
     
-  } else if (data == "NSCLC_Multi") {
-
-      object = readRDS(test_path("fixtures/NSCLC_Multi", "NSCLCmulti_Combine_and_Renormalize_SO_downsample.rds"))
-      object@meta.data$label_cluster = paste("cluster", object@meta.data$SCT_snn_res.0.2, sep = "_")
-      contrasts = c("cluster_1-cluster_2")
-      replicate = 'Phase'
-      comparison.level = 'label_cluster'
-      label = "label_cluster"
-
+    object = selectCRObject("pbmc.single")
+    object@meta.data$group_cluster = paste("cluster", 
+                                           object@meta.data$SCT_snn_res.0.2, 
+                                           sep = "_")
+    contrasts = c("cluster_1-cluster_2")
+    replicate = 'Phase'
+    subgroup = 'group_cluster'
+    group = "group_cluster"
+    
+  } else if (data == "nsclc.multi") {
+    
+    object = selectCRObject("nsclc.multi")
+    object@meta.data$group_cluster = paste("cluster", 
+                                           object@meta.data$SCT_snn_res.0.2, 
+                                           sep = "_")
+    contrasts = c("cluster_1-cluster_2")
+    replicate = 'Phase'
+    subgroup = 'group_cluster'
+    group = "group_cluster"
+    
   } else if (data == "BRCA") {
-
-      object = readRDS(test_path("fixtures/BRCA", "BRCA_Combine_and_Renormalize_SO_downsample.rds"))
-      contrasts = c("G2M-S")
-      replicate = 'orig.ident'
-      comparison.level = 'Phase'
-      label = "Phase"
+    
+    object = selectCRObject("BRCA")
+    contrasts = c("G2M-S")
+    replicate = 'orig.ident'
+    subgroup = 'Phase'
+    group = "Phase"
     
   }
   
-  return(list("object" = object, "contrasts"= contrasts, 
+  return(list("object" = object, 
+              "contrasts"= contrasts, 
               "replicate" = replicate,
-              "comparison.level" = comparison.level,
-              "label" = label))  
+              "subgroup" = subgroup,
+              "group" = group))  
 }
