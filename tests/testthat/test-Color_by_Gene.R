@@ -1,87 +1,168 @@
-test_that("Color by Gene using TEC (Mouse) dataset", {
-  obj <- readRDS(test_path("fixtures/TEC", "TEC_Combine_and_Renormalize_SO_downsample.rds"))
-  ColorByGene.result <- colorByGene(object = obj,
-                                    samples.to.include = 'c("1_Embryo_13_5","2_Embryo_15","3_Newborn","4_Adult")',
-                                    gene = c("Gapdh","GAPDH","Foxp3","Il2ra","Cd4","Cd8a"))
+test_that("Color by Gene using TEC (Mouse) dataset with normal parameters", {
+  tec.data <- getParamCBG("TEC")
+  output <- do.call(colorByGene, tec.data)
   
-  expected.elements = c("object", "plot")
-  expect_setequal(names(ColorByGene.result), expected.elements) 
-})
-
-
-test_that("Color by Gene for TSNE plot (Mouse TEC dataset)", {
-  obj <- readRDS(test_path("fixtures/TEC", "TEC_Combine_and_Renormalize_SO_downsample.rds"))
-  ColorByGene.result <- colorByGene(object = obj,
-                             samples.to.include = 'c("1_Embryo_13_5","2_Embryo_15","3_Newborn","4_Adult")',
-                             gene = c("Gapdh","GAPDH","Foxp3","Il2ra","Cd4","Cd8a"),
-                             reduction.type = "tsne")
-
-  expected.elements = c("object", "plot")
-  expect_setequal(names(ColorByGene.result), expected.elements) 
-})
-
-test_that("Color by Gene with blue color (Mouse TEC dataset)", {
-  obj <- readRDS(test_path("fixtures/TEC", "TEC_Combine_and_Renormalize_SO_downsample.rds"))
-  ColorByGene.result <- colorByGene(object = obj,
-                                    samples.to.include = 'c("1_Embryo_13_5","2_Embryo_15","3_Newborn","4_Adult")',
-                                    gene = c("Gapdh","GAPDH","Foxp3","Il2ra","Cd4","Cd8a"),
-                                    reduction.type = "tsne",
-                                    color = "blue")
+  ggsave(
+    "output/TEC_colbygeneplot_Gapdh.png",
+    output$plot[[1]],
+    width = 10,
+    height = 10
+  )
+  expect_snapshot_file("output", "TEC_colbygeneplot_Gapdh.png")
   
-  expected.elements = c("object", "plot")
-  expect_setequal(names(ColorByGene.result), expected.elements) 
-})
-
-
-
-test_that("Color by Gene using Chariou (Mouse) dataset", {    
-  obj <- readRDS(test_path("fixtures/Chariou", "Chariou_Combine_and_Renormalize_SO_downsample.rds"))
-  ColorByGene.result <- colorByGene(object = obj,
-                                    samples.to.include = 'c("CD8dep","Combo","ENT","NHSIL12","PBS")',
-                                    gene = c("Gapdh","GAPDH","Foxp3","Il2ra","Cd4","Cd8a"))
+  ggsave(
+    "output/TEC_colbygeneplot_Il2ra.png",
+    output$plot[[2]],
+    width = 10,
+    height = 10
+  )
+  expect_snapshot_file("output", "TEC_colbygeneplot_Il2ra.png")
   
-  expected.elements = c("object", "plot")
-  expect_setequal(names(ColorByGene.result), expected.elements) 
+  expect_type(output, "list")
+  expected.elements <- c("object", "plot")
+  expect_setequal(names(output), expected.elements)
 })
 
-
-
-
-test_that("Color by Gene using BRCA (Human) dataset", {    
-  obj <- readRDS(test_path("fixtures/BRCA", "BRCA_Combine_and_Renormalize_SO_downsample.rds"))
-  ColorByGene.result <- colorByGene(object = obj,
-                                    samples.to.include = 'c("CID3586","CID3838","CID3921","CID3941","CID3946","CID3948","CID3963","CID4040","CID4066","CID4067","CID4290A","CID4398","CID44041","CID4461","CID4463","CID4465","CID4471","CID4495","CID44971","CID44991","CID4513","CID4515","CID45171","CID4523","CID4530N","CID4535")',
-                                    gene = c("Gapdh","GAPDH","FOXP3","IL2RA","CD4","CD8A","MYC", "PARP8"),
-                                    reduction.type = "tsne")
+test_that("Color by Gene using Chariou (Mouse) dataset", {
+  chariou.data <- getParamCBG("Chariou")
+  output <- do.call(colorByGene, chariou.data)
   
-  expected.elements = c("object", "plot")
-  expect_setequal(names(ColorByGene.result), expected.elements) 
-})
-
-
-
-
-test_that("Test Annotate Cell Types using NSCLCmulti (Human) dataset", {    
-  obj <- readRDS(test_path("fixtures/NSCLC_Multi", "NSCLCmulti_Combine_and_Renormalize_SO_downsample.rds"))
-  ColorByGene.result <- colorByGene(object = obj,
-                                    samples.to.include = 'c("Donor_1","Donor_2","Donor_3","Donor_4","Donor_5","Donor_6","Donor_7")',
-                                    gene = c("Gapdh","GAPDH","FOXP3","IL2RA","CD4","CD8A","MYC","AMER2","CD9","CEBPD"),
-                                    reduction.type = "tsne")
+  ggsave(
+    "output/Chariou_colbygeneplot_Gapdh.png",
+    output$plot[[1]],
+    width = 10,
+    height = 10
+  )
+  expect_snapshot_file("output", "Chariou_colbygeneplot_Gapdh.png")
   
-  expected.elements = c("object", "plot")
-  expect_setequal(names(ColorByGene.result), expected.elements) 
+  expect_type(output, "list")
+  expected.elements <- c("object", "plot")
+  expect_setequal(names(output), expected.elements)
 })
 
 
-
-test_that("Test Annotate Cell Types using NSCLCsingle (Human) dataset", {    
-  obj <- readRDS(test_path("fixtures/NSCLC_Single", "NSCLCsingle_Combine_and_Renormalize_SO_downsample.rds"))
-  ColorByGene.result <- colorByGene(object = obj,
-                                    samples.to.include = 'c("NSCLC_Single")',
-                                    gene = c("Gapdh","GAPDH","FOXP3","IL2RA","CD4","CD8A","MYC"),
-                                    reduction.type = "tsne")
+test_that("Color by Gene using BRCA (Human) dataset", {
+  brca.data <- getParamCBG("BRCA")
+  output <- do.call(colorByGene, brca.data)
   
-  expected.elements = c("object", "plot")
-  expect_setequal(names(ColorByGene.result), expected.elements) 
+  ggsave(
+    "output/BRCA_colbygeneplot_PARP8.png",
+    output$plot[[1]],
+    width = 10,
+    height = 10
+  )
+  expect_snapshot_file("output", "BRCA_colbygeneplot_PARP8.png")
+  
+  expect_type(output, "list")
+  expected.elements <- c("object", "plot")
+  expect_setequal(names(output), expected.elements)
 })
 
+
+test_that("Test Annotate Cell Types using NSCLCmulti (Human) dataset", {
+  nsclc.multi.data <- getParamCBG("nsclc-multi")
+  output <- do.call(colorByGene, nsclc.multi.data)
+  
+  ggsave(
+    "output/NSCLCmulti_colbygeneplot_AMER2.png",
+    output$plot[[1]],
+    width = 10,
+    height = 10
+  )
+  expect_snapshot_file("output", "NSCLCmulti_colbygeneplot_AMER2.png")
+
+  ggsave(
+    "output/NSCLCmulti_colbygeneplot_CD9.png",
+    output$plot[[2]],
+    width = 10,
+    height = 10
+  )
+  expect_snapshot_file("output", "NSCLCmulti_colbygeneplot_CD9.png")
+  
+  ggsave(
+    "output/NSCLCmulti_colbygeneplot_CEBPD.png",
+    output$plot[[3]],
+    width = 10,
+    height = 10
+  )
+  expect_snapshot_file("output", "NSCLCmulti_colbygeneplot_CEBPD.png")
+  
+  expect_type(output, "list")
+  expected.elements <- c("object", "plot")
+  expect_setequal(names(output), expected.elements)
+})
+
+
+
+test_that("Test Annotate Cell Types using PBMCsingle (Human) dataset", {
+  pbmc.single.data <- getParamCBG("pbmc-single")
+  output <- do.call(colorByGene, pbmc.single.data)
+  
+  ggsave(
+    "output/PBMCsingle_colbygeneplot_MYC.png",
+    output$plot[[1]],
+    width = 10,
+    height = 10
+  )
+  expect_snapshot_file("output", "PBMCsingle_colbygeneplot_MYC.png")
+  
+  expect_type(output, "list")
+  expected.elements <- c("object", "plot")
+  expect_setequal(names(output), expected.elements)
+})
+
+
+test_that("Color by Gene using TEC (Mouse) dataset, TSNE", {
+  tec.data <- getParamCBG("TEC")
+  tec.data$reduction.type = "tsne"
+  
+  output <- do.call(colorByGene, tec.data)
+  
+  ggsave(
+    "output/TEC_colbygeneplot_Gapdh.tsne.png",
+    output$plot[[1]],
+    width = 10,
+    height = 10
+  )
+  expect_snapshot_file("output", "TEC_colbygeneplot_Gapdh.tsne.png")
+  
+  ggsave(
+    "output/TEC_colbygeneplot_Il2ra.tsne.png",
+    output$plot[[2]],
+    width = 10,
+    height = 10
+  )
+  expect_snapshot_file("output", "TEC_colbygeneplot_Il2ra.tsne.png")
+  
+  expect_type(output, "list")
+  expected.elements <- c("object", "plot")
+  expect_setequal(names(output), expected.elements)
+})
+
+
+test_that("Color by Gene using TEC (Mouse) dataset, Blue color", {
+  tec.data <- getParamCBG("TEC")
+  tec.data$color <- "blue"
+  
+  output <- do.call(colorByGene, tec.data)
+  
+  ggsave(
+    "output/TEC_colbygeneplot_Gapdh.tsne.png",
+    output$plot[[1]],
+    width = 10,
+    height = 10
+  )
+  expect_snapshot_file("output", "TEC_colbygeneplot_Gapdh.blue.png")
+  
+  ggsave(
+    "output/TEC_colbygeneplot_Il2ra.tsne.png",
+    output$plot[[2]],
+    width = 10,
+    height = 10
+  )
+  expect_snapshot_file("output", "TEC_colbygeneplot_Il2ra.blue.png")
+  
+  expect_type(output, "list")
+  expected.elements <- c("object", "plot")
+  expect_setequal(names(output), expected.elements)
+})
