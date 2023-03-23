@@ -68,6 +68,10 @@ Imports:
     dendextend,
     dendsort,
     pheatmap,
-    scales
+    scales,
+    celldex,
+    gdata,
+    ggrepel,
+    tidyr
 Config/testthat/edition: 3
 
