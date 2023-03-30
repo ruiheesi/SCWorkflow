@@ -48,7 +48,7 @@
 #' @param display.unscaled.values Set to TRUE if you want to view the unscaled
 #' gene/protein expression values (Default is FALSE)
 
-#' @importFrom Seurat subset
+#' @importFrom Seurat
 #' @importFrom scales rescale
 #' @importFrom gridExtra arrangeGrob
 #' @importFrom grid grid.draw
