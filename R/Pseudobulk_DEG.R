@@ -197,7 +197,7 @@ pseudobulkDEG <- function(object,
   
   ##JB set default to subgroup to NULL, meaning not to partition analysis ====
   #JB if (subgroup != NULL), then partition analysis ====
-  if (subdivide = TRUE){
+  if (subdivide == TRUE){
     # process data into gene x replicate x subgroup matrices
     pseudobulks = keep %>%
       map( ~ {
