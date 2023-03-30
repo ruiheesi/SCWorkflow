@@ -72,6 +72,7 @@ Imports:
     celldex,
     gdata,
     ggrepel,
-    tidyr
+    tidyr,
+    htmlwidgets
 Config/testthat/edition: 3
 

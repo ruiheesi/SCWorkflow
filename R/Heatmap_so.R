@@ -30,7 +30,7 @@
 #' @param row.order Gene vector to set row order. If NULL, use cluster order
 #'  (default is NULL)
 #'
-#' @importFrom Seurat subset
+#' @importFrom Seurat
 #' @importFrom pheatmap pheatmap
 #' @importFrom dendsort dendsort
 #' @importFrom dplyr filter arrange across all_of mutate_if select
