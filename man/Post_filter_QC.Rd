@@ -4,29 +4,16 @@
 \alias{Post_filter_QC}
 \title{Post-filter QC Plots}
 \usage{
-<<<<<<< HEAD
-Post_filter_QC(Seurat_Object, Image_type = "png")
-=======
-Post_filter_QC(Seurat_Object, Parallelize_Computation = F, Image_type = "png")
->>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
+Post_filter_QC(object, imagetype = "png")
 }
 \arguments{
-\item{Seurat_Object}{Please input a filtered Seurat Object. This should be the output from the Initial QC template.}
+\item{object}{Please input a filtered Seurat Object. This should be the output from the Initial QC template.}
 
-<<<<<<< HEAD
-=======
-\item{Parallelize_Computation}{Toggle true to parallelize your computations using Spark. Recommended for large datasets.}
-
->>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
-\item{Image_type}{Remember that svgs are much larger than pngs, so we recommend doing everything first in png, then rerunning to output specific svgs as needed.}
-}
-\value{
-Seurat Objects and QC plots that compares several QC parameters across samples after initial QC and filtering. This template is Step 2 in the basic Single-Cell RNA-seq workflow.
+\item{imagetype}{Remember that svgs are much larger than pngs, so we recommend doing everything first in png, then rerunning to output specific svgs as needed.}
 }
 \description{
-This set of plots compares several QC parameters across samples after initial QC and filtering. This template is Step 2 in the basic Single-Cell RNA-seq workflow.
+This set of plots compares several QC parameters across samples after initial QC and filtering.
 }
 \details{
-Post-filter QC Plots template in single-cell-rna-seq-r4 NIDAP environment
-from v47
+This is Step 2 in the basic Single-Cell RNA-seq workflow. This template is used to evaluate different factors effecting data quality that should be taken into consideration for downstream processing.
 }
