@@ -1,37 +1,58 @@
-#' Combine_and_Renormalize template in single-cell-rna-seq-r4 NIDAP environment
-#' from v178
-#' 
 #' 
 #' @title Combine & Renormalize 
-#' @description Combines samples, rescales and renormalizes, runs Dimensional Reduction, and returns a combined Seurat Object. This template will summarize the multi-dimensionality of your data into a set of "principal components" to allow for easier analysis. There is an option to use this template to perform Integration, as well. This is Step 4 in the canonical Single Cell pipeline after elbow plots and regression.   
-#' @details
+#' @description Combines samples, rescales and renormalizes, 
+#' runs Dimensional Reduction, and returns a combined Seurat Object. 
+#' @details This is Step 4 in the basic Single-Cell RNA-seq workflow.
+#'  This template will summarize the multi-dimensionality of your data into 
+#'  a set of "principal components" to allow for easier analysis. 
+#'  There is an option to use this template to perform Integration, as well.
 #' 
 #' 
 #' @param object description.
-#' @param npcs Select the number of principal components for your analysis. Please see the elbow plot in the previous template to figure out what number of PCs explains your variance cut-off. For example, if the elbow plot has point at (15,0.02), it means that 15 PCs encapsulate 98% of the variance in your data.
-#' @param vars.to.regress Subtract (‘regress out’) this source of heterogeneity from the data. For example, to regress out mitochondrial effects, input "percent.mt." Options: percent.mt, nCount.RNA, S.Score, G2M.Score, CC.Difference
-#' @param integratedata Perform integration of cells across conditions using the most variant genes to identify cells most similar to each other.  N.B. Always look at cells before deciding whether to perform integration, and seek advice from bioinformatician.
-#' @param clust.res.low Select minimum resolution for clustering plots. The lower you set this, the FEWER clusters will be generated.
-#' @param clust.res.high Select the maximum resolution for clustering. The higher you set this number, the MORE clusters you will produced.
-#' @param clust.res.bin Select the bins for your cluster plots. For example, if you input 0.2 as your bin, and have low/high resolution ranges of 0.2 and 0.6, then the template will produce cluster plots at resolutions of 0.2, 0.4 and 0.6.
-#' @param only.var.genes If dataset is larger than ~40k filtered cells, toggle to TRUE. If TRUE, only variable genes will be available for downstream analysis. Default is FALSE.
+#' @param npcs Select the number of principal components for your analysis.
+#'  Please see the elbow plot in the previous template to figure out what
+#'  number of PCs explains your variance cut-off. For example,
+#'  if the elbow plot has point at (15,0.02), it means that 15 PCs
+#'  encapsulate 98% of the variance in your data.(Default: 15)
+#' @param vars.to.regress Subtract (‘regress out’) this source of heterogeneity
+#'  from the data. For example, to Subtract mitochondrial effects, 
+#'  input "percent.mt." Options: percent.mt, nCount.RNA, 
+#'  S.Score, G2M.Score, CC.Difference
+#' @param integrate.data Perform integration of cells across conditions using
+#'  the most variant genes to identify cells most similar to each other.
+#'  N.B. Always look at cells before deciding whether to perform integration,
+#'  and seek advice from bioinformatician.
+#' @param clust.res.low Select minimum resolution for clustering plots.
+#'  The lower you set this, the FEWER clusters will be generated.
+#' @param clust.res.high Select the maximum resolution for clustering.
+#'  The higher you set this number, the MORE clusters you will produced.
+#' @param clust.res.bin Select the bins for your cluster plots.
+#'  For example, if you input 0.2 as your bin, and have low/high resolution 
+#'  ranges of 0.2 and 0.6, then the template will produce cluster plots 
+#'  at resolutions of 0.2, 0.4 and 0.6.
+#' @param only.var.genes If dataset is larger than ~40k filtered cells,
+#'  toggle to TRUE. If TRUE, only variable genes will be available for
+#'  downstream analysis. Default is FALSE.
 #' @param draw.umap If TRUE, draw UMAP plot.
 #' @param draw.tsne If TRUE, draw TSNE plot.
-#' @param imageType Select output image type. Options: png, svg
 #' @param nfeatures Number of variable features.
 #' @param low.cut description.
 #' @param high.cut description.
 #' @param low.cut.disp description.
 #' @param high.cut.disp description.
-#' @param selection.method Method to choose top variable features. Options: vst, mean.var.plot, dispersion
-#' @param cell.hashing.data Toggle "true" if you are using cell-hashed data.
+#' @param selection.method Method to choose top variable features.
+#'  Options: vst, mean.var.plot, dispersion
+#' @param cell.hashing.data Toggle "true" if you are using cell-hashed data
 #' @param project.name description.
-# @param doMergeData Toggle FALSE to stop metadata from merging. Not recommended for standard pipeline. # doMergeData doesn't do anything last used in vesion 34 so removed as parameter
-#' @param seed.for.PCA description.
-#' @param seed.for.TSNE description.
-#' @param seed.for.UMAP description.
-#' @param SCTransform Set to TRUE to run SCTransform (recommended current v3 Seurat default). Set to FALSE to run ScaleData (previous v2 Seurat default) instead.
-#' @param exclude.sample Exclude unwanted samples from the merge step. Include sample names to be removed. If you want to exclude several samples, separate each sample number by comma (e.g. sample1,sample2,sample3,sample4).
+#' @param seed.for.pca description.
+#' @param seed.for.tsne description.
+#' @param seed.for.umap description.
+#' @param sctransform Set to TRUE to run SCTransform
+#'  (recommended current v3 Seurat default). Set to FALSE to run ScaleData
+#'  (previous v2 Seurat default) instead.
+#' @param exclude.sample Exclude unwanted samples from the merge step.
+#'  Include sample names to be removed. If you want to exclude several samples,
+#'  separate each sample number by comma (e.g. sample1,sample2,sample3,sample4).
 #' 
 #' 
 #' @import Seurat
@@ -44,35 +65,33 @@
 #' 
 #' @export
 #' 
-#' @return Seurat Objects and QC plots. Combines samples, rescales and renormalizes, runs Dimensional Reduction, and returns a combined Seurat Object. This template will summarize the multi-dimensionality of your data into a set of "principal components" to allow for easier analysis. There is an option to use this template to perform Integration, as well. This is Step 4 in the canonical Single Cell pipeline after elbow plots and regression.
+#' @return Seurat Objects and QC plots
 
 
-Combine_and_Renormalize <- function(object,
-                                    npcs = 15,
-                                    vars.to.regress = NULL,
-                                    integratedata = FALSE,
-                                    clust.res.low = 0.2,
-                                    clust.res.high = 1.2,
-                                    clust.res.bin = 0.2,
-                                    only.var.genes = FALSE,
-                                    draw.umap = TRUE,
-                                    draw.tsne = TRUE,
-                                    imageType = 'png',
-                                    nfeatures = 2000,
-                                    low.cut = 0.1,
-                                    high.cut = 8,
-                                    low.cut.disp = 1,
-                                    high.cut.disp = 100000,
-                                    selection.method = 'vst',
-                                    cell.hashing.data = FALSE,
-                                    project.name = 'scRNAProject',
-                                    # doMergeData = TRUE,
-                                    seed.for.PCA = 42,
-                                    seed.for.TSNE = 1,
-                                    seed.for.UMAP = 42,
-                                    SCTransform = TRUE,
-                                    exclude.sample = ""
-                          ){
+combineRenormalize <- function(object,
+                               npcs = 15,
+                               vars.to.regress = NULL,
+                               integrate.data = FALSE,
+                               clust.res.low = 0.2,
+                               clust.res.high = 1.2,
+                               clust.res.bin = 0.2,
+                               only.var.genes = FALSE,
+                               draw.umap = TRUE,
+                               draw.tsne = TRUE,
+                               nfeatures = 2000,
+                               low.cut = 0.1,
+                               high.cut = 8,
+                               low.cut.disp = 1,
+                               high.cut.disp = 100000,
+                               selection.method = 'vst',
+                               cell.hashing.data = FALSE,
+                               project.name = 'scRNAProject',
+                               seed.for.pca = 42,
+                               seed.for.tsne = 1,
+                               seed.for.umap = 42,
+                               sctransform = TRUE,
+                               exclude.sample = ""
+){
   
   
   
@@ -89,55 +108,34 @@ Combine_and_Renormalize <- function(object,
   ## Main Code Block ##
   ## --------------- ##
   
-  # # load data
-  # object.class <- getClass(class(SO))
-  # 
-  # if(object.class@className == "RFoundryObject") {
-  #   cat("1. Reading Seurat Object from dataset: RObjectdata.rds\n\n")
-  #   
-  #   SO = SO$value
-  # }else{
-  #   cat("1. Reading Seurat Object from dataset: SO.rds\n\n")
-  #   
-  #   fs <- SO$fileSystem()
-  #   path <- fs$get.path("object.rds", 'r')
-  #   SO <- readRDS(path)
-  #   
-  # }
-  
-  SO <- object
   
   #in case you want to redo this on a merged SO
-  if (class(SO) =="Seurat") {
+  if (class(object) =="Seurat") {
     x =list()
-    x[[1]] <- SO
-    SO <- x
+    x[[1]] <- object
+    object <- x
   }
   
   # If exclude option is TRUE, filter out undesirable sample
   if (length(c(exclude.sample)) == 0){
-    SO <- SO
+    object <- object
   } else {
-    # SO <- SO[-c(exclude.sample)]
-    SO <- SO[!names(SO)%in%exclude.sample]
+    # object <- object[-c(exclude.sample)]
+    object <- object[!names(object)%in%exclude.sample]
   }
   
   
-  ###############################
-  ## original settings v170
-  # conserve.memory=only.var.genes
+  ## Auto detect number of cells and turn on Conserve memory ####
   
   ## Calculate total number of cells in input SO.
-  cell.count <- sum(unlist((lapply(SO, function(x) dim(x)[2]))))
+  cell.count <- sum(unlist((lapply(object, function(x) dim(x)[2]))))
   
-  ## Auto detect number of cells and turn on Conserve memory v173
   ## Setting a limit for cell numbers
-  # if (dim(SO)[2] < 35000) {
+  # if (dim(object)[2] < 35000) {
   if (cell.count < 35000) {
     too.many.cells <- FALSE
   } else {
     too.many.cells <- TRUE
-    # cat(“There are too many cells, only 2000 variable genes would be #reported\n”)
   }
   
   ## 
@@ -147,217 +145,270 @@ Combine_and_Renormalize <- function(object,
     conserve.memory <- FALSE
   }
   
-  ################################
   
   
-  
-  ############################
-  ## Detect Citeseq
-  
-  #initialize Citeseq functionality as false, 
-  #later the template will check for a Protein assay and run if it finds it
-  doCiteSeq <- FALSE
+  ## Merge samples into single SO ####
   
   dat = vector()
   
-  if (length(SO) > 1) {
-    for(i in 2:length(SO)){dat=c(dat,SO[[i]]) }
-    SO.merge <- merge(SO[[1]], y = dat, add.cell.ids = names(SO), project = project.name, merge.data = TRUE)
-    allgenes <- rownames(SO.merge)
-    #SO.merge <- ScaleData(SO.merge, assay = "RNA", features=allgenes)
+  if (length(object) > 1) {
+    for(i in 2:length(object)){dat=c(dat,object[[i]]) }
+    object.merge <- merge(object[[1]], y = dat, add.cell.ids = names(object), project = project.name, merge.data = TRUE)
+    allgenes <- rownames(object.merge)
   } else {
-    SO.merge <- SO[[1]]
-    allgenes <- rownames(SO.merge)
-    #SO.merge <- ScaleData(SO.merge, assay = "RNA", features=allgenes)
+    object.merge <- object[[1]]
+    allgenes <- rownames(object.merge)
   }
   
-  if (!("orig.ident" %in% colnames(SO.merge@meta.data))) {
-    SO.merge@meta.data$orig.ident <- SO.merge@meta.data$orig.ident
+  if (!("orig.ident" %in% colnames(object.merge@meta.data))) {
+    object.merge@meta.data$orig.ident <- object.merge@meta.data$orig.ident
   }
   
-  if ("Protein" %in% names(SO.merge@assays)){
-    doCiteSeq <-TRUE
+  
+  ## Detect Citeseq ####
+  
+  #initialize Citeseq functionality as false, 
+  #later the template will check for a Protein assay and run if it finds it
+  
+  do.cite.seq <- FALSE
+  
+  if ("Protein" %in% names(object.merge@assays)){
+    do.cite.seq <-TRUE
   }
   
+  
+  ## HTO ####
   if(cell.hashing.data){
-    #SO.merge <- ScaleData(SO.merge, assay = "HTO")
+    object.merge <- ScaleData(object.merge, assay = "HTO")
   }
   
-  ############################
-  ## SCTransform
   
-  if (SCTransform){
-    if(is.null(vars.to.regress)){
-      SO.merge <- SCTransform(SO.merge,do.correct.umi = TRUE, conserve.memory = conserve.memory, return.only.var.genes = FALSE)
-      }else{       
-      SO.merge <- SCTransform(SO.merge,do.correct.umi = TRUE,vars.to.regress=vars.to.regress, conserve.memory = conserve.memory, return.only.var.genes = FALSE) 
+  ## SCTransform on merge SO ####
+  
+  if (sctransform==T){
+    if(is.null(vars.to.regress)){ 
+      ## No Regression Variables
+      object.merge <- SCTransform(object.merge,
+                                  do.correct.umi = TRUE, 
+                                  conserve.memory = conserve.memory, 
+                                  return.only.var.genes = FALSE)
+    }else{
+      ## With Regression Variables  
+      object.merge <- SCTransform(object.merge,
+                                  do.correct.umi = TRUE,
+                                  vars.to.regress=vars.to.regress, 
+                                  conserve.memory = conserve.memory, 
+                                  return.only.var.genes = FALSE) 
     }
   }else{
-    all.genes <- rownames(SO.merge)
+    all.genes <- rownames(object.merge)
     if(is.null(vars.to.regress)){
-      SO.merge <- SO.merge
+      object.merge <- object.merge
+    }else{
+      print("SCTransform not Preformed")
     }
-    else{
-      #SO.merge <- ScaleData(SO.merge, features=all.genes, assay = "RNA", vars.to.regress=vars.to.regress) 
-    }
-    DefaultAssay(SO.merge) <- "RNA"   
+    DefaultAssay(object.merge) <- "RNA"   
   }
   
   
-  ############################
-  ## Integrate data
   
-  if (length(SO)>1) {
-    all.features <- lapply(SO, row.names) %>% Reduce(intersect, .)
-    if(integratedata==TRUE){
-      integ.features <- SelectIntegrationFeatures(object.list = SO, nfeatures = 3000) 
-      if(!is.null(SO[[1]]@assays$SCT)){
-        SO <- PrepSCTIntegration(object.list = SO, anchor.features = integ.features)
-        k.filter <- min(200, min(sapply(SO, ncol)))
-        integ.anchors <- FindIntegrationAnchors(object.list = SO, normalization.method = "SCT", k.filter=k.filter, anchor.features = integ.features)
-        SO.merge <- IntegrateData(anchorset = integ.anchors, normalization.method = "SCT",features.to.integrate = all.features)
-        #SO.merge <- ScaleData(SO.merge,features=all.features)
+  ## Integrate data ####
+  
+  if (length(object)>1) {
+    all.features <- lapply(object, row.names) %>% Reduce(intersect, .)
+    if(integrate.data==TRUE){
+      integ.features <- SelectIntegrationFeatures(object.list = object, 
+                                                  nfeatures = 3000) 
+      
+      if(!is.null(object[[1]]@assays$SCT)){
+        ## Integrate SCTransform Data
+        object <- PrepSCTIntegration(object.list = object, 
+                                     anchor.features = integ.features)
+        k.filter <- min(200, min(sapply(object, ncol)))
+        integ.anchors <- FindIntegrationAnchors(object.list = object, 
+                                                normalization.method = "SCT", 
+                                                k.filter=k.filter, 
+                                                anchor.features=integ.features)
+        object.merge <- IntegrateData(anchorset = integ.anchors, 
+                                      normalization.method = "SCT",
+                                      features.to.integrate = all.features)
       }else{
-        k.filter <- min(200, min(sapply(SO, ncol)))
-        integ.anchors <- FindIntegrationAnchors(object.list = SO, k.filter=k.filter, anchor.features = integ.features)
-        SO.merge <- IntegrateData(anchorset = integ.anchors,features.to.integrate = all.features)
-        #SO.merge <- ScaleData(SO.merge,features=all.features)  
+        ## Integrate Counts Data
+        k.filter <- min(200, min(sapply(object, ncol)))
+        integ.anchors <- FindIntegrationAnchors(object.list = object, 
+                                                k.filter=k.filter, 
+                                                anchor.features = integ.features)
+        object.merge <- IntegrateData(anchorset = integ.anchors,
+                                      features.to.integrate = all.features)
       }
     }
   }
   
-  ############################
-  ## Dimension reduction
   
-  SO.merge <- FindVariableFeatures(object = SO.merge, nfeatures = nfeatures, mean.cutoff = c(low.cut, high.cut), dispersion.cutoff = c(low.cut.disp, high.cut.disp), selection.method = selection.method, verbose = FALSE)
-  SO.merge <- RunPCA(object = SO.merge, npcs = npcs, verbose = FALSE,seed.use = seed.for.PCA)
-  SO.merge <- RunUMAP(object = SO.merge, reduction = "pca", dims = 1:npcs, seed.use=seed.for.UMAP)
-  SO.merge <- RunTSNE(object = SO.merge, reduction = "pca", dim.embed = 2, dims = 1:npcs, seed.use = seed.for.TSNE)
-  SO.merge <- FindNeighbors(SO.merge, dims = 1:npcs)
+  ## Dimension reduction ####
+  
+  object.merge <- FindVariableFeatures(object = object.merge, 
+                                       nfeatures = nfeatures, 
+                                       mean.cutoff = c(low.cut, high.cut), 
+                                       dispersion.cutoff=c(low.cut.disp,high.cut.disp), 
+                                       selection.method = selection.method, 
+                                       verbose = FALSE)
+  object.merge <- RunPCA(object = object.merge, 
+                         npcs = npcs, verbose = FALSE,
+                         seed.use = seed.for.pca)
+  object.merge <- RunUMAP(object = object.merge, 
+                          reduction = "pca", 
+                          dims = 1:npcs, 
+                          seed.use=seed.for.umap)
+  object.merge <- RunTSNE(object = object.merge, 
+                          reduction = "pca", 
+                          dim.embed = 2, 
+                          dims = 1:npcs, 
+                          seed.use = seed.for.tsne)
+  object.merge <- FindNeighbors(object.merge, dims = 1:npcs)
   
   
-  ############################
-  ## Citeseq
+  ## Citeseq ####
   
   #check for CITE-seq data and if so, run reductions
-  if(doCiteSeq) {
-    # Moved below integration step. SO.merge is recreated and this information was lost
-    #SO.merge <- ScaleData(SO.merge, assay = "Protein")
+  if(do.cite.seq) {
+    object.merge <- ScaleData(object.merge, assay = "Protein")
     
     print("finding protein variable features...")
-    VariableFeatures(SO.merge,assay="Protein") <- rownames(SO.merge$Protein)
+    VariableFeatures(object.merge,assay="Protein") <- rownames(object.merge$Protein)
+    
     #Support for partial
-    if(all(sapply(seq.along(SO),function(i) "Protein" %in% names(SO[[i]]@assays)))){
+    if(all(sapply(seq.along(object),function(i) "Protein" %in% names(object[[i]]@assays)))){
       print("running protein pca...")
-      SO.merge = ScaleData(SO.merge, assay = 'Protein', verbose = FALSE) ####Add this line here ################
-      SO.merge <- RunPCA(object = SO.merge, assay="Protein",npcs = npcs,verbose = FALSE,reduction.name="protein.pca",seed.use = seed.for.PCA)
-      SO.merge <- RunUMAP(object = SO.merge, assay="Protein", features=rownames(SO.merge$Protein), reduction.name="protein.umap",seed.use=seed.for.UMAP)
-      SO.merge <- RunTSNE(object = SO.merge, assay="Protein", features=rownames(SO.merge$Protein),seed.use = seed.for.TSNE,reduction.name="protein.tsne",check.duplicates=F)
-      SO.merge <- FindNeighbors(SO.merge, assay="Protein",graph.name="Protein.snn",features=rownames(SO.merge$Protein))
+      object.merge = ScaleData(object.merge, 
+                               assay = 'Protein',
+                               verbose = FALSE) 
+      object.merge <- RunPCA(object = object.merge, 
+                             assay="Protein",
+                             npcs = npcs,
+                             reduction.name="protein.pca",
+                             seed.use = seed.for.pca,
+                             verbose = FALSE)
+      object.merge <- RunUMAP(object = object.merge, 
+                              assay="Protein", 
+                              features=rownames(object.merge$Protein), 
+                              reduction.name="protein.umap",
+                              seed.use=seed.for.umap)
+      object.merge <- RunTSNE(object = object.merge, 
+                              assay="Protein", 
+                              features=rownames(object.merge$Protein),
+                              seed.use = seed.for.tsne,
+                              reduction.name="protein.tsne",
+                              check.duplicates=F)
+      object.merge <- FindNeighbors(object.merge, assay="Protein",
+                                    graph.name="Protein.snn",
+                                    features=rownames(object.merge$Protein))
     }else{
-      doCiteSeq <- FALSE #set to false so we don't cluster protein
+      do.cite.seq <- FALSE #set to false so we don't cluster protein
     }
     
   } else {
-    doCiteSeq <- FALSE
+    do.cite.seq <- FALSE
   }
   
-  ############################
-  ## Cluster
+  
+  ## Cluster ####
   
   for (i in seq(clust.res.low,clust.res.high,clust.res.bin)){
-    SO.merge <- FindClusters(SO.merge, resolution = i, algorithm = 1)
-    if(doCiteSeq){
-      SO.merge <- FindClusters(SO.merge, graph.name="Protein_snn",resolution = i, algorithm = 1)
+    object.merge <- FindClusters(object.merge, resolution = i, algorithm = 1)
+    if(do.cite.seq==TRUE){
+      object.merge <- FindClusters(object.merge, 
+                                   graph.name="Protein_snn",
+                                   resolution = i, 
+                                   algorithm = 1)
     }
   }
   print("Clustering successful!")
   
-  ############################
-  ## create plots
+  
+  ## create plots ####
   
   n <- 60
   qual.col.pals = brewer.pal.info[brewer.pal.info$category == 'qual',]
   qual.col.pals = qual.col.pals[c(7,6,2,1,8,3,4,5),]
   cols = unlist(mapply(brewer.pal, qual.col.pals$maxcolors, rownames(qual.col.pals)))
   
+  
   grobsList = list()
   if(draw.tsne){
-    p1 <- DimPlot(SO.merge, reduction = "tsne", group.by = "orig.ident", repel = TRUE,          pt.size=0.02) + theme.classic() + scale.color.manual(values=cols) + theme(legend.position="top", legend.text=element.text(size=5)) +
-      guides(colour = guide.legend(ncol=3, override.aes = list(size=1, alpha = 1))) +         ggtitle("RNA TSNE")
+    p1 <- DimPlot(object.merge, 
+                  reduction = "tsne",group.by = "orig.ident", 
+                  repel = TRUE,pt.size=0.02) + 
+      theme_classic() + 
+      scale_color_manual(values=cols) + 
+      theme(legend.position="top", legend.text=element_text(size=5)) +
+      guides(colour = guide_legend(ncol=3, 
+                                   override.aes = list(size=1, alpha = 1))) +         
+      ggtitle("RNA TSNE")
+    
     grobsList[[length(grobsList)+1]] <- p1
     print("Added RNA TSNE")
     print(length(grobsList))
     
   }
   if(draw.umap){
-    p2 <- DimPlot(SO.merge, reduction = "umap", group.by = "orig.ident", repel = TRUE, pt.size=0.02) + theme.classic() + scale.color.manual(values=cols) + theme(legend.position="top", legend.text=element.text(size=5)) +
-      guides(colour = guide.legend(ncol=3, override.aes = list(size=1, alpha = 1))) + ggtitle("RNA UMAP")
+    p2 <- DimPlot(object.merge, 
+                  reduction = "umap", 
+                  group.by = "orig.ident", 
+                  repel = TRUE, pt.size=0.02) + 
+      theme_classic() + scale_color_manual(values=cols) + 
+      theme(legend.position="top", legend.text=element_text(size=5)) +
+      guides(colour = guide_legend(ncol=3, 
+                                   override.aes = list(size=1, alpha = 1))) + 
+      ggtitle("RNA UMAP")
+    
     grobsList[[length(grobsList)+1]] <- p2
     print("Added RNA UMAP")
     print(length(grobsList))
     
   }
-  if(draw.tsne & doCiteSeq){ 
-    p3 <- DimPlot(SO.merge, reduction = "protein_tsne", group.by = "orig.ident", repel = TRUE, pt.size=0.02) + theme.classic() + scale.color.manual(values=cols) + theme(legend.position="top", legend.text=element.text(size=5)) +
-      guides(colour = guide.legend(ncol=3, override.aes = list(size=1, alpha = 1))) + ggtitle("Antibody TSNE")
+  
+  ### CITEseq Figures
+  if(draw.tsne & do.cite.seq){ 
+    p3 <- DimPlot(object.merge, 
+                  reduction = "protein_tsne", 
+                  group.by = "orig.ident", 
+                  repel = TRUE, pt.size=0.02) + 
+      theme_classic() + scale_color_manual(values=cols) + 
+      theme(legend.position="top", legend.text=element_text(size=5)) +
+      guides(colour = guide_legend(ncol=3, 
+                                   override.aes = list(size=1, alpha = 1))) + 
+      ggtitle("Antibody TSNE")
+    
     grobsList[[length(grobsList)+1]] <- p3
     print("Added Antibody TSNE")
     print(length(grobsList))
     
-    
   }
-  if(draw.umap & doCiteSeq){ 
-    p4 <- DimPlot(SO.merge, reduction = "protein_umap", group.by = "orig.ident", repel = TRUE, pt.size=0.02) + theme.classic() + scale.color.manual(values=cols) + theme(legend.position="top", legend.text=element.text(size=5)) +
-      guides(colour = guide.legend(ncol=3, override.aes = list(size=1, alpha = 1))) + ggtitle("Antibody UMAP")
+  if(draw.umap & do.cite.seq==TRUE){ 
+    p4 <- DimPlot(object.merge, 
+                  reduction = "protein_umap", 
+                  group.by = "orig.ident", 
+                  repel = TRUE, pt.size=0.02) + 
+      theme_classic() + 
+      scale_color_manual(values=cols) + 
+      theme(legend.position="top", 
+            legend.text=element_text(size=5)) +
+      guides(colour = guide_legend(ncol=3, 
+                                   override.aes = list(size=1, alpha = 1))) + 
+      ggtitle("Antibody UMAP")
     grobsList[[length(grobsList)+1]] <- p4
     print("Added Antibody UMAP")
     print(length(grobsList))
     
   }
   
-  ############################
-  ## create Figure output
   
-  n = ceiling(length(grobsList)^0.5)
-  m=ceiling(length(grobsList)/n)
-  imageWidth = 1200*n
-  imageHeight = 1200*m
-  dpi = 300
+  ## create Figure output ####
   
-  grobs=arrangeGrob(grobs=grobsList,ncol=n)
+  grobs <- arrangeGrob(grobs=grobsList,ncol=n)
   
-  # if (imageType == 'png') {
-  #   png(
-  #     # filename=graphicsFile,
-  #     width=imageWidth,
-  #     height=imageHeight,
-  #     units="px",
-  #     pointsize=2,
-  #     bg="white",
-  #     res=dpi,
-  #     type="cairo")
-  # } else {
-  #   svglite::svglite(
-  #     # file=graphicsFile,
-  #     width=round(imageWidth/dpi,digits=2),
-  #     height=round(imageHeight/dpi,digits=2),
-  #     pointsize=1,
-  #     bg="white")
-  # }
   
-  # plot(grobs)
-  
-  grobs=grobs
-  
-  #slot(SO.merge,"commands") <- list()
-  # cat("\nPCA Object Checksum:\n")
-  
-  return(list(so=SO.merge,plot=grobs))
-  
-  # output <- new.output()
-  # output.fs <- output$fileSystem()
-  # saveRDS(SO.merge, output.fs$get.path("object.rds", 'w'))
-  # 
-  # return(output.fs)
+  return(list(object=object.merge,plot=grobs))
 }
+
