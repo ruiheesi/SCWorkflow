@@ -1,103 +1,106 @@
-## Check Color by Genes Automatic works for different datasets ##
-
+# Data Testing
 test_that("Color by Genes Automatic works for TEC data", {
 
-  TEC_data <- getparam_Cbg_auto("TEC")
+  tec.data <- getCbgAutoParam("TEC")
 
-  Cbg_demo <- colorbyGenes(SO = TEC_data$object,
-                             samples.to.include = TEC_data$samples.to.include,
-                             samples.to.display = TEC_data$samples.to.display,
-                             marker.list = TEC_data$marker.list,
-                             cells.of.interest = TEC_data$cells.of.interest)
+  cbg.demo <- colorByMarkerTable(object = tec.data$object,
+                           samples.subset = tec.data$samples.subset,
+                           samples.to.display = tec.data$samples.to.display,
+                           marker.table = tec.data$marker.table,
+                           cells.of.interest = tec.data$cells.of.interest)
 
   expected_elements <- c("gtable", "gTree", "grob", "gDesc")
-  expect_setequal(class(Cbg_demo), expected_elements)
+  expect_setequal(class(cbg.demo), expected_elements)
 })
 
 test_that("Color by Genes Automatic works for Chariou data", {
   
-  Chariou_data <- getparam_Cbg_auto("Chariou")
+  chariou.data <- getCbgAutoParam("Chariou")
   
-  Cbg_demo <- colorbyGenes(SO = Chariou_data$object,
-                             samples.to.include = Chariou_data$samples.to.include,
-                             samples.to.display = Chariou_data$samples.to.display,
-                             marker.list = Chariou_data$marker.list,
-                             cells.of.interest = Chariou_data$cells.of.interest)
+  cbg.demo <- colorByMarkerTable(object = chariou.data$object,
+                           samples.subset = chariou.data$samples.subset,
+                           samples.to.display = chariou.data$samples.to.display,
+                           marker.table = chariou.data$marker.table,
+                           cells.of.interest = chariou.data$cells.of.interest)
   
   expected_elements <- c("gtable", "gTree", "grob", "gDesc")
-  expect_setequal(class(Cbg_demo), expected_elements)
+  expect_setequal(class(cbg.demo), expected_elements)
   
 })
 
-test_that("Color by Genes Automatic works for NSCLC_Single data", {
+test_that("Color by Genes Automatic works for pbmc.single data", {
   
-  NSCLC_Single_data <- getparam_Cbg_auto("NSCLC_Single")
+  pbmc.single <- getCbgAutoParam("pbmc.single")
   
-  Cbg_demo <- colorbyGenes(SO = NSCLC_Single_data$object,
-                             samples.to.include = NSCLC_Single_data$samples.to.include,
-                             samples.to.display = NSCLC_Single_data$samples.to.display,
-                             marker.list = NSCLC_Single_data$marker.list,
-                             cells.of.interest = NSCLC_Single_data$cells.of.interest)
+  cbg.demo <- colorByMarkerTable(object = pbmc.single$object,
+                           samples.subset = pbmc.single$samples.subset,
+                           samples.to.display = pbmc.single$samples.to.display,
+                           marker.table = pbmc.single$marker.table,
+                           cells.of.interest = pbmc.single$cells.of.interest)
   
   expected_elements <- c("gtable", "gTree", "grob", "gDesc")
-  expect_setequal(class(Cbg_demo), expected_elements)
+  expect_setequal(class(cbg.demo), expected_elements)
   
 })
 
-test_that("Color by Genes Automatic works for NSCLC_Multi data", {
+test_that("Color by Genes Automatic works for nsclc_multi data", {
   
-  NSCLC_Multi_data <- getparam_Cbg_auto("NSCLC_Multi")
+  nsclc_multi <- getCbgAutoParam("nsclc.multi")
   
-  Cbg_demo <- colorbyGenes(SO = NSCLC_Multi_data$object,
-                             samples.to.include = NSCLC_Multi_data$samples.to.include,
-                             samples.to.display = NSCLC_Multi_data$samples.to.display,
-                             marker.list = NSCLC_Multi_data$marker.list,
-                             cells.of.interest = NSCLC_Multi_data$cells.of.interest)
+  cbg.demo <- colorByMarkerTable(object = nsclc_multi$object,
+                           samples.subset = nsclc_multi$samples.subset,
+                           samples.to.display = nsclc_multi$samples.to.display,
+                           marker.table = nsclc_multi$marker.table,
+                           cells.of.interest = nsclc_multi$cells.of.interest)
   
   expected_elements <- c("gtable", "gTree", "grob", "gDesc")
-  expect_setequal(class(Cbg_demo), expected_elements)
+  expect_setequal(class(cbg.demo), expected_elements)
   
 })
 
 test_that("Color by Genes Automatic works for BRCA data", {
   
-  BRCA_data <- getparam_Cbg_auto("BRCA")
+  BRCA_data <- getCbgAutoParam("BRCA")
   
-  Cbg_demo <- colorbyGenes(SO = BRCA_data$object,
-                             samples.to.include = BRCA_data$samples.to.include,
-                             samples.to.display = BRCA_data$samples.to.display,
-                             marker.list = BRCA_data$marker.list,
-                             cells.of.interest = BRCA_data$cells.of.interest)
+  cbg.demo <- colorByMarkerTable(object = BRCA_data$object,
+                           samples.subset = BRCA_data$samples.subset,
+                           samples.to.display = BRCA_data$samples.to.display,
+                           marker.table = BRCA_data$marker.table,
+                           cells.of.interest = BRCA_data$cells.of.interest)
   
   expected_elements <- c("gtable", "gTree", "grob", "gDesc")
-  expect_setequal(class(Cbg_demo), expected_elements)
+  expect_setequal(class(cbg.demo), expected_elements)
   
 })
 
 
-## Error Checking ##
-test_that("Color by Genes Automatic stops when user inputs an assay not found in seurat ", {
+# Error Checking
+test_that("Color by Genes Automatic stops when user inputs an assay not found 
+          in seurat ", {
   
-  TEC_data <- getparam_Cbg_auto("TEC")
+  tec.data <- getCbgAutoParam("TEC")
   
-  expect_error(colorbyGenes(SO = TEC_data$object,
-                             samples.to.include = TEC_data$samples.to.include,
-                             samples.to.display = TEC_data$samples.to.display,
-                             marker.list = TEC_data$marker.list,
-                             cells.of.interest = TEC_data$cells.of.interest,
-                             assay = "wrong_assay"), "assay type not found in seurat")
+  expect_error(colorByMarkerTable(object = tec.data$object,
+                            samples.subset = tec.data$samples.subset,
+                            samples.to.display = tec.data$samples.to.display,
+                            marker.table = tec.data$marker.table,
+                            cells.of.interest = tec.data$cells.of.interest,
+                            assay = "wrong_assay"), 
+                            "assay type not found in seurat")
 
 })
 
-test_that("Color by Genes Automatic stops when user inputs an reduction type not found in seurat ", {
+test_that("Color by Genes Automatic stops when user inputs an reduction type 
+          not found in seurat ", {
   
-  TEC_data <- getparam_Cbg_auto("TEC")
+  tec.data <- getCbgAutoParam("TEC")
   
-  expect_error(colorbyGenes(SO = TEC_data$object,
-                              samples.to.include = TEC_data$samples.to.include,
-                              samples.to.display = TEC_data$samples.to.display,
-                              marker.list = TEC_data$marker.list,
-                              cells.of.interest = TEC_data$cells.of.interest,
-                              reduction = "wrong_reduction"), "reduction type not found in seurat")
+  expect_error(colorByMarkerTable(object = tec.data$object,
+                            samples.subset = tec.data$samples.subset,
+                            samples.to.display = tec.data$samples.to.display,
+                            marker.table = tec.data$marker.table,
+                            cells.of.interest = tec.data$cells.of.interest,
+                            reduction = "wrong_reduction"), 
+                            "reduction type not found in seurat")
   
 })

@@ -1,21 +1,34 @@
-# This code comes from NIDAP 'Pseudobulk DEG [scRNA-seq][CCBR]' code template
-# Template Manager https://nidap.nih.gov/workspace/vector/templates/ri.vector.main.template.07c5b878-ada6-4cd8-9f61-e312f8491904
-# Documentation https://nidap.nih.gov/workspace/notepad/view/ri.notepad.main.notepad.422102e6-4d67-4ec9-baf7-e4f1fd78e0a8
 # Original Code comes from https://github.com/neurorestore/Libra/blob/main/R/pseudobulk_de.R
 
 #' @title Pseudobulk Differential Gene Expression Analysis
 #' @description Performs Linear Models for Microarray Data on single-cell data 
-#' @details Aggregate gene expression amongst replicates before performing limma regression
+#' @details Average gene expression of replicates before performing 
+#'          limma regression
 #' 
-#' @param so Seurat-class object
-#' @param contrasts Choose the groups (group1-group2) to compare transcription profiles against, positive Fold Change values indicate upregulation in group1
-#' @param replicate Column of metadata containing replicate information, gene expression will first be aggregated based on this column before differential analysis is ran
-#' @param comparison.level Name of metadata column containing information on the sub-levels you want to divide your data into. 
-#' @param label Name of metadata column containing information on the groups (contrasts) you want to compare.
-#' @param min.num.cells Filters a comparison level based on the minimum number of cells at that level.
-#' @param min.num.reps Filters a comparison level based on the minimum number of replicates at that level.
-#' @param min.num.features Filters out genes if they are expressed in fewer than X number of cells.
-#' @param subdivide_data Toggle to TRUE if you want to make comparisons across different levels within your data.
+#' @param object Seurat-class object
+#' @param contrasts Choose the groups (group1-group2) to compare transcription 
+#'                  profiles against, positive Fold Change values indicate 
+#'                  upregulation in group1
+#' @param replicate Column of metadata containing replicate information, 
+#'                  gene expression will first be aggregated based on this 
+#'                  column before differential analysis is ran
+#' @param subgroup Name of metadata column containing information on the 
+#'                 sub-levels you want to divide your data into (optional, 
+#'                 same as group if you don't want to subdivide)
+#' @param group Name of metadata column containing information on the groups 
+#'              (contrasts) you want to compare
+#' @param min.num.cells Filters a subgroup level based on the minimum number of 
+#'                      cells at that level (Default: 3)
+#' @param min.num.reps Filters a subgroup level based on the minimum number of
+#'                     replicates at that level (Default: 1)
+#' @param min.num.features Filters out genes if they are expressed in fewer 
+#'                         than X number of cells (Default: 0)
+#' @param subdivide Toggle to TRUE if you want to make comparisons across 
+#'                  different levels within your data (Default: FALSE)
+#' @param external Analyze external datasets (Default: TRUE)
+#' @param de.family General approach of running DEG (Default: pseudobulk)
+#' @param de.method Method of running DEG (Default: limma)
+#' @param de.type Method of creating design for DEG (Default: LRT)
 #' 
 #' @import Seurat
 #' @import edgeR
@@ -27,535 +40,403 @@
 #' @import statmod
 #'   
 #' @export
+#' @example Do not run: pseudobulkDEG(object = seurat,
+#'                                    contrasts = "Drug-Vehicle",
+#'                                    replicate = "Mouse_Treatment_Replicates",
+#'                                    subgroup = "Mouse_Treatment_Group",
+#'                                    group = "Mouse_Treatment_Group",
+#'                                    subdivide = FALSE)
+#'                                    
+#' @example Do not run: pseudobulkDEG(object = seurat,
+#'                                    contrasts = "Drug-Vehicle",
+#'                                    replicate = "Mouse_Treatment_Replicates",
+#'                                    subgroup = "Species",
+#'                                    group = "Mouse_Treatment_Group",
+#'                                    subdivide = TRUE)
 
-#' @return data.frame of differentially expressed genes across comparisons
+#' @return data.frame of differentially expressed genes across groups and 
+#'         (if specified) subgroups
 
-pseudobulkDEG <- function(so,
-                               contrasts,
-                               replicate,
-                               comparison.level,
-                               label,
-                               min.num.cells = 3,
-                               min.num.reps = 1,
-                               min.num.features = 0,
-                               subdivide_data = FALSE) {
+pseudobulkDEG <- function(object,
+                          contrasts,
+                          replicate,
+                          subgroup,
+                          group,
+                          min.num.cells = 3,
+                          min.num.reps = 1,
+                          min.num.features = 0,
+                          subdivide = FALSE,
+                          external = T,
+                          de.family = "pseudobulk",
+                          de.method = "limma",
+                          de.type = "LRT") {
   
-  ## -------------- ##
-  ## Error Messages ##
-  ## -------------- ##
-  check_contrasts <- unlist(strsplit(contrasts, "-"))
-  if(sum(check_contrasts %in% so@meta.data[,eval(parse(text = "label"))]) < 2){
-    stop("contrasts not found amongst <label> metadata column")
+  ## Check Inputs ##
+  # Error Messages
+  check.contrasts <- unlist(strsplit(contrasts, "-"))
+  if(sum(check.contrasts %in% object@meta.data[,eval(parse(text = "group"))]) 
+     < 2){
+    stop("contrasts not found amongst <group> metadata column")
+  }
+    
+  # extract cell types and group from metadata
+  if ("Seurat" %in% class(object)) {
+    meta = object@meta.data %>%
+      droplevels()
+    if (!is.null(replicate))
+      replicates = as.character(meta[[replicate]])
+    if (!is.factor(meta[[group]])) {
+      labels = meta[[group]]
+    } else {
+      labels = as.character(meta[[group]])
+    }
+    celltypes = as.character(meta[[subgroup]])
+    expr = Seurat::GetAssayData(object, slot = 'counts')
+  } else {
+    # check if input is sparse matrix or numberic matrix/df
+    valid.input = is(object, 'sparseMatrix') ||
+      is_numeric_matrix(object) ||
+      is_numeric_dataframe(object)
+    if (!valid.input)
+      stop("input must be Seurat, monocle, sparse matrix, numeric matrix, or ",
+           "numeric data frame")
+    if (is.null(meta))
+      stop("input matrix must be accompanied by a metadata table")
+    expr = object
+    if (!is.null(replicate))
+      replicates = as.character(meta[[replicate]])
+    labels = as.character(meta[[group]])
+    celltypes = as.character(meta[[subgroup]])
   }
   
-  ## ---------------- ##
-  ## Helper Functions ##
-  ## ---------------- ##
-  
-  check_inputs = function(input,
-                          meta = meta,
-                          replicate_col = 'Replicate',
-                          cell_type_col = 'Comparison',
-                          label_col = 'Label') {
-    
-    # extract cell types and label from metadata
-    if ("Seurat" %in% class(input)) {
-      # confirm Seurat is installed
-      if (!requireNamespace("Seurat", quietly = TRUE)) {
-        stop("install \"Seurat\" R package for Augur compatibility with ",
-             "input Seurat object", call. = FALSE)
-      }
-      meta = input@meta.data %>%
-        droplevels()
-      if (!is.null(replicate_col))
-        replicates = as.character(meta[[replicate_col]])
-      if (!is.factor(meta[[label_col]])) {
-        labels = meta[[label_col]]
-      } else {
-        labels = as.character(meta[[label_col]])
-      }
-      cell_types = as.character(meta[[cell_type_col]])
-      expr = Seurat::GetAssayData(input, slot = 'counts')
-    } else if ("cell_data_set" %in% class(input)) {
-      # confirm monocle3 is installed
-      if (!requireNamespace("monocle3", quietly = TRUE)) {
-        stop("install \"monocle3\" R package for Augur compatibility with ",
-             "input monocle3 object", call. = FALSE)
-      }
-      meta = monocle3::pData(input) %>%
-        droplevels() %>%
-        as.data.frame()
-      if (!is.null(replicate_col))
-        replicates = as.character(meta[[replicate_col]])
-      if (!is.factor(meta[[label_col]])) {
-        labels = meta[[label_col]]
-      } else {
-        labels = as.character(meta[[label_col]])
-      }
-      cell_types = as.character(meta[[cell_type_col]])
-      expr = monocle3::exprs(input)
-    } else if ("SingleCellExperiment" %in% class(input)){
-      # confirm SingleCellExperiment is installed
-      if (!requireNamespace("SingleCellExperiment", quietly = TRUE)) {
-        stop("install \"SingleCellExperiment\" R package for Augur ",
-             "compatibility with input SingleCellExperiment object",
-             call. = FALSE)
-      }
-      meta = SummarizedExperiment::colData(input) %>%
-        droplevels() %>%
-        as.data.frame()
-      if (!is.null(replicate_col))
-        replicates = as.character(meta[[replicate_col]])
-      if (!is.factor(meta[[label_col]])) {
-        labels = meta[[label_col]]
-      } else {
-        labels = as.character(meta[[label_col]])
-      }
-      cell_types = as.character(meta[[cell_type_col]])
-      expr = SummarizedExperiment::assay(input)
-    } else {
-      # check if input is sparse matrix or numberic matrix/df
-      valid_input = is(input, 'sparseMatrix') ||
-        is_numeric_matrix(input) ||
-        is_numeric_dataframe(input)
-      if (!valid_input)
-        stop("input must be Seurat, monocle, sparse matrix, numeric matrix, or ",
-             "numeric data frame")
-      if (is.null(meta))
-        stop("input matrix must be accompanied by a metadata table")
-      expr = input
-      if (!is.null(replicate_col))
-        replicates = as.character(meta[[replicate_col]])
-      labels = as.character(meta[[label_col]])
-      cell_types = as.character(meta[[cell_type_col]])
-    }
-    
-    # check dimensions are non-zero
-    if (length(dim(expr)) != 2 || !all(dim(expr) > 0)) {
-      stop("expression matrix has at least one dimension of size zero")
-    }
-    
-    # check dimensions match
-    n_cells1 = nrow(meta)
-    n_cells2 = ncol(expr)
-    if (n_cells1 != n_cells2) {
-      stop("number of cells in metadata (", n_cells1, ") does not match number ",
-           "of cells in expression (", n_cells2, ")")
-    }
-    
-    # check at least two labels
-    if (n_distinct(labels) == 1) {
-      stop("only one label provided: ", unique(labels))
-    }
-    
-    # check for missing labels or cell types
-    if (any(is.na(labels))) {
-      stop("labels contain ", sum(is.na(labels)), "missing values")
-    }
-    if (any(is.na(cell_types))) {
-      stop("cell types contain ", sum(is.na(cell_types)), "missing values")
-    }
-    if (!is.null(replicate_col) && any(is.na(replicates))) {
-      stop("replicates contain ", sum(is.na(replicates)), "missing values")
-    }
-    
-    # check for missing replicates
-    if (!is.null(replicate_col) && is.null(replicates)) {
-      stop("metadata does not contain replicate information")
-    }
-    
-    # remove missing values
-    missing = is.na(expr)
-    if (any(missing)) {
-      stop("matrix contains ", sum(missing), "missing values")
-    }
-    
-    # clean up the meta data
-    if (!is.null(replicate_col)) {
-      meta <- meta %>% as.data.frame() %>%
-        mutate(cell_barcode = rownames(meta),
-               replicate = meta[[replicate_col]],
-               cell_type = meta[[cell_type_col]],
-               label = meta[[label_col]]) %>%
-        mutate_at(vars(replicate, cell_type, label), as.factor)
-    } else {
-      meta <- meta %>% as.data.frame() %>%
-        mutate(cell_barcode = rownames(meta),
-               cell_type = meta[[cell_type_col]],
-               label = meta[[label_col]]) %>%
-        mutate_at(vars(cell_type, label), as.factor)
-    }
-    
-    # make sure meta contains row names and is a data frame
-    rownames(meta) = colnames(expr)
-    meta = as.data.frame(meta)
-    to_return = list(
-      expr = expr,
-      meta = meta
-    )
-    return(to_return)
+  # check dimensions are non-zero
+  if (length(dim(expr)) != 2 || !all(dim(expr) > 0)) {
+    stop("expression matrix has at least one dimension of size zero")
   }
   
-  # Create a pseudobulk matrix
-  # Convert a single-cell expression matrix (i.e., genes by cells)
-  #   to a pseudobulk matrix by summarizing counts within biological replicates
-  
-  to_pseudobulk = function(input, 
-                           meta = NULL, 
-                           replicate_col = 'Replicate',
-                           cell_type_col = 'Comparison',
-                           label_col = 'Label',
-                           min_cells = 3,
-                           min_reps = 2,
-                           min_features = 0,
-                           external = T,
-                           subdivide = T) {
-    if (external) {
-      # first, make sure inputs are correct
-      inputs = check_inputs(
-        input, 
-        meta = meta,
-        replicate_col = replicate_col,
-        cell_type_col = cell_type_col,
-        label_col = label_col)
-      expr = inputs$expr
-      meta = inputs$meta
-    } else {
-      expr = input
-    }
-    
-    # convert to characters
-    meta$replicate <- as.character(meta[,eval(parse(text = "replicate"))])
-    meta$cell_type <- as.character(meta[,eval(parse(text = "comparison.level"))])
-    meta$label <- as.character(meta[,eval(parse(text = "label"))])
-    
-    ## Code from v20 ~ not working when using variable to subset
-    #meta %<>% mutate(replicate = as.character(meta[,replicate]),
-    #                 cell_type = as.character(meta[,comparison.level]),
-    #                 label = as.character(meta[,label]))
-    
-    # keep only cell types with enough cells
-    keep = meta %>%
-      dplyr::count(cell_type, label) %>%
-      group_by(cell_type) %>%
-      dplyr::filter(all(n >= min_cells)) %>%
-      pull(cell_type) %>%
-      unique()
-    
-    # Need to make rownames = barcode otherwise, downstream matrix multiplication won't work
-    rownames(meta) <- meta$Barcode
-    
-    if (subdivide == TRUE){
-      # process data into gene x replicate x cell_type matrices
-      pseudobulks = keep %>%
-        map( ~ {
-          print(.)
-          cell_type = .
-          meta0 = meta %>% filter(cell_type == !!cell_type)
-          expr0 = expr %>% magrittr::extract(, meta0$cell_barcode)
-          # catch cell types without replicates or conditions
-          if (n_distinct(meta0$label) < 2)
-            return(NA)
-          replicate_counts = distinct(meta0, label, replicate) %>%
-            group_by(label) %>%
-            summarise(replicates = n_distinct(replicate)) %>%
-            pull(replicates)
-          if (any(replicate_counts < min_reps))
-            return(NA)
-          
-          # process data into gene X replicate X cell_type matrice
-          mm = model.matrix(~ 0 + replicate:label, data = meta0)
-          
-          # Test #
-          #mm = model.matrix(~ replicate:label, data = meta0)
-          # Test #
-          
-          mat_mm = expr0 %*% mm
-          
-          ### Original code - start ###
-          #keep_genes = rowSums(mat_mm > 0) > min_features
-          ### Original code - end ###
-          
-          ### New code - start ###
-          keep_genes = rowSums(as.array(mat_mm > 0)) > min_features
-          ### New code - end ###
-          
-          mat_mm = mat_mm[keep_genes, ] %>% as.data.frame()
-          mat_mm %<>% as.data.frame()
-          colnames(mat_mm) = gsub("replicate|label", "", colnames(mat_mm))
-          # drop empty columns
-          keep_samples = colSums(mat_mm) > 0
-          mat_mm %<>% magrittr::extract(, keep_samples)
-          return(mat_mm)
-        }) %>%
-        setNames(keep)
-    } else {
-      keep = "all"
-      pseudobulks = keep %>%
-        map( ~ {
-          print(.)
-          cell_type = .
-          meta0 = meta
-          expr0 = expr
-          # catch cell types without replicates or conditions
-          if (n_distinct(meta0$label) < 2)
-            return(NA)
-          replicate_counts = distinct(meta0, label, replicate) %>%
-            group_by(label) %>%
-            summarise(replicates = n_distinct(replicate)) %>%
-            pull(replicates)
-          if (any(replicate_counts < min_reps))
-            return(NA)
-          
-          # process data into gene X replicate X cell_type matrice
-          mm = model.matrix(~ 0 + replicate:label, data = meta0)
-          
-          # Test #
-          #mm = model.matrix(~ replicate:label, data = meta0)
-          # Test #
-          
-          mat_mm = expr0 %*% mm
-          
-          ### Original code - start ###
-          #keep_genes = rowSums(mat_mm > 0) > min_features
-          ### Original code - end ###
-          
-          ### New code - start ###
-          keep_genes = rowSums(as.array(mat_mm > 0)) > min_features
-          ### New code - end ###
-          
-          mat_mm = mat_mm[keep_genes, ] %>% as.data.frame()
-          mat_mm %<>% as.data.frame()
-          colnames(mat_mm) = gsub("replicate|label", "", colnames(mat_mm))
-          # drop empty columns
-          keep_samples = colSums(mat_mm) > 0
-          mat_mm %<>% magrittr::extract(, keep_samples)
-          return(mat_mm)
-        }) %>%
-        setNames(keep)
-    }
-    
-    # drop NAs
-    pseudobulks %<>% magrittr::extract(!is.na(.))
-    
-    # also filter out cell types with no retained genes
-    min_dim = map(pseudobulks, as.data.frame) %>% map(nrow)
-    pseudobulks %<>% magrittr::extract(min_dim > 1)
-    
-    # also filter out types without replicates
-    min_repl = map_int(pseudobulks, ~ {
-      # make sure we have a data frame a not a vector
-      tmp = as.data.frame(.)
-      targets = data.frame(group_sample = colnames(tmp)) %>%
-        mutate(group = gsub(".*\\:", "", group_sample))
-      if (n_distinct(targets$group) == 1)
-        return(as.integer(0))
-      min(table(targets$group))
-    })
-    pseudobulks %<>% magrittr::extract(min_repl >= min_reps)
-    return(pseudobulks)
+  # check dimensions match
+  ncells1 = nrow(meta)
+  ncells2 = ncol(expr)
+  if (ncells1 != ncells2) {
+    stop("number of cells in metadata (", ncells1, ") does not match number ",
+         "of cells in expression (", ncells2, ")")
   }
   
-  # Run a DE analysis within each cell type using Seurat
+  # check at least two labels
+  if (n_distinct(labels) == 1) {
+    stop("only one group provided: ", unique(labels))
+  }
   
-  pseudobulk_de = function(input, 
-                           meta = NULL, 
-                           replicate_col = replicate,
-                           cell_type_col = comparison.level,
-                           label_col = label,
-                           min_cells = min.num.cells,
-                           min_reps = min.num.reps,
-                           min_features = min.num.features,
-                           de_family = 'pseudobulk',
-                           de_method = 'limma',
-                           de_type = 'LRT',
-                           subdivide = subdivide_data) {
-    # check args
-    if (de_method == 'limma') {
-      if (de_type != 'voom') {
-        # change default type to use
-        de_type = 'trend'  
-      }
+  # check for missing labels or cell types
+  if (any(is.na(labels))) {
+    stop("labels contain ", sum(is.na(labels)), "missing values")
+  }
+  if (any(is.na(celltypes))) {
+    stop("cell types contain ", sum(is.na(celltypes)), "missing values")
+  }
+  if (!is.null(replicate) && any(is.na(replicates))) {
+    stop("replicates contain ", sum(is.na(replicates)), "missing values")
+  }
+  
+  # check for missing replicates
+  if (!is.null(replicate) && is.null(replicates)) {
+    stop("metadata does not contain replicate information")
+  }
+  
+  # remove missing values
+  missing = is.na(expr)
+  if (any(missing)) {
+    stop("matrix contains ", sum(missing), "missing values")
+  }
+  
+  # clean up the meta data
+  if (!is.null(replicate)) {
+    meta <- meta %>% as.data.frame() %>%
+      mutate(cell.barcode = rownames(meta),
+             replicate = meta[[replicate]],
+             subgroup = meta[[subgroup]],
+             group = meta[[group]]) %>%
+      mutate_at(vars(replicate, subgroup, group), as.factor)
+  } else {
+    meta <- meta %>% as.data.frame() %>%
+      mutate(cell.barcode = rownames(meta),
+             subgroup = meta[[subgroup]],
+             group = meta[[group]]) %>%
+      mutate_at(vars(subgroup, group), as.factor)
+  }
+  
+  # make sure meta contains row names and is a data frame
+  rownames(meta) = colnames(expr)
+  meta = as.data.frame(meta)
+  inputs = list(
+    expr = expr,
+    meta = meta
+  )
+
+## Create a pseudobulk matrix ##
+# Convert a single-cell expression matrix (i.e., genes by cells)
+#   to a pseudobulk matrix by summarizing counts within biological replicates
+    expr = inputs$expr
+    meta = inputs$meta
+  
+  # convert to characters
+  meta$replicate <- as.character(meta[,eval(parse(text = "replicate"))])
+  meta$subgroup <- as.character(meta[,eval(parse(text = "subgroup"))])
+  meta$group <- as.character(meta[,eval(parse(text = "group"))])
+  
+  # keep only cell types with enough cells
+  keep = meta %>%
+    dplyr::count(subgroup, group) %>%
+    group_by(subgroup) %>%
+    dplyr::filter(all(n >= min.num.cells)) %>%
+    pull(subgroup) %>%
+    unique()
+  
+  # Need to make rownames = barcode for matrix multiplication
+  rownames(meta) <- meta$Barcode
+  
+  ##JB set default to subgroup to NULL, meaning not to partition analysis ====
+  #JB if (subgroup != NULL), then partition analysis ====
+  if (subdivide == TRUE){
+    # process data into gene x replicate x subgroup matrices
+    pseudobulks = keep %>%
+      map( ~ {
+        print(.)
+        subgroup = .
+        meta0 = meta %>% filter(subgroup == !!subgroup)
+        expr0 = expr %>% magrittr::extract(, meta0$cell.barcode)
+        # catch cell types without replicates or conditions
+        if (n_distinct(meta0$group) < 2)
+          return(NA)
+        replicate.counts = distinct(meta0, group, replicate) %>%
+          group_by(group) %>%
+          summarise(replicates = n_distinct(replicate)) %>%
+          pull(replicates)
+        if (any(replicate.counts < min.num.reps))
+          return(NA)
+
+        # mm: cell x replicate membership matrix (matrix of 1s and 0s)
+        mm = model.matrix(~ 0 + replicate:group, data = meta0)
+        
+        # mat.mm 
+        mat.mm = expr0 %*% mm
+        
+        keep.genes = rowSums(as.array(mat.mm > 0)) > min.num.features
+
+        mat.mm = mat.mm[keep.genes, ] %>% as.data.frame()
+        mat.mm %<>% as.data.frame()
+        colnames(mat.mm) = gsub("replicate|group", "", colnames(mat.mm))
+        # drop empty columns
+        keep.samples = colSums(mat.mm) > 0
+        mat.mm %<>% magrittr::extract(, keep.samples)
+        return(mat.mm)
+      }) %>% setNames(keep)
+    } else { keep = "all"
+    pseudobulks = keep %>%
+      map( ~ {
+        print(.)
+        subgroup = .
+        meta0 = meta
+        expr0 = expr
+        # catch cell types without replicates or conditions
+        if (n_distinct(meta0$group) < 2)
+          return(NA)
+        replicate.counts = distinct(meta0, group, replicate) %>%
+          group_by(group) %>%
+          summarise(replicates = n_distinct(replicate)) %>%
+          pull(replicates)
+        if (any(replicate.counts < min.num.reps))
+          return(NA)
+
+        # process data into gene X replicate X subgroup matrice
+        mm = model.matrix(~ 0 + replicate:group, data = meta0)
+
+        mat.mm = expr0 %*% mm
+
+        keep.genes = rowSums(as.array(mat.mm > 0)) > min.num.features
+
+        mat.mm = mat.mm[keep.genes, ] %>% as.data.frame()
+        mat.mm %<>% as.data.frame()
+        colnames(mat.mm) = gsub("replicate|group", "", colnames(mat.mm))
+        # drop empty columns
+        keep.samples = colSums(mat.mm) > 0
+        mat.mm %<>% magrittr::extract(, keep.samples)
+        return(mat.mm)
+      }) %>%
+      setNames(keep)
+  }
+  
+  # drop NAs
+  pseudobulks %<>% magrittr::extract(!is.na(.))
+  
+  # also filter out cell types with no retained genes
+  min.dim = map(pseudobulks, as.data.frame) %>% map(nrow)
+  pseudobulks %<>% magrittr::extract(min.dim > 1)
+  
+  # also filter out types without replicates
+  min.repl = map_int(pseudobulks, ~ {
+    # make sure we have a data frame a not a vector
+    tmp = as.data.frame(.)
+    targets = data.frame(group.sample = colnames(tmp)) %>%
+      mutate(group = gsub(".*\\:", "", group.sample))
+    if (n_distinct(targets$group) == 1)
+      return(as.integer(0))
+    min(table(targets$group))
+  })
+  pseudobulks %<>% magrittr::extract(min.repl >= min.num.reps)
+
+# Run a DE analysis within each cell type using Seurat
+  # check args
+  if (de.method == 'limma') {
+    if (de.type != 'voom') {
+      # change default type to use
+      de.type = 'trend'  
     }
+  }
+  
+  results = map(pseudobulks, function(x) {
+    # create targets matrix
+    targets = data.frame(group.sample = colnames(x)) %>%
+      mutate(group = gsub(".*\\:", "", group.sample))
+    ## optionally, carry over factor levels from entire dataset
+    if (is.factor(meta$group)) {
+      targets$group %<>% factor(levels = levels(meta$group))
+    }
+    # Need to set to higher values if more than 2 contrasts variables
+    if (n_distinct(targets$group) > 100000)
+      return(NULL)
     
-    # get the pseudobulks list
-    pseudobulks = to_pseudobulk(
-      input = input,
-      meta = meta,
-      replicate_col = replicate_col,
-      cell_type_col = cell_type_col,
-      label_col = label_col,
-      min_cells = min_cells,
-      min_reps = min_reps,
-      min_features = min_features,
-      external = T,
-      subdivide = subdivide
-    )
+    # create design
+    dm.formula <- as.formula(paste("~0", paste(c("group")), sep="+", 
+                                   collapse="+"))
+    design = model.matrix(dm.formula, data = targets)
     
-    results = map(pseudobulks, function(x) {
-      # create targets matrix
-      targets = data.frame(group_sample = colnames(x)) %>%
-        mutate(group = gsub(".*\\:", "", group_sample))
-      ## optionally, carry over factor levels from entire dataset
-      if (is.factor(meta$label)) {
-        targets$group %<>% factor(levels = levels(meta$label))
-      }
-      # Need to set to higher values if more than 2 contrasts variables
-      if (n_distinct(targets$group) > 100000)
-        return(NULL)
-      # create design
-      
-      ### Possible Code for Design Formula (dm.formula) ###
-      dm.formula <- as.formula(paste("~0", paste(c("group")), sep="+", collapse="+"))
-      #design = model.matrix(~ group, data = targets)
-      design = model.matrix(dm.formula, data = targets)
-      
-      DE = switch(de_method,
-                  edgeR = {
-                    tryCatch({
-                      y = DGEList(counts = x, group = targets$group) %>%
-                        calcNormFactors(method = 'TMM') %>%
-                        estimateDisp(design)
-                      test = switch(de_type,
-                                    QLF = {
-                                      fit = glmQLFit(y, design)
-                                      test = glmQLFTest(fit, coef = -1)
-                                    },
-                                    LRT = {
-                                      fit = glmFit(y, design = design)
-                                      test = glmLRT(fit)
-                                    })
-                      res = topTags(test, n = Inf) %>%
-                        as.data.frame() %>%
-                        rownames_to_column('gene') %>%
-                        # flag metrics in results
-                        mutate(de_family = 'pseudobulk',
-                               de_method = de_method,
-                               de_type = de_type)
-                    }, error = function(e) {
-                      message(e)
-                      data.frame()
-                    })
-                  },
-                  DESeq2 = {
-                    tryCatch({
-                      dds = DESeqDataSetFromMatrix(countData = x,
-                                                   colData = targets,
-                                                   design = ~ group)
-                      dds = switch(de_type,
-                                   Wald = {
-                                     dds = try(DESeq(dds,
-                                                     test = 'Wald',
-                                                     fitType = 'parametric',
-                                                     sfType = 'poscounts',
-                                                     betaPrior = F))
-                                   },
-                                   LRT = {
-                                     dds = try(DESeq(dds,
-                                                     test = 'LRT',
-                                                     reduced = ~ 1,
-                                                     fitType = 'parametric',
-                                                     sfType = 'poscounts',
-                                                     betaPrior = F))
-                                   }
-                      )
-                      res = results(dds)
-                      # write
-                      res = as.data.frame(res) %>%
-                        mutate(gene = rownames(x)) %>%
-                        # flag metrics in results
-                        mutate(de_family = 'pseudobulk',
-                               de_method = de_method,
-                               de_type = de_type)
-                    }, error = function(e) {
-                      message(e)
-                      data.frame()
-                    })
-                  },
-                  limma = {
-                    tryCatch({
-                      x = switch(de_type,
-                                 trend = {
-                                   trend_bool = T
-                                   dge = DGEList(as.matrix(x), group = targets$group)
-                                   dge = calcNormFactors(dge)
-                                   x = new("EList")
-                                   x$E = cpm(dge, log = TRUE, prior.count = 3)
-                                   x
+    DE = switch(de.method,
+                edgeR = {
+                  tryCatch({
+                    y = DGEList(counts = x, group = targets$group) %>%
+                      calcNormFactors(method = 'TMM') %>%
+                      estimateDisp(design)
+                    test = switch(de.type,
+                                  QLF = {
+                                    fit = glmQLFit(y, design)
+                                    test = glmQLFTest(fit, coef = -1)
+                                  },
+                                  LRT = {
+                                    fit = glmFit(y, design = design)
+                                    test = glmLRT(fit)
+                                  })
+                    res = topTags(test, n = Inf) %>%
+                      as.data.frame() %>%
+                      rownames_to_column('gene') %>%
+                      # flag metrics in results
+                      mutate(de.family = 'pseudobulk',
+                             de.method = de.method,
+                             de.type = de.type)
+                  }, error = function(e) {
+                    message(e)
+                    data.frame()
+                  })
+                },
+                DESeq2 = {
+                  tryCatch({
+                    dds = DESeqDataSetFromMatrix(countData = x,
+                                                 colData = targets,
+                                                 design = ~ group)
+                    dds = switch(de.type,
+                                 Wald = {
+                                   dds = try(DESeq(dds,
+                                                   test = 'Wald',
+                                                   fitType = 'parametric',
+                                                   sfType = 'poscounts',
+                                                   betaPrior = F))
                                  },
-                                 voom = {
-                                   counts = all(as.matrix(x) %% 1 == 0)
-                                   if (counts) {
-                                     trend_bool = F
-                                     x = voom(as.matrix(x), design)
-                                     x
-                                   }
-                                 })
-                      
-                      # get fit
-                      #Run Contrasts                    
-                      
-                      contrasts <- unlist(contrasts %>% strsplit("-") %>% 
-                                            lapply(function (x) paste("group",x,sep="")) %>% 
-                                            lapply(paste, collapse = "-"))
-                      
-                      cm <- makeContrasts(contrasts = contrasts, levels=design)
-                      
-                      fit2 = lmFit(x, design) %>% contrasts.fit(cm) %>%
-                        eBayes(trend = trend_bool, robust = trend_bool)
-                      
-                      logFC = fit2$coefficients
-                      colnames(logFC)=paste(colnames(logFC),"logFC",sep="_")
-                      tstat = fit2$t
-                      colnames(tstat)=paste(colnames(tstat),"tstat",sep="_")
-                      FC = 2^fit2$coefficients
-                      FC = ifelse(FC<1,-1/FC,FC)
-                      colnames(FC)=paste(colnames(FC),"FC",sep="_")
-                      pvalall=fit2$p.value
-                      colnames(pvalall)=paste(colnames(pvalall),"pval",sep="_")
-                      pvaladjall=apply(pvalall,2,function(x) p.adjust(x,"BH"))
-                      colnames(pvaladjall)=paste(colnames(fit2$coefficients),"adjpval",sep="_")
-                      
-                      ### Original Code - Start ###        
-                      
-                      ## format the results
-                      #res = fit2 %>%
-                      ## extract all coefs except intercept
-                      #topTable(number = Inf, coef = NULL) %>%
-                      #rownames_to_column('gene') %>%
-                      ## flag metrics in results
-                      #mutate(
-                      #  de_family = 'pseudobulk',
-                      #  de_method = de_method,
-                      #  de_type = de_type)
-                      
-                      ### Original Code - End ### 
-                      
-                      res=as.data.frame(cbind(FC, logFC, tstat, pvalall, pvaladjall))
-                      
-                      res$Gene <- rownames(res)
-                      
-                      res <- res %>% mutate(
-                        de_family = 'pseudobulk',
-                        de_method = de_method,
-                        de_type = de_type)
-                      
-                    }, error = function(e) {
-                      message(e)
-                      data.frame()
-                    })
-                  }
-      )
-    })
-    results %<>% bind_rows(.id = 'cell_type')
-    results <- results %>% dplyr::select("Gene", everything())
-  }
-  
-  ## --------------- ##
-  ## Main Code Block ##
-  ## --------------- ##
-  
-  DE <- pseudobulk_de(so)
-  
-  return(DE)
+                                 LRT = {
+                                   dds = try(DESeq(dds,
+                                                   test = 'LRT',
+                                                   reduced = ~ 1,
+                                                   fitType = 'parametric',
+                                                   sfType = 'poscounts',
+                                                   betaPrior = F))
+                                 }
+                    )
+                    res = results(dds)
+                    # write
+                    res = as.data.frame(res) %>%
+                      mutate(gene = rownames(x)) %>%
+                      # flag metrics in results
+                      mutate(de.family = 'pseudobulk',
+                             de.method = de.method,
+                             de.type = de.type)
+                  }, error = function(e) {
+                    message(e)
+                    data.frame()
+                  })
+                },
+                limma = {
+                  tryCatch({
+                    x = switch(de.type,
+                               trend = {
+                                 trend_bool = T
+                                 dge = DGEList(as.matrix(x), 
+                                               group = targets$group)
+                                 dge = calcNormFactors(dge)
+                                 x = new("EList")
+                                 x$E = cpm(dge, log = TRUE, prior.count = 3)
+                                 x
+                               },
+                               voom = {
+                                 counts = all(as.matrix(x) %% 1 == 0)
+                                 if (counts) {
+                                   trend_bool = F
+                                   x = voom(as.matrix(x), design)
+                                   x
+                                 }
+                               })
+                    
+                    # run contrasts                    
+                    contrasts <- unlist(contrasts %>% strsplit("-") %>% 
+                                          lapply(function (x) 
+                                            paste("group",x,sep="")) %>% 
+                                          lapply(paste, collapse = "-"))
+                    
+                    cm <- makeContrasts(contrasts = contrasts, levels=design)
+                    
+                    fit2 = lmFit(x, design) %>% contrasts.fit(cm) %>%
+                      eBayes(trend = trend_bool, robust = trend_bool)
+                    
+                    logFC = fit2$coefficients
+                    colnames(logFC)=paste(colnames(logFC),"logFC",sep="_")
+                    tstat = fit2$t
+                    colnames(tstat)=paste(colnames(tstat),"tstat",sep="_")
+                    FC = 2^fit2$coefficients
+                    FC = ifelse(FC<1,-1/FC,FC)
+                    colnames(FC)=paste(colnames(FC),"FC",sep="_")
+                    pvalall=fit2$p.value
+                    colnames(pvalall)=paste(colnames(pvalall),"pval",sep="_")
+                    pvaladjall=apply(pvalall,2,function(x) p.adjust(x,"BH"))
+                    colnames(pvaladjall)=paste(colnames(fit2$coefficients),
+                                               "adjpval",sep="_")
+                    
+                    res=as.data.frame(cbind(FC, logFC, tstat, pvalall, 
+                                            pvaladjall))
+                    
+                    res$Gene <- rownames(res)
+                    
+                    res <- res %>% mutate(
+                      de.family = 'pseudobulk',
+                      de.method = de.method,
+                      de.type = de.type)
+                    
+                  }, error = function(e) {
+                    message(e)
+                    data.frame()
+                  })
+                }
+    )
+  })
+  results %<>% bind_rows(.id = 'subgroup')
+  results <- results %>% dplyr::select("Gene", everything())
+
+return(results)
 }
