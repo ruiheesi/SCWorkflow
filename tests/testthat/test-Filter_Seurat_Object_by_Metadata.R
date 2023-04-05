@@ -1,95 +1,139 @@
+test_that(
+  "Test Filter Seurat Object by Metadata using Downsampled TEC (Mouse) data
+   with normal parameters",
+  {
+    tec.data <- getParamFSOBM("TEC")
+    output <- do.call(filterSeuratObjectByMetadata, tec.data)
+    
+    ggsave("output/TEC_fsobm.plot1.png",
+           output$plot1,
+           width = 10,
+           height = 10)
+    expect_snapshot_file("output", "TEC_fsobm.plot1.png")
+    ggsave("output/TEC_fsobm.plot2.png",
+           output$plot2,
+           width = 10,
+           height = 10)
+    expect_snapshot_file("output", "TEC_fsobm.plot2.png")
+    
+    expect_type(output, "list")
+    expected.elements = c("object", "plot1", "plot2")
+    expect_setequal(names(output), expected.elements)
+    
+  }
+)
 
 
-test_that("Test Filter Seurat Object by Metadata using Downsampled TEC (Mouse) data", {
-  obj <- readRDS(test_path("fixtures/TEC", "TEC_Combine_and_Renormalize_SO_downsample.rds"))
-  FilterByMeta.result <- filterSeuratObjectByMetadata(object = obj,
-                                                      samples.to.include = 'c("1_Embryo_13_5","3_Newborn")',
-                                                      sample.name = "orig.ident",
-                                                      category.to.filter = "seurat_clusters",
-                                                      values.to.filter = "3")
-  
-  
-#  ggsave(file="BeforeFiltering.pdf", FilterByMeta.result$plot1)
-#  ggsave(file="AfterFiltering.pdf", FilterByMeta.result$plot2)
-  expect_type(FilterByMeta.result,"list")
-  expected.elements = c("object", "plot1", "plot2")
-  expect_setequal(names(FilterByMeta.result), expected.elements)
-  
-})
-
-
-
-
-test_that("Test Filter Seurat Object by Metadata using Chariou (Mouse) dataset", {
-  obj <- readRDS(test_path("fixtures/Chariou", "Chariou_Combine_and_Renormalize_SO_downsample.rds"))
-  FilterByMeta.result <- filterSeuratObjectByMetadata(object = obj,
-                                                      samples.to.include = 'c("CD8dep","NHSIL12")',
-                                                      sample.name = "orig.ident",
-                                                      category.to.filter = "seurat_clusters",
-                                                      values.to.filter = "2")
-  
-  
-#  ggsave(file="BeforeFiltering.pdf", FilterByMeta.result$plot1)
-#  ggsave(file="AfterFiltering.pdf", FilterByMeta.result$plot2)
-  expect_type(FilterByMeta.result,"list")
-  expected.elements = c("object", "plot1", "plot2")
-  expect_setequal(names(FilterByMeta.result), expected.elements)
-  
-})
-
-
-test_that("Test Filter Seurat Object by Metadata using BRCA (Human) dataset", {
-  obj <- readRDS(test_path("fixtures/BRCA", "BRCA_Combine_and_Renormalize_SO_downsample.rds"))
-  FilterByMeta.result <- filterSeuratObjectByMetadata(object = obj,
-                                                      samples.to.include = 'c("CID3586","CID3946", "CID4513" )',
-                                                      sample.name = "orig.ident",
-                                                      category.to.filter = "seurat_clusters",
-                                                      values.to.filter = "1")
-  
-  
-#  ggsave(file="BeforeFiltering.pdf", FilterByMeta.result$plot1)
-#  ggsave(file="AfterFiltering.pdf", FilterByMeta.result$plot2)
-  expect_type(FilterByMeta.result,"list")
-  expected.elements = c("object", "plot1", "plot2")
-  expect_setequal(names(FilterByMeta.result), expected.elements)
-  
-})
-
-
-test_that("Test Filter Seurat Object by Metadata using NSCLCmulti (Human) dataset", {
-  obj <- readRDS(test_path("fixtures/NSCLC_Multi", "NSCLCmulti_Combine_and_Renormalize_SO_downsample.rds"))
-  FilterByMeta.result <- filterSeuratObjectByMetadata(object = obj,
-                                                      samples.to.include = 'c("Donor_1","Donor_4")',
-                                                      sample.name = "orig.ident",
-                                                      category.to.filter = "seurat_clusters",
-                                                      values.to.filter = "16")
-  
-  
-#  ggsave(file="BeforeFiltering.pdf", FilterByMeta.result$plot1)
-#  ggsave(file="AfterFiltering.pdf", FilterByMeta.result$plot2)
-  expect_type(FilterByMeta.result,"list")
-  expected.elements = c("object", "plot1", "plot2")
-  expect_setequal(names(FilterByMeta.result), expected.elements)
-  
-})
+test_that("Test Filter Seurat Object by Metadata using Chariou (Mouse) dataset",
+          {
+            chariou.data <- getParamFSOBM("Chariou")
+            output <-
+              do.call(filterSeuratObjectByMetadata, chariou.data)
+            
+            ggsave(
+              "output/Chariou_fsobm.plot1.png",
+              output$plot1,
+              width = 10,
+              height = 10
+            )
+            expect_snapshot_file("output", "Chariou_fsobm.plot1.png")
+            ggsave(
+              "output/Chariou_fsobm.plot2.png",
+              output$plot2,
+              width = 10,
+              height = 10
+            )
+            expect_snapshot_file("output", "Chariou_fsobm.plot2.png")
+            
+            expect_type(output, "list")
+            expected.elements = c("object", "plot1", "plot2")
+            expect_setequal(names(output), expected.elements)
+            
+          })
 
 
 
+test_that("Test Filter Seurat Object by Metadata using BRCA (Human) dataset",
+          {
+            brca.data <- getParamFSOBM("BRCA")
+            output <-
+              do.call(filterSeuratObjectByMetadata, brca.data)
+            
+            ggsave(
+              "output/BRCA_fsobm.plot1.png",
+              output$plot1,
+              width = 10,
+              height = 10
+            )
+            expect_snapshot_file("output", "BRCA_fsobm.plot1.png")
+            ggsave(
+              "output/BRCA_fsobm.plot2.png",
+              output$plot2,
+              width = 10,
+              height = 10
+            )
+            expect_snapshot_file("output", "BRCA_fsobm.plot2.png")
+            
+            expect_type(output, "list")
+            expected.elements = c("object", "plot1", "plot2")
+            expect_setequal(names(output), expected.elements)
+            
+          })
 
-test_that("Test Filter Seurat Object by Metadata using NSCLCsingle (Human) dataset", {
-  obj <- readRDS(test_path("fixtures/NSCLC_Single", "NSCLCsingle_Combine_and_Renormalize_SO_downsample.rds"))
-  FilterByMeta.result <- filterSeuratObjectByMetadata(object = obj,
-                                                      samples.to.include = 'c("NSCLC_Single")',
-                                                      sample.name = "orig.ident",
-                                                      category.to.filter = "seurat_clusters",
-                                                      values.to.filter = "5")
-  
-  
-#  ggsave(file="BeforeFiltering.pdf", FilterByMeta.result$plot1)
-#  ggsave(file="AfterFiltering.pdf", FilterByMeta.result$plot2)
-  expect_type(FilterByMeta.result,"list")
-  expected.elements = c("object", "plot1", "plot2")
-  expect_setequal(names(FilterByMeta.result), expected.elements)
-  
-})
 
+test_that("Test Filter Seurat Object by Metadata using NSCLCmulti (Human) data",
+          {
+            nsclc.multi.data <- getParamFSOBM("nsclc-multi")
+            output <-
+              do.call(filterSeuratObjectByMetadata, nsclc.multi.data)
+            
+            ggsave(
+              "output/NSCLCmulti_fsobm.plot1.png",
+              output$plot1,
+              width = 10,
+              height = 10
+            )
+            expect_snapshot_file("output", "NSCLCmulti_fsobm.plot1.png")
+            ggsave(
+              "output/NSCLCmulti_fsobm.plot2.png",
+              output$plot2,
+              width = 10,
+              height = 10
+            )
+            expect_snapshot_file("output", "NSCLCmulti_fsobm.plot2.png")
+            
+            expect_type(output, "list")
+            expected.elements = c("object", "plot1", "plot2")
+            expect_setequal(names(output), expected.elements)
+            
+          })
+
+
+
+
+test_that("Test Filter Seurat Object by Metadata using PBMCsingle (Human) data",
+          {
+            pbmc.single.data <- getParamFSOBM("pbmc-single")
+            output <-
+              do.call(filterSeuratObjectByMetadata, pbmc.single.data)
+            
+            ggsave(
+              "output/PBMCsingle_fsobm.plot1.png",
+              output$plot1,
+              width = 10,
+              height = 10
+            )
+            expect_snapshot_file("output", "PBMCsingle_fsobm.plot1.png")
+            ggsave(
+              "output/PBMCsingle_fsobm.plot2.png",
+              output$plot2,
+              width = 10,
+              height = 10
+            )
+            expect_snapshot_file("output", "PBMCsingle_fsobm.plot2.png")
+            
+            expect_type(output, "list")
+            expected.elements = c("object", "plot1", "plot2")
+            expect_setequal(names(output), expected.elements)
+            
+          })
