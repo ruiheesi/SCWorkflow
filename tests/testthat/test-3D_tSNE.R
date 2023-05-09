@@ -12,7 +12,6 @@ test_that("Produce 3D tsne plot and return tsne coordinates - TEC Data", {
                        file = "output/TEC_plotly.png"),
     "TEC_plotly.png"
   )
-  ex
   expected.elements = c("plot", "data")
   expect_setequal(names(output), expected.elements)
   

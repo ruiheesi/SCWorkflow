@@ -7,6 +7,7 @@
 #' @param color.variable Metadata column in Seurat Object to use for color
 #' @param label.variable Metadata column in Seurat Object to use for label
 #' @param legend If TRUE, show legend (default is TRUE)
+#' @param colors Colors used for the color.variable
 #' @param filename Filename for saving plot (default is "plot.html")
 #' @param npcs Number of principal components used for tSNE calculations
 #'   (default is 15)
@@ -22,20 +23,11 @@ tSNE3D <- function(object,
                    color.variable,
                    label.variable,
                    legend = TRUE,
+                   colors = c("darkblue","purple4","green","red","darkcyan",
+                              "magenta2","orange","yellow","black"),
                    filename = "plot.html",
                    save.plot = FALSE,
                    npcs = 15) {
-  cols = c(
-    "darkblue",
-    "purple4",
-    "green",
-    "red",
-    "darkcyan",
-    "magenta2",
-    "orange",
-    "yellow",
-    "black"
-  )
   
   #Run TSNE again to get 3d coordinates:
   object <- RunTSNE(
@@ -83,7 +75,7 @@ tSNE3D <- function(object,
     y = ~ TSNE2,
     z = ~ TSNE3,
     color = ~ colorvar,
-    colors = cols,
+    colors = colors,
     type = "scatter3d",
     mode = "markers",
     hoverinfo = 'text',
