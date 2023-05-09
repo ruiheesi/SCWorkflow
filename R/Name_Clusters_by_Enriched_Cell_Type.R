@@ -35,7 +35,7 @@
 #'
 #' @export
 #' @return Returns Seurat-class object with updated meta.data slot containing
-#' custom cluster annotation
+#' custom cluster annotation and a plot
 
 nameClusters <- function(object,
                          cluster.numbers,
@@ -177,7 +177,6 @@ nameClusters <- function(object,
   
   invisible(list(
     object = object,
-    table = table,
     plot = g
   ))
   

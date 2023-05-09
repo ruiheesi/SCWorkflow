@@ -64,7 +64,7 @@ dotPlotMet <- function(object,
   }
   
   if (c > 0) {
-    missinglab2 <- celltype[!celltype %in% unique(Idents(object))]
+    missinglab2 <- cells[!cells %in% unique(Idents(object))]
     warning(
       sprintf(
         "There are %s additional elements in your input categories
