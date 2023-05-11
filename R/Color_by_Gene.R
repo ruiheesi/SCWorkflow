@@ -25,7 +25,6 @@
 #' @param use.cite.seq.data TRUE if you would like to plot Antibody clusters
 #' from CITEseq instead of scRNA.
 #' @param assay Select Assay to Plot (default is SCT)
-
 #'
 #' @import Seurat
 #' @import gridExtra
