@@ -22,7 +22,7 @@ getModuleScoreParam <- function(data){
       
   } else if (data == "nsclc.single") {
     
-    object = select_crobject("nsclc_single")
+    object = select_crobject("nsclc-single")
     samples.subset = unique(object$orig.ident)
     sample.to.display = unique(object$orig.ident)
     set.seed(114)
@@ -38,7 +38,7 @@ getModuleScoreParam <- function(data){
     
   } else if (data == "nsclc.multi") {
 
-    object = select_crobject("nsclc_multi")
+    object = select_crobject("nsclc-multi")
     samples.subset = unique(object$orig.ident)
     sample.to.display = unique(object$orig.ident)
     set.seed(214)
@@ -78,4 +78,10 @@ getModuleScoreParam <- function(data){
               "general.class" = general.class,
               "lvl.df" = lvl.df
               ))  
+}
+
+.drawMSfig <- function(x, width = 10, height = 10){
+  path <- tempfile(fileext = ".png")
+  ggsave(path, x, width = 10, height = 10)
+  print(path)
 }
