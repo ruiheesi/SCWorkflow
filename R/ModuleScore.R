@@ -150,52 +150,6 @@ modScore <- function(object,
   # Remove original unprocessed object
   rm(object)
   
-  # Adding protein marker expression
-  if (cite.seq){
-    protein.markers <- marker.tab[grepl("_prot",marker.tab)]
-    
-    protein.orig <- gsub("_prot.*","",protein.markers)
-    
-    protein.name <- paste(protein.orig,
-                                  "_prot", sep = "")
-    
-    protein.array <- list()
-    for (prot.indx in seq_along(protein.orig)){
-      protein.array[[prot.indx]] <- object.sub@assays$Protein[protein.orig
-                                                              [prot.indx],]
-      rownames(protein.array[[prot.indx]]) <- protein.name[prot.indx]
-    }
-    protein.array.comp <- do.call(rbind,protein.array)
-    object.sub@assays$SCT@data <- rbind(object.sub@assays$SCT@data,
-                                        protein.array.comp)
-  }
-  
-  # Recognize any negative markers in marker list
-  neg.marker.name <- marker.tab[grepl("_neg",marker.tab)]
-  orig.markers <- gsub("_neg.*","",neg.marker.name)
-  
-  # Retrieve markers found in counts data
-  orig.markers <- orig.markers[orig.markers %in% rownames(
-    object.sub@assays$SCT@data)]
-  
-  neg.markers.ls <- list()
-  
-  # Calculate adjusted expression for negative markers
-  for (neg.indx in seq_along(orig.markers)){
-    
-    # Format the data so that it can rbinded with object$SCT@scale.data
-    neg.markers.ls[[neg.indx]] <- t(matrix(max(object.sub@assays$SCT@data[
-      orig.markers[neg.indx],]) - object.sub@assays$SCT@data[
-        orig.markers[neg.indx],]))
-    
-    row.names(neg.markers.ls[[neg.indx]]) <- neg.marker.name[neg.indx]
-    colnames(neg.markers.ls[[neg.indx]]) <- colnames(object.sub@assays$SCT@data)
-    
-    # Append new Negative/low marker (w Expression Count) to object slot
-    object.sub@assays$SCT@data <- rbind(object.sub@assays$SCT@data, 
-                                        neg.markers.ls[[neg.indx]]) 
-  }
-  
   # Retrive markers from list
   marker = select(marker.table, celltypes)
   marker.list = as.list(marker)
@@ -386,11 +340,12 @@ modScore <- function(object,
   call.res <- .modScoreCall(trunc.meta.gen,gen.thrs.vec,reject = "unknown")
   call.res$Barcode <- rownames(call.res)
   
+  # Hierarchical Classification
   if (multi.lvl){   
     
     for (k in 1:ncol(lvl.df)){ 
       
-      # Initialize list for temporarily keeping results from subpopulation calls
+      # Temporarily keep results from subpopulation calls
       sub.class.call <- list()
       
       ## Subclass Identification
@@ -453,12 +408,12 @@ modScore <- function(object,
       call.res$temp.call <- NULL
     }}
   
-  ## Updating CellType(s) in metadata with subclass calls
+  # Updating CellType(s) in metadata with subclass calls
   object.sub@meta.data$Likely_CellType <- call.res$Likely_CellType[
     match(object.sub@meta.data$Barcode,call.res$Barcode)]
   
-  ms.res <- list(arranged.figures = do.call(arrangeGrob, c(figures)),
-                       object = object.sub)
+  ms.res <- list(ms.figures = figures,
+                       ms.object = object.sub)
   
   return(ms.res)
  }

@@ -3,6 +3,12 @@ test_that("Violin plot works for TEC data", {
   
   violin_test = do.call(violinPlot, tec.data)
   
+  skip_on_ci()
+  expect_snapshot_file(
+    .drawViolin(violin_test),
+    "tec_violin.png"
+  )
+  
   expected_elements = c("gg", "ggplot")
   expect_setequal(class(violin_test), expected_elements)
   
@@ -10,49 +16,73 @@ test_that("Violin plot works for TEC data", {
 
 test_that("Violin plot works for Chariou data", {
   chariou.data = selectViolin("Chariou")
-  
+
   violin_test = do.call(violinPlot, chariou.data)
   
+  skip_on_ci()
+  expect_snapshot_file(
+    .drawViolin(violin_test),
+    "chariou_violin.png"
+  )
+
   expected_elements = c("gg", "ggplot")
   expect_setequal(class(violin_test), expected_elements)
-  
+
 })
 
 test_that("Violin plot works for pbmc.single data", {
   pbmc.single = selectViolin("pbmc.single")
-  
+
   violin_test = do.call(violinPlot, pbmc.single)
   
+  skip_on_ci()
+  expect_snapshot_file(
+    .drawViolin(violin_test),
+    "pbmc_single_violin.png"
+  )
+
   expected_elements = c("gg", "ggplot")
   expect_setequal(class(violin_test), expected_elements)
-  
+
 })
 
 test_that("Violin plot works for nsclc.multi data", {
   nsclc.multi = selectViolin("nsclc.multi")
-  
+
   violin_test = do.call(violinPlot, nsclc.multi)
   
+  skip_on_ci()
+  expect_snapshot_file(
+    .drawViolin(violin_test),
+    "nsclc_multi_violin.png"
+  )
+
   expected_elements = c("gg", "ggplot")
   expect_setequal(class(violin_test), expected_elements)
-  
+
 })
 
 test_that("Violin plot works for brca data", {
   brca = selectViolin("brca")
-  
+
   violin_test = do.call(violinPlot, brca)
   
+  skip_on_ci()
+  expect_snapshot_file(
+    .drawViolin(violin_test),
+    "brca_violin.png"
+  )
+
   expected_elements = c("gg", "ggplot")
   expect_setequal(class(violin_test), expected_elements)
-  
+
 })
 
 ## Check code detects warnings and errors ##
 
 test_that("Violin plot stops when no query genes are found in the data", {
   pbmc.single <- selectViolin("pbmc.single")
-  
+
   expect_error(
     violinPlot(
       object = pbmc.single$object,
@@ -63,12 +93,12 @@ test_that("Violin plot stops when no query genes are found in the data", {
     ),
     "No query genes were found in the dataset."
   )
-  
+
 })
 
 test_that("Violin plot stops when ident of interest is not found in seurat", {
   pbmc.single <- selectViolin("pbmc.single")
-  
+
   expect_error(
     violinPlot(
       object = pbmc.single$object,
@@ -78,12 +108,12 @@ test_that("Violin plot stops when ident of interest is not found in seurat", {
     ),
     "Unable to find ident of interest in metadata."
   )
-  
+
 })
 
 test_that("Violin plot stops when group of interest is empty", {
   pbmc.single <- selectViolin("pbmc.single")
-  
+
   expect_error(
     violinPlot(
       object = pbmc.single$object,
@@ -93,14 +123,14 @@ test_that("Violin plot stops when group of interest is empty", {
     ),
     "No groups were found in the selected ident."
   )
-  
+
 })
 
 test_that("Violin plot stops when user attempts to rename group.by as
           Gene, Expression, or Scaled",
           {
             pbmc.single <- selectViolin("pbmc.single")
-            
+
             expect_error(
               violinPlot(
                 object = pbmc.single$object,
@@ -111,5 +141,5 @@ test_that("Violin plot stops when user attempts to rename group.by as
               ),
               "New ident name cannot be one of Gene, Expression, or scaled."
             )
-            
+
           })

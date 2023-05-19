@@ -260,61 +260,6 @@ colorByMarkerTable <- function(object,
                       max(lengths(present.marker.ls)))
   markers.from.list <- do.call(cbind, padded.ls)
   
-  # Recognize any markers designated as proteins and add protein expression 
-  if (protein.presence) {
-    protein.markers <- markers.from.list[grepl("_prot", markers.from.list)]
-    
-    protein.orig <- gsub("_prot.*", "", protein.markers)
-    
-    protein.name <- paste(protein.orig,
-                                  "_prot", sep = "")
-    
-    protein.array <- list()
-    for (i in seq_along(protein.orig)) {
-      protein.array[[i]] <-
-        object.sub@assays$Protein[protein.orig[i], ]
-      rownames(protein.array[[i]]) <- protein.name[i]
-    }
-    protein.array.comp <- do.call(rbind, protein.array)
-    object.sub@assays$SCT@scale.data <-
-      rbind(object.sub@assays$SCT@scale.data, protein.array.comp)
-  }
-  
-  # Add negative/low identifiers
-  neg.markers.names <-
-    markers.from.list[grepl("_neg", markers.from.list)]
-  orig.markers <- gsub("_neg.*", "", neg.markers.names)
-  
-  # Append neg.markers.names to rownames of object.sub
-  neg.markers.ls <- list()
-  
-  # Calculate adjusted expression for negative markers
-  for (i in seq_along(orig.markers)) {
-    if (orig.markers[i] %in% rownames(object.sub@assays$SCT@scale.data)) {
-      # Format the data so that it can rbinded with object$SCT@scale.data
-      neg.markers.ls[[i]] <-
-        t(matrix(
-          max(object.sub@assays$SCT@scale.data[orig.markers[i], ]) - 
-            object.sub@assays$SCT@scale.data[orig.markers[i], ]
-        ))
-      row.names(neg.markers.ls[[i]]) <- neg.markers.names[i]
-      colnames(neg.markers.ls[[i]]) <-
-        colnames(object.sub@assays$SCT@scale.data)
-      
-      # Append new Negative/low marker (w Expression Count) to object slot
-      object.sub@assays$SCT@scale.data <-
-        rbind(object.sub@assays$SCT@scale.data, neg.markers.ls[[i]])
-    } else {
-      print(
-        paste(
-          orig.markers[i],
-          " is not found in Seurat, cannot calculate negative expression",
-          sep = ""
-        )
-      )
-    }
-  }
-  
   markers.present = unlist(markers.from.list)
   
   if (!length(markers.present) > 0) {
