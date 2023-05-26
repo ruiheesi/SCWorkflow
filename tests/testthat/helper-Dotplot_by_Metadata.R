@@ -40,3 +40,16 @@ getParamDP <- function(data){
               "cells" = cells)
          )  
 }
+
+.drawDotPng <- function(x, width = 10, height = 10){
+  path <- tempfile(fileext = ".png")
+  png(path,
+      width=width,
+      height=height,
+      units = "in",
+      res = 400
+  )
+  on.exit(dev.off())
+  print(x)
+  path
+}

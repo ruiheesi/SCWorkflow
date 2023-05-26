@@ -61,7 +61,7 @@ nameClusters <- function(object,
   
   # If cluster numbers on input table match the cluster numbers in cluster 
   # column in metadata, add new custom labels to seurat object
-  if (all(levels(metadata.df[[cluster.column]]) %in% levels(colval))) {
+  if (all(unique(metadata.df[[cluster.column]]) %in% unique(cluster.numbers))) {
     object <- AddMetaData(object,
                           metadata = 
                             deframe(tibble(metadata.df[[cluster.column]],
