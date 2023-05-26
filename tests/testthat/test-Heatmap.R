@@ -1,33 +1,33 @@
-test_that("Produce heatmap and return plot and filtered dataframe: TEC data", {
-    cr.object <- getParamHM("TEC")
-    output <- do.call(heatmapSC, cr.object)
+test_that("Produce heatmap and return plot and filtered dataframe: TEC data",
+          {
+            cr.object <- getParamHM("TEC")
+            output <- do.call(heatmapSC, cr.object)
             
-    expect_snapshot_file(
-      .drawpng(output$plot),
-        "TEC_heatmap.png"
-    )
+            expect_type(output, "list")
+            expected.elements = c("plot", "data")
+            expect_setequal(names(output), expected.elements)
             
-    expect_type(output, "list")
-    expected.elements = c("plot", "data")
-    expect_setequal(names(output), expected.elements)
-})
+            skip_on_ci()
+            expect_snapshot_file(.drawHeatPng(output$plot),
+                                 "TEC_heatmap.png")
+          })
 
 test_that("Heatmap scaled vs unscaled", {
   cr.object <- getParamHM("TEC")
+  output <- do.call(heatmapSC, cr.object)
   cr.object$scale.data <- FALSE
   output2 <- do.call(heatmapSC, cr.object)
-
-  expect_snapshot_file(
-    .drawpng(output2$plot),
-    "TEC_heatmap_unscaled.png"
-  )
-
+  
   #compare scaled (a) vs. nonscaled data (b) to be different
   a <- rowMeans(as.data.frame.matrix(output$data)[, -1])
   b <- rowMeans(as.data.frame.matrix(output2$data)[, -1])
-
+  
   expect_false(isTRUE(all.equal(a, b)))
-
+  
+  skip_on_ci()
+  expect_snapshot_file(.drawHeatPng(output2$plot),
+                       "TEC_heatmap_unscaled.png")
+  
 })
 
 test_that("Heatmap run with bad gene name", {
@@ -69,28 +69,26 @@ test_that("Produce heatmap - Chariou data", {
   cr.object <- getParamHM("Chariou")
   output <- do.call(heatmapSC, cr.object)
 
-  expect_snapshot_file(
-    .drawpng(output$plot),
-    "Chariou_heatmap.png"
-  )
-
   expect_type(output, "list")
   expected.elements = c("plot", "data")
   expect_setequal(names(output), expected.elements)
+
+  skip_on_ci()
+  expect_snapshot_file(.drawHeatPng(output$plot),
+                       "Chariou_heatmap.png")
 })
 
 test_that("Produce heatmap - PBMC single data", {
   cr.object <- getParamHM("pbmc-single")
   output <- do.call(heatmapSC, cr.object)
 
-  expect_snapshot_file(
-    .drawpng(output$plot),
-    "pbmc-single_heatmap.png"
-  )
-
   expect_type(output, "list")
   expected.elements = c("plot", "data")
   expect_setequal(names(output), expected.elements)
+
+  skip_on_ci()
+  expect_snapshot_file(.drawHeatPng(output$plot),
+                       "pbmc-single_heatmap.png")
 })
 
 test_that("Produce heatmap with protein using NSCLC multi data", {
@@ -98,26 +96,24 @@ test_that("Produce heatmap with protein using NSCLC multi data", {
   cr.object$legend.font = 3
   output <- do.call(heatmapSC, cr.object)
 
-  expect_snapshot_file(
-    .drawpng(output$plot),
-    "nsclc-multi_heatmap.png"
-  )
-
   expect_type(output, "list")
   expected.elements = c("plot", "data")
   expect_setequal(names(output), expected.elements)
+
+  skip_on_ci()
+  expect_snapshot_file(.drawHeatPng(output$plot),
+                       "nsclc-multi_heatmap.png")
 })
 
 test_that("Produce heatmap with filtered dataframe - BRCA data", {
   cr.object <- getParamHM("BRCA")
   output <- do.call(heatmapSC, cr.object)
 
-  expect_snapshot_file(
-    .drawpng(output$plot),
-    "BRCA_heatmap.png"
-  )
-
   expect_type(output, "list")
   expected.elements = c("plot", "data")
   expect_setequal(names(output), expected.elements)
+
+  skip_on_ci()
+  expect_snapshot_file(.drawHeatPng(output$plot),
+                       "BRCA_heatmap.png")
 })

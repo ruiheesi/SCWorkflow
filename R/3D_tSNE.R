@@ -6,6 +6,7 @@
 #' @param object Seurat-class object
 #' @param color.variable Metadata column in Seurat Object to use for color
 #' @param label.variable Metadata column in Seurat Object to use for label
+#' @param dot.size Dot size for plot (default is 4)
 #' @param legend If TRUE, show legend (default is TRUE)
 #' @param colors Colors used for the color.variable
 #' @param filename Filename for saving plot (default is "plot.html")
@@ -22,6 +23,7 @@
 tSNE3D <- function(object,
                    color.variable,
                    label.variable,
+                   dot.size = 4,
                    legend = TRUE,
                    colors = c("darkblue","purple4","green","red","darkcyan",
                               "magenta2","orange","yellow","black"),
@@ -80,7 +82,7 @@ tSNE3D <- function(object,
     mode = "markers",
     hoverinfo = 'text',
     text = ~ label,
-    size = 4
+    size = dot.size
   )
   
   if (legend == FALSE) {

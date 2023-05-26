@@ -78,4 +78,19 @@ getParamDL <- function(data){
               "data.reduction" = data.reduction,
               "density.heatmap" = density.heatmap,
               "display.unscaled.values" = display.unscaled.values))  
+
+}  
+
+.drawdualplot <- function(x, width = 10, height = 10){
+#.drawdualplot <- function(x){
+    path <- tempfile(fileext = ".png")
+    png(path,
+        width=width,
+        height=height,
+        units = "in",
+        res = 400
+    )
+    on.exit(dev.off())
+    grid.draw(x)
+    path
 }
