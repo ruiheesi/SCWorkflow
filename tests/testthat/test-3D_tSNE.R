@@ -1,4 +1,5 @@
 #These lines are necessary to launch Kaleido properly (temporary patch):
+skip_on_ci()
 reticulate::py_run_string(
   "import sys;print(sys.version); sys.path.append('/rstudio-files/R_environments/single-cell-rna-seq-r4'); print(sys.path)"
 )
