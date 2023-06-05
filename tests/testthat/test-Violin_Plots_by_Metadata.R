@@ -1,64 +1,49 @@
 test_that("Violin plot works for TEC data", {
+  tec.data = selectViolin("TEC")
   
-  TEC_data <- select_dataset_SCviolin("TEC")
+  violin_test = do.call(violinPlot, tec.data)
   
-  violin_test <- violinPlot(so = TEC_data$object, ident.of.interest = TEC_data$ident.of.interest, 
-             groups.of.interest = TEC_data$groups.of.interest,
-             genes.of.interest = TEC_data$genes.of.interest)
-  
-  expected_elements = c("gg","ggplot")
+  expected_elements = c("gg", "ggplot")
   expect_setequal(class(violin_test), expected_elements)
   
 })
 
 test_that("Violin plot works for Chariou data", {
+  chariou.data = selectViolin("Chariou")
   
-  Chariou_data <- select_dataset_SCviolin("Chariou")
+  violin_test = do.call(violinPlot, chariou.data)
   
-  violin_test <- violinPlot(so = Chariou_data$object, ident.of.interest = Chariou_data$ident.of.interest, 
-                            groups.of.interest = Chariou_data$groups.of.interest,
-                            genes.of.interest = Chariou_data$genes.of.interest)
-  
-  expected_elements = c("gg","ggplot")
+  expected_elements = c("gg", "ggplot")
   expect_setequal(class(violin_test), expected_elements)
   
 })
 
-test_that("Violin plot works for NSCLC_Single data", {
+test_that("Violin plot works for pbmc.single data", {
+  pbmc.single = selectViolin("pbmc.single")
   
-  NSCLC_Single_data <- select_dataset_SCviolin("NSCLC_Single")
+  violin_test = do.call(violinPlot, pbmc.single)
   
-  violin_test <- violinPlot(so = NSCLC_Single_data$object, ident.of.interest = NSCLC_Single_data$ident.of.interest, 
-                            groups.of.interest = NSCLC_Single_data$groups.of.interest,
-                            genes.of.interest = NSCLC_Single_data$genes.of.interest)
-  
-  expected_elements = c("gg","ggplot")
+  expected_elements = c("gg", "ggplot")
   expect_setequal(class(violin_test), expected_elements)
   
 })
 
-test_that("Violin plot works for NSCLC_Multi data", {
+test_that("Violin plot works for nsclc.multi data", {
+  nsclc.multi = selectViolin("nsclc.multi")
   
-  NSCLC_Multi_data <- select_dataset_SCviolin("NSCLC_Multi")
+  violin_test = do.call(violinPlot, nsclc.multi)
   
-  violin_test <- violinPlot(so = NSCLC_Multi_data$object, ident.of.interest = NSCLC_Multi_data$ident.of.interest, 
-                            groups.of.interest = NSCLC_Multi_data$groups.of.interest,
-                            genes.of.interest = NSCLC_Multi_data$genes.of.interest)
-  
-  expected_elements = c("gg","ggplot")
+  expected_elements = c("gg", "ggplot")
   expect_setequal(class(violin_test), expected_elements)
   
 })
 
-test_that("Violin plot works for BRCA data", {
+test_that("Violin plot works for brca data", {
+  brca = selectViolin("brca")
   
-  BRCA <- select_dataset_SCviolin("BRCA")
+  violin_test = do.call(violinPlot, brca)
   
-  violin_test <- violinPlot(so = BRCA$object, ident.of.interest = BRCA$ident.of.interest, 
-                            groups.of.interest = BRCA$groups.of.interest,
-                            genes.of.interest = BRCA$genes.of.interest)
-  
-  expected_elements = c("gg","ggplot")
+  expected_elements = c("gg", "ggplot")
   expect_setequal(class(violin_test), expected_elements)
   
 })
@@ -66,43 +51,65 @@ test_that("Violin plot works for BRCA data", {
 ## Check code detects warnings and errors ##
 
 test_that("Violin plot stops when no query genes are found in the data", {
+  pbmc.single <- selectViolin("pbmc.single")
   
-  NSCLC_Single_data <- select_dataset_SCviolin("NSCLC_Single")
-  
-  expect_error(violinPlot(so = NSCLC_Single_data$object, ident.of.interest = NSCLC_Single_data$ident.of.interest, 
-                          groups.of.interest = NSCLC_Single_data$groups.of.interest,
-                          genes.of.interest = paste("jibberish", 1:5, sep="_")), "No query genes were found in the dataset.")
+  expect_error(
+    violinPlot(
+      object = pbmc.single$object,
+      group.by = pbmc.single$group.by,
+      group.subset = pbmc.single$group.subset,
+      genes.of.interest = paste("jibberish", 1:5, sep =
+                                  "_")
+    ),
+    "No query genes were found in the dataset."
+  )
   
 })
 
 test_that("Violin plot stops when ident of interest is not found in seurat", {
+  pbmc.single <- selectViolin("pbmc.single")
   
-  NSCLC_Single_data <- select_dataset_SCviolin("NSCLC_Single")
-  
-  expect_error(violinPlot(so = NSCLC_Single_data$object, ident.of.interest = "jibberish", 
-                          groups.of.interest = NSCLC_Single_data$groups.of.interest,
-                          genes.of.interest = NSCLC_Single_data$genes.of.interest), "Unable to find ident of interest in metadata.")
+  expect_error(
+    violinPlot(
+      object = pbmc.single$object,
+      group.by = "jibberish",
+      group.subset = pbmc.single$group.subset,
+      genes.of.interest = pbmc.single$genes.of.interest
+    ),
+    "Unable to find ident of interest in metadata."
+  )
   
 })
 
 test_that("Violin plot stops when group of interest is empty", {
+  pbmc.single <- selectViolin("pbmc.single")
   
-  NSCLC_Single_data <- select_dataset_SCviolin("NSCLC_Single")
-  
-  expect_error(violinPlot(so = NSCLC_Single_data$object, ident.of.interest = NSCLC_Single_data$ident.of.interest, 
-                          groups.of.interest = paste("jibberish", 1:5, sep="_"),
-                          genes.of.interest = NSCLC_Single_data$genes.of.interest), "No groups were found in the selected ident.")
-  
-})
-
-test_that("Violin plot stops when user attempts to rename ident.of.interest as Gene, Expression, or Scaled", {
-  
-  NSCLC_Single_data <- select_dataset_SCviolin("NSCLC_Single")
-  
-  expect_error(violinPlot(so = NSCLC_Single_data$object, ident.of.interest = NSCLC_Single_data$ident.of.interest, 
-                          groups.of.interest = NSCLC_Single_data$groups.of.interest,
-                          genes.of.interest = NSCLC_Single_data$genes.of.interest,
-                          rename.ident = "Gene"), "New ident name cannot be one of Gene, Expression, or scaled.")
+  expect_error(
+    violinPlot(
+      object = pbmc.single$object,
+      group.by = pbmc.single$group.by,
+      group.subset = paste("jibberish", 1:5, sep = "_"),
+      genes.of.interest = pbmc.single$genes.of.interest
+    ),
+    "No groups were found in the selected ident."
+  )
   
 })
 
+test_that("Violin plot stops when user attempts to rename group.by as
+          Gene, Expression, or Scaled",
+          {
+            pbmc.single <- selectViolin("pbmc.single")
+            
+            expect_error(
+              violinPlot(
+                object = pbmc.single$object,
+                group.by = pbmc.single$group.by,
+                group.subset = pbmc.single$group.subset,
+                genes.of.interest = pbmc.single$genes.of.interest,
+                rename.ident = "Gene"
+              ),
+              "New ident name cannot be one of Gene, Expression, or scaled."
+            )
+            
+          })

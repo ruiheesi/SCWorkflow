@@ -2,17 +2,14 @@
 % Please edit documentation in R/3D_tSNE.R
 \name{tSNE3D}
 \alias{tSNE3D}
-\title{Plot 3D TSNE from Seurat Object and saves as html file}
+\title{Plot 3D-TSNE given a Seurat Object and returns plotly image}
 \usage{
 tSNE3D(
   object,
   color.variable,
   label.variable,
-<<<<<<< HEAD
+  legend = TRUE,
   filename = "plot.html",
-=======
-  fileName = "plot.html",
->>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
   save.plot = FALSE,
   npcs = 15
 )
@@ -20,23 +17,21 @@ tSNE3D(
 \arguments{
 \item{object}{Seurat-class object}
 
-\item{color.variable}{Metadata column to use for color}
+\item{color.variable}{Metadata column in Seurat Object to use for color}
 
-\item{label.variable}{Metadata column to use for label}
+\item{label.variable}{Metadata column in Seurat Object to use for label}
 
-<<<<<<< HEAD
+\item{legend}{If TRUE, show legend (default is TRUE)}
+
 \item{filename}{Filename for saving plot (default is "plot.html")}
-=======
-\item{fileName}{Filename for saving plot (default is "plot.html")}
->>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
 
-\item{save.plot}{Save plot (default is FALSE)}
+\item{save.plot}{Save plot as widget in html file (default is FALSE)}
 
-\item{npcs}{Number of PC's (default is 15)}
+\item{npcs}{Number of principal components used for tSNE calculations
+(default is 15)}
 }
 \description{
-Returns 3D tSNE plot for seurat object
-}
-\details{
-This method provides visualization of 3D tSNE plot
+This method provides visualization of 3D-tSNE plot given a
+Seurat Object and returns a plotly plot and a dataframe of TSNE
+coordinates. It optionally saves the plotly image embedded in an html file.
 }

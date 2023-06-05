@@ -1,75 +1,105 @@
-# This code comes from NIDAP 'Plot 3D TSNE from Seurat Object [scRNA-Seq][CCBR]' code template
-
-#' @title Plot 3D TSNE from Seurat Object and saves as html file
-#' @description Returns 3D tSNE plot for seurat object
-#' @details This method provides visualization of 3D tSNE plot
-#' 
+#' @title Plot 3D-TSNE given a Seurat Object and returns plotly image
+#' @description This method provides visualization of 3D-tSNE plot given a
+#'   Seurat Object and returns a plotly plot and a dataframe of TSNE
+#'   coordinates. It optionally saves the plotly image embedded in an html file.
+#'
 #' @param object Seurat-class object
-#' @param color.variable Metadata column to use for color
-#' @param label.variable Metadata column to use for label
+#' @param color.variable Metadata column in Seurat Object to use for color
+#' @param label.variable Metadata column in Seurat Object to use for label
+#' @param legend If TRUE, show legend (default is TRUE)
 #' @param filename Filename for saving plot (default is "plot.html")
-#' @param npcs Number of PC's (default is 15)
-#' @param save.plot Save plot (default is FALSE)
-#' 
-#' @import Seurat
-#' @import ggplot2 
+#' @param npcs Number of principal components used for tSNE calculations
+#'   (default is 15)
+#' @param save.plot Save plot as widget in html file (default is FALSE)
+#'
 #' @importFrom plotly as_widget plot_ly
-#'   
+#' @importFrom Seurat RunTSNE
+#' @importFrom htmlwidgets saveWidget
+#'
 #' @export
 
 tSNE3D <- function(object,
                    color.variable,
                    label.variable,
+                   legend = TRUE,
                    filename = "plot.html",
                    save.plot = FALSE,
-                   npcs = 15){
-  
-  cols=c("darkblue","purple4","green","red","darkcyan","magenta2","orange",
-         "yellow","black")
+                   npcs = 15) {
+  cols = c(
+    "darkblue",
+    "purple4",
+    "green",
+    "red",
+    "darkcyan",
+    "magenta2",
+    "orange",
+    "yellow",
+    "black"
+  )
   
   #Run TSNE again to get 3d coordinates:
-  object <- RunTSNE(object, assay="SCT",
-                dims=1:npcs,
-                dim.embed = 3, 
-                seed.use=1)
+  object <- RunTSNE(
+    object,
+    assay = "SCT",
+    dims = 1:npcs,
+    dim.embed = 3,
+    seed.use = 1
+  )
   
-  tsne.coord <- as.data.frame(object@reductions$tsne@cell.embeddings)
+  tsne.coord <-
+    as.data.frame(object@reductions$tsne@cell.embeddings)
   
-  if(is.null(object@meta.data[[label.variable]])){
-    stop(paste0("The metadata variable selected for labeling ",label.variable,
-                " is not available in the seurat object"))
+  if (is.null(object@meta.data[[label.variable]])) {
+    stop(
+      sprintf(
+        "The metadata variable selected for labeling %s is not
+                 available in the seurat object",
+        label.variable
+      )
+    )
   }
-  if(is.null(object@meta.data[[color.variable]])){
-    stop(paste0("The metadata variable selected for color ",color.variable,
-                " is not available in the seurat object"))
+  if (is.null(object@meta.data[[color.variable]])) {
+    stop(
+      sprintf(
+        "The metadata variable selected for color %s is not available
+                 in the seurat object",
+        color.variable
+      )
+    )
   }
   
-  tsne.df <- data.frame(TSNE1=tsne.coord$tSNE_1,
-                        TSNE2=tsne.coord$tSNE_2,
-                        TSNE3=tsne.coord$tSNE_3,
-                        colorvar=as.factor(object@meta.data[[color.variable]]),
-                        label = object@meta.data[[label.variable]])
+  #Set up dataframe for plotly:
+  tsne.df <- data.frame(
+    TSNE1 = tsne.coord$tSNE_1,
+    TSNE2 = tsne.coord$tSNE_2,
+    TSNE3 = tsne.coord$tSNE_3,
+    colorvar = as.factor(object@meta.data[[color.variable]]),
+    label = object@meta.data[[label.variable]]
+  )
   
-  fig <- plot_ly(tsne.df, x = ~TSNE1, 
-                 y = ~TSNE2, 
-                 z = ~TSNE3, 
-                 color = ~colorvar, 
-                 colors = cols,
-                 type="scatter3d",
-                 mode="markers",
-                 hoverinfo = 'text',
-                 text = ~label,
-                 size= 4) 
+  fig <- plot_ly(
+    tsne.df,
+    x = ~ TSNE1,
+    y = ~ TSNE2,
+    z = ~ TSNE3,
+    color = ~ colorvar,
+    colors = cols,
+    type = "scatter3d",
+    mode = "markers",
+    hoverinfo = 'text',
+    text = ~ label,
+    size = 4
+  )
   
-  legend=TRUE
-  if(legend==FALSE){
+  if (legend == FALSE) {
     fig <- hide_legend(fig)
   }
   
-  if(save.plot == TRUE){
-    htmlwidgets::saveWidget(as_widget(fig), filename, selfcontained=TRUE)
+  #Save plot into html as embedded plotly image
+  if (save.plot == TRUE) {
+    htmlwidgets::saveWidget(as_widget(fig), filename, selfcontained = TRUE)
   }
   
   tsne.results <- list("plot"  = fig, "data" = tsne.df)
-  return(tsne.results) 
+  return(tsne.results)
 }

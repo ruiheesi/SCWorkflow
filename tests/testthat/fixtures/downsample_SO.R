@@ -280,5 +280,49 @@ downsample_SO(IN,OUT)
 
 
 
+### for Potomac Version
+
+for (data in c('TEC','Chariou','PBMC_Single','NSCLC_Multi')) {
+  
+  data.run <- getParamRaw(data)
+  Raw.out <- do.call(processRawData, data.run)
+  # Raw.out$object[[1]]
+  # IN=paste0('/rstudio-files/ccbr-data/data/singlecell/',data,'/',data,'_ProcessRaw_SO.rds')
+  # saveRDS(Raw.out$object,IN)
+  
+  downsampled.obj=list()
+  downsampled.obj=lapply(names(Raw.out$object), function(x){
+    ds=DownsampleSeurat(Raw.out$object[[x]],targetCells=2000,seed = 42)
+  
+  if(c('protein')%in%names(ds@assays)){
+    genes=c(sample(rownames(ds), size =3000-length(rownames(ds@assays$protein)), replace=F),rownames(ds@assays$protein))%>%unique()
+    
+  }else{
+    genes=c(sample(rownames(ds), size =3000, replace=F))%>%unique()
+  }
+  ds <- subset(ds,features = genes)    
+  return(ds)
+  })
+  names(downsampled.obj)=names(Raw.out$object)
+  OUT=paste0('/rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/fixtures/',data,'/',data,'_ProcessRaw_SO_downsample.rds')
+  saveRDS(downsampled.obj,file=OUT)    
+  
+}
+
+
+
+
+for (data in c('TEC','Chariou','NSCLC_Single','NSCLC_Multi')) {
+  
+  data.run <- getParamFQ(data)
+  Raw.out <- do.call(filterQC, data.run)
+ 
+  OUT=paste0('/rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/fixtures/',data,'/',data,'_Filtered_SO_downsample.rds')
+  saveRDS(Raw.out$object,file=OUT)    
+  
+}
+
+
+
 # Git Token
 # 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
