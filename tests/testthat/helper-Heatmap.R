@@ -91,3 +91,15 @@ getParamHM <- function(data) {
     )
   )
 }
+
+.drawHeatPng <- function(x,width=1200, height = 500){
+  path <- tempfile(fileext = ".png")
+  png(path,
+      width=width,
+      height=height,
+      )
+  on.exit(dev.off())
+  print(x)
+  path
+}
+

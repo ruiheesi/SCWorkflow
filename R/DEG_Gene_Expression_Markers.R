@@ -20,10 +20,7 @@
 #' Default is FALSE
 #' @param assay.to.use The assay to use for your DEG analysis.
 #' Default is SCT, but can use linearly scaled data by selecting RNA instead
-#' @param latent.vars Select possible confounding variable within metadata
-#' to account for when running DEG (Works only when test.use is one of 'LR',
-#' 'negbinom', 'poisson', or 'MAST'). Leave blank if you don't have
-#' any confounding variables you want to take into account.
+
 
 #' @import Seurat
 #' @import ggplot2
@@ -54,8 +51,8 @@ degGeneExpressionMarkers <- function(object,
                                      test.to.use = "MAST",
                                      log.fc.threshold = 0.25,
                                      use.spark = FALSE,
-                                     assay.to.use = "SCT",
-                                     latent.vars = c()) {
+                                     assay.to.use = "SCT"
+                                     ) {
   ## --------------- ##
   ## Functions       ##
   ## --------------- ##
@@ -74,7 +71,7 @@ degGeneExpressionMarkers <- function(object,
     markers = FindMarkers(
       object.sub,
       ident.1 = first.cluster,
-      ident.2 = second.cluster,
+      ident.2 = unlist(n)[2],
       test.use = test.to.use,
       logfc.threshold = log.fc.threshold,
       verbose = FALSE,

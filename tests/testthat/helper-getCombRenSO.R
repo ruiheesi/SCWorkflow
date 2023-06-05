@@ -15,8 +15,8 @@ select_crobject <- function(dataset) {
   } else if (dataset == "nsclc-single"){
     
     print("selected NSCLC Single dataset")
-    inputObject <- readRDS(test_path("fixtures/NSCLC_Single",
-    "NSCLCsingle_Cell_Types_SingleR_SO_downsample.rds"))
+    inputObject <- readRDS(test_path("fixtures/PBMC_Single",
+    "PBMCsingle_Cell_Types_SingleR_SO_downsample.rds"))
     
   } else if (dataset == "nsclc-multi"){
     

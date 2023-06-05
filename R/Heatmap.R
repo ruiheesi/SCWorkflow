@@ -1,7 +1,7 @@
 #' @title Heatmap of transcript and/or protein expression values in single cells
 #' @description This method provides a heatmap of single cell data from a Seurat
 #'  object given a set of genes and optionally orders by various metadata and/or
-#'  gene or protein expression levels. Method is based on pheatmap
+#'  gene or protein expression levels. Method is based on ComplexHeatmap::pheatmap
 #'
 #' @param object Seurat-class object
 #' @param sample.names Sample names
@@ -31,7 +31,7 @@
 #'  (default is NULL)
 #'
 #' @import Seurat
-#' @importFrom pheatmap pheatmap
+#' @importFrom ComplexHeatmap pheatmap
 #' @importFrom dendsort dendsort
 #' @importFrom dplyr filter arrange across all_of mutate_if select
 #' @importFrom dendextend rotate
@@ -154,9 +154,6 @@ heatmapSC <- function(object,
   
   # Function to set various heatmap parameters and run pheatmap
   .doHeatmap <- function(dat, clus.col, clus.row, rn, cn, col) {
-    require(pheatmap)
-    require(dendsort)
-    
     col.pal <- np[[col]]
     minx = min(dat)
     maxx = max(dat)
@@ -209,7 +206,6 @@ heatmapSC <- function(object,
       clustering_method = "complete",
       cluster_rows = row.clus,
       cluster_cols = clus.col,
-      cutree_rows = 1,
       clustering_distance_rows = "euclidean",
       clustering_distance_cols = "euclidean",
       annotation_col = annotation.col,
@@ -221,7 +217,7 @@ heatmapSC <- function(object,
     
     callback = function(hc, mat) {
       dend = rev(dendsort(as.dendrogram(hc)))
-      dend %>% dendextend::rotate(c(1:length(dend))) -> dend
+      #dend %>% dendextend::rotate(c(1:length(dend))) -> dend
       as.hclust(dend)
     }
     do.call("pheatmap", c(hm.parameters, list(clustering_callback = callback)))
@@ -396,7 +392,7 @@ heatmapSC <- function(object,
   
   #Arrange columns by metadata tracks:
   if (arrange.by.metadata == TRUE) {
-    annot %>% arrange(across(all_of(metadata))) -> annot
+    annot <- annot %>% arrange(across(all_of(metadata))) 
     df.mat <- df.mat[, match(annot$Barcode, colnames(df.mat))]
     df.mat <-
       df.mat[, apply(df.mat, 2, function(x)
@@ -487,6 +483,11 @@ heatmapSC <- function(object,
     cn = add.column.names,
     col = heatmap.color
   )
+  
+  #Add legends and title formatting:
+  p@matrix_color_mapping@name <- " "
+  p@matrix_legend_param$at <- as.numeric(formatC(p@matrix_legend_param$at, 2))
+  p@column_title_param$gp$fontsize <- 10
   
   #Return expression matrix used in heatmap
   heatmap.df <- as.data.frame(tmean.scale) %>%

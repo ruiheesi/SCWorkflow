@@ -8,7 +8,10 @@ tSNE3D(
   object,
   color.variable,
   label.variable,
+  dot.size = 4,
   legend = TRUE,
+  colors = c("darkblue", "purple4", "green", "red", "darkcyan", "magenta2", "orange",
+    "yellow", "black"),
   filename = "plot.html",
   save.plot = FALSE,
   npcs = 15
@@ -21,7 +24,11 @@ tSNE3D(
 
 \item{label.variable}{Metadata column in Seurat Object to use for label}
 
+\item{dot.size}{Dot size for plot (default is 4)}
+
 \item{legend}{If TRUE, show legend (default is TRUE)}
+
+\item{colors}{Colors used for the color.variable}
 
 \item{filename}{Filename for saving plot (default is "plot.html")}
 

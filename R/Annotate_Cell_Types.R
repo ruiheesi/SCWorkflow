@@ -18,6 +18,9 @@
 #' Default is 2
 #' @param do.finetuning Performs the SingleR fine-tuning function.
 #' Default is FALSE
+#' @param local.celldex Provide a local copy of CellDex library.
+#' Default is FALSE
+
 
 #'
 #' @import Seurat
@@ -43,7 +46,8 @@ annotateCellTypes <- function(object,
                               species = "Mouse",
                               reduction.type = "umap",
                               legend.dot.size = 2,
-                              do.finetuning = FALSE) {
+                              do.finetuning = FALSE,
+                              local.celldex = NULL) {
   ## -------------------------------- ##
   ## Functions                        ##
   ## -------------------------------- ##
@@ -54,7 +58,12 @@ annotateCellTypes <- function(object,
     if (species == "Human") {
 
       #HPCA block
-      HPCA <- celldex::HumanPrimaryCellAtlasData(ensembl = FALSE)
+      if (!is.null(local.celldex)) {
+        HPCA <- local.celldex[[1]]
+      } else {
+        HPCA <- celldex::HumanPrimaryCellAtlasData(ensembl = FALSE)
+      }
+      
       singler = SingleR(
         test = so.counts,
         genes = 'de',
@@ -63,8 +72,8 @@ annotateCellTypes <- function(object,
         ref = HPCA,
         labels = HPCA$label.main
       )
-      so[["HPCA_main"]] <-
-        singler$labels[match(rownames(so[[]]), rownames(singler))]
+      so[["HPCA_main"]] <- 
+        singler$labels[match(so[[]][["seurat_clusters"]], rownames(singler))]
       
       singler = SingleR(
         test = so.counts,
@@ -75,10 +84,14 @@ annotateCellTypes <- function(object,
         labels = HPCA$label.fine
       )
       so[["HPCA"]] <-
-        singler$labels[match(rownames(so[[]]), rownames(singler))]
-      
+        singler$labels[match(so[[]][["seurat_clusters"]], rownames(singler))]
+            
       #BP_encode block
-      BP <- celldex::BlueprintEncodeData(ensembl = FALSE)
+      if (!is.null(local.celldex)) {
+        BP <- local.celldex[[2]]
+      } else {
+        BP <- celldex::BlueprintEncodeData(ensembl = FALSE)
+      }
       singler = SingleR(
         test = so.counts,
         genes = 'de',
@@ -105,7 +118,12 @@ annotateCellTypes <- function(object,
     if (species == "Mouse") {
       
       #mouseRNAseq block
-      mousernaseq <- celldex::MouseRNAseqData(ensembl = FALSE)
+      if (!is.null(local.celldex)) {
+          mousernaseq <- local.celldex[[3]]
+        } else {
+          mousernaseq <- celldex::MouseRNAseqData(ensembl = FALSE)
+        }
+      
       singler = SingleR(
         test = so.counts,
         genes = 'de',
@@ -114,8 +132,9 @@ annotateCellTypes <- function(object,
         ref = mousernaseq,
         labels = mousernaseq$label.main
       )
+
       so[["mouseRNAseq_main"]] <-
-        singler$labels[match(rownames(so[[]]), rownames(singler))]
+        singler$labels[match(so[[]][["seurat_clusters"]], rownames(singler))]
       
       singler = SingleR(
         test = so.counts,
@@ -126,10 +145,14 @@ annotateCellTypes <- function(object,
         labels = mousernaseq$label.fine
       )
       so[["mouseRNAseq"]] <-
-        singler$labels[match(rownames(so[[]]), rownames(singler))]
+        singler$labels[match(so[[]][["seurat_clusters"]], rownames(singler))]
       
       #ImmGen block
-      immgen <- celldex::ImmGenData(ensembl = FALSE)
+      if (!is.null(local.celldex)) {
+        immgen <- local.celldex[[4]]
+      } else {
+        immgen <- celldex::ImmGenData(ensembl = FALSE)
+      }
       singler = SingleR(
         test = so.counts,
         genes = 'de',
@@ -138,9 +161,9 @@ annotateCellTypes <- function(object,
         ref = immgen,
         labels = immgen$label.main
       )
-      so[["immgen_main"]] <-
-        singler$labels[match(rownames(so[[]]), rownames(singler))]
-      
+      so[["immgen_main"]] <- 
+        singler$labels[match(so[[]][["seurat_clusters"]], rownames(singler))]
+
       singler = SingleR(
         test = so.counts,
         genes = 'de',
@@ -149,8 +172,8 @@ annotateCellTypes <- function(object,
         ref = immgen,
         labels = immgen$label.fine
       )
-      so[["immgen"]] <-
-        singler$labels[match(rownames(so[[]]), rownames(singler))]
+      so[["immgen"]] <- 
+        singler$labels[match(so[[]][["seurat_clusters"]], rownames(singler))]
       
     }
     return(so)

@@ -112,6 +112,7 @@ harmonyBatchCorrect <- function(object,
   cols = unlist(mapply(brewer.pal, qual.col.pals$maxcolors, 
                        rownames(qual.col.pals)))
   
+  set.seed(10)
   g1 <- ggplot(sdat, aes(x=TSNE1, y=TSNE2)) +
     theme_bw() +
     theme(legend.title=element_blank()) +
@@ -130,8 +131,9 @@ harmonyBatchCorrect <- function(object,
   harm.embeds <- object@reductions$harmony@cell.embeddings
   harm.lvl.backcalc <- harm.embeds %*% t(ppldngs)
   
-  # Replace SCT scale.data expression with backcalculated data
-  object@assays$SCT@scale.data <- t(harm.lvl.backcalc)
+  # Insert back-calculated data into seurat
+  harmSCT <- CreateAssayObject(data = t(harm.lvl.backcalc))
+  object[["harmSCT"]] <- harmSCT
   
   harmony.res <- list(adj.object = object,
                       adj.tsne = g1)
