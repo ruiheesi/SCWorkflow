@@ -2,7 +2,6 @@ for (data in c('TEC','Chariou','NSCLC_Multi')) {#,'PBMC_Single')) {
   
   test_that(paste0("Test Filter and QC - Standard (",data," dataset)"), {
     
-    
     data.run <- getParamRaw(data)
     Raw.out <- do.call(processRawData, data.run)
     
