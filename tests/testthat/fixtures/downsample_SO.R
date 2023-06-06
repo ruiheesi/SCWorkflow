@@ -1,6 +1,13 @@
+<<<<<<< HEAD
 
 
 
+=======
+<<<<<<< HEAD
+=======
+
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
+>>>>>>> 549f205832afd7618696b7ae8c0e72008d3c5088
 downsample_SO=function(IN,OUT){
   library(Seurat)
   
@@ -13,6 +20,7 @@ saveRDS(downsampled.obj,file=OUT)
 }
 
 
+<<<<<<< HEAD
 ########################################################################################
 ## CITEseq data did not work with previous function. Found this function that works for CITEseq
 
@@ -89,6 +97,9 @@ downsample_CITE_SO=function(IN,OUT){
 
 
 
+=======
+<<<<<<< HEAD
+>>>>>>> 549f205832afd7618696b7ae8c0e72008d3c5088
 
 
 ########################################################################################
@@ -175,6 +186,8 @@ for (data in c('TEC','Chariou','NSCLC_Single','NSCLC_Multi')) {
 ########################################################################################
 ########################################################################################
 
+=======
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
 ## TEC
 IN='/rstudio-files/ccbr-data/data/singlecell/TEC/TEC_Combine_and_Renormalize_SO.rds'
 OUT='/rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/fixtures/TEC/TEC_Combine_and_Renormalize_SO_downsample.rds'
@@ -188,6 +201,7 @@ downsample_SO(IN,OUT)
 # cp /rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/fixtures/TEC/TEC_CellTypesSingleR_SO_downsample.rds
 # /rstudio-files/ccbr-data/data/singlecell/TEC
 
+<<<<<<< HEAD
 # mkdir /rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/fixtures/TEC/h5files
 # cp /rstudio-files/ccbr-data/data/singlecell/TEC/*.h5 /rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/fixtures/TEC/h5files
 
@@ -203,6 +217,13 @@ downsample_SO(IN,OUT)
 
 
 
+=======
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
+>>>>>>> 549f205832afd7618696b7ae8c0e72008d3c5088
 ## Chariou
 IN='/rstudio-files/ccbr-data/data/singlecell/Chariou/Chariou_Combine_and_Renormalize_SO.rds'
 OUT='/rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/fixtures/Chariou/Chariou_Combine_and_Renormalize_SO_downsample.rds'
@@ -221,6 +242,10 @@ downsample_SO(IN,OUT)
 # cp /rstudio-files/ccbr-data/data/singlecell/Chariou/*.h5 /rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/fixtures/Chariou/h5files
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
 ## NSCLC_Single
 
 IN='/rstudio-files/ccbr-data/data/singlecell/NSCLC_Single/NSCLCsingle_Combine_and_Renormalize_SO.rds'
@@ -245,7 +270,15 @@ downsample_SO(IN,OUT)
 
 IN='/rstudio-files/ccbr-data/data/singlecell/NSCLC_Multi/NSCLCmulti_Combine_and_Renormalize_SO.rds'
 OUT='/rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/fixtures/NSCLC_Multi/NSCLCmulti_Combine_and_Renormalize_SO_downsample.rds'
+<<<<<<< HEAD
 downsample_CITE_SO(IN,OUT)
+=======
+<<<<<<< HEAD
+
+=======
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
+downsample_SO(IN,OUT)
+>>>>>>> 549f205832afd7618696b7ae8c0e72008d3c5088
 # cp /rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/fixtures/NSCLC_Multi/NSCLCmulti_Combine_and_Renormalize_SO_downsample.rds \
 # /rstudio-files/ccbr-data/data/singlecell/NSCLC_Multi
 # so=readRDS(OUT)
@@ -254,7 +287,15 @@ downsample_CITE_SO(IN,OUT)
 
 IN='/rstudio-files/ccbr-data/data/singlecell/NSCLC_Multi/NSCLCmulti_Cell_Types_SingleR_SO.rds'
 OUT='/rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/fixtures/NSCLC_Multi/NSCLCmulti_Cell_Types_SingleR_SO_downsample.rds'
+<<<<<<< HEAD
 downsample_CITE_SO(IN,OUT)
+=======
+<<<<<<< HEAD
+
+=======
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
+downsample_SO(IN,OUT)
+>>>>>>> 549f205832afd7618696b7ae8c0e72008d3c5088
 # cp /rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/fixtures/NSCLC_Multi/NSCLCmulti_Cell_Types_SingleR_SO_downsample.rds \
 # /rstudio-files/ccbr-data/data/singlecell/NSCLC_Multi
 # so=readRDS(OUT)
@@ -265,7 +306,10 @@ downsample_CITE_SO(IN,OUT)
 # cp /rstudio-files/ccbr-data/data/singlecell/NSCLC_Multi/*.h5 /rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/fixtures/NSCLC_Multi/h5files
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
 ## BRCA
 
 IN='/rstudio-files/ccbr-data/data/singlecell/BRCA/BRCA_Combine_and_Renormalize_SO.rds'
@@ -275,6 +319,7 @@ downsample_SO(IN,OUT)
 # /rstudio-files/ccbr-data/data/singlecell/BRCA
 
 
+<<<<<<< HEAD
 # mkdir /rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/fixtures/BRCA/h5files
 # cp /rstudio-files/ccbr-data/data/singlecell/BRCA/*.h5 /rstudio-files/ccbr-data/users/phil/SCWorkflow/tests/testthat/fixtures/BRCA/h5files
 
@@ -323,6 +368,11 @@ for (data in c('TEC','Chariou','NSCLC_Single','NSCLC_Multi')) {
 }
 
 
+=======
+<<<<<<< HEAD
+>>>>>>> 549f205832afd7618696b7ae8c0e72008d3c5088
 
+=======
+>>>>>>> 30b7146f0a89f5ab7f8ae790ea33038fe5ca58de
 # Git Token
 # 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
