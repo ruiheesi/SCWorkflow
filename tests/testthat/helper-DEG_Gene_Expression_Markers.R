@@ -6,19 +6,16 @@ getParamDGEM <- function(data){
       samples = 'c("1_Embryo_13_5","2_Embryo_15")'
       parameter.to.test = "SCT_snn_res_0_2"
       contrasts =  c("1-2","2-all")
-      latent.vars = c()
   } else if (data == "Chariou") {
       object <- selectCRObject("Chariou")
       samples = 'c("CD8dep","Combo","ENT","NHSIL12","PBS")'
       parameter.to.test = "SCT_snn_res_2_8"
       contrasts =  c("0-1","0-all")
-      latent.vars = c()
   } else if (data == "pbmc-single") {
       object <- selectCRObject("pbmc-single")
       samples = 'c("PBMC_Single")'
       parameter.to.test = "SCT_snn_res_0_2"
       contrasts =  c("0-1","0-all")
-      latent.vars = c()
   } else if (data == "nsclc-multi") {
       object <- selectCRObject("nsclc-multi")
       samples = 'c("Donor_1",
@@ -30,7 +27,6 @@ getParamDGEM <- function(data){
                    "Donor_7")'
       parameter.to.test = "SCT_snn_res_0_2"
       contrasts =  c("0-1","0-all")
-      latent.vars = c()
   } else if (data == "BRCA") {
       object <- selectCRObject("BRCA")
       samples = 'c("CID3586",
@@ -61,12 +57,10 @@ getParamDGEM <- function(data){
                    "CID4535")'
       parameter.to.test = "SCT_snn_res_0_2"
       contrasts =  c("0-1","0-all")
-      latent.vars = c()
   }
 
   return(list("object" = object,
               "samples"=samples, 
               "parameter.to.test" = parameter.to.test,
-              "contrasts" = contrasts,
-              "latent.vars" = latent.vars))  
+              "contrasts" = contrasts))  
 }
