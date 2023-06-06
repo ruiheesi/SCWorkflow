@@ -61,6 +61,7 @@ degGeneExpressionMarkers <- function(object,
   .getDegTable <- function(n) {
     first.cluster <- unlist(n)[1]
     second.cluster <- unlist(n)[2]
+    second.cluster.name <- second.cluster
     
     if (second.cluster == "all") {
       second.cluster <- NULL
@@ -71,7 +72,7 @@ degGeneExpressionMarkers <- function(object,
     markers = FindMarkers(
       object.sub,
       ident.1 = first.cluster,
-      ident.2 = unlist(n)[2],
+      ident.2 = second.cluster,
       test.use = test.to.use,
       logfc.threshold = log.fc.threshold,
       verbose = FALSE,
@@ -88,7 +89,7 @@ degGeneExpressionMarkers <- function(object,
           colnames(markers),
           first.cluster,
           "vs",
-          second.cluster,
+          second.cluster.name,
           sep = "_"
         )
       )
