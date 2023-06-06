@@ -1,7 +1,7 @@
 #' 
 #' @title Combine & Normalize 
 #' @description Scales and Normalizes data, Combines samples, 
-#'  runs Dimensional Reduction, and returns a combined Seurat Object. 
+#'  runs Dimensional Reduction, Clusters, and returns a combined Seurat Object. 
 #' @details This is Step 3 in the basic Single-Cell RNA-seq workflow.
 #'  This template will summarize the multi-dimensionality of your data into 
 #'  a set of "principal components" to allow for easier analysis. 
@@ -11,7 +11,7 @@
 #'  Please see the elbow plot in the previous template to figure out what
 #'  number of PCs explains your variance cut-off. For example,
 #'  if the elbow plot has point at (15,0.02), it means that 15 PCs
-#'  encapsulate 98% of the variance in your data.(Default: 15)
+#'  encapsulate 98% of the variance in your data.(Default: 30)
 #' @param SCT.level Select at which stage to apply SCtransform nomalization. 
 #'  Merged: Merge all samples and apply SCTransfrom on merged object. 
 #'  Sample: Apply SCTranform on individual samples then merge into single 
@@ -27,14 +27,15 @@
 #' Seurat::FindVariableFeatures. (Default: 8)
 #' @param low.cut.disp Set low cutoff to calculate feature dispersions in 
 #' Seurat::FindVariableFeatures.(Default: 1)
-#' @param high.cut.disp description. (Default: 100000)
+#' @param high.cut.disp Set high cutoff to calculate feature dispersions in 
+#' Seurat::FindVariableFeatures. (Default: 100000)
 #' @param selection.method Method to choose top variable features.
 #'  Options: vst, mean.var.plot, dispersion. (Default: 'vst')
-#' @param only.var.genes If dataset is larger than ~40k filtered cells,
-#'  toggle to TRUE. If TRUE, only variable genes will be available for
-#'  downstream analysis. (Default: FALSE)
 #' @param draw.umap If TRUE, draw UMAP plot. (Default: TRUE)
 #' @param draw.tsne If TRUE, draw TSNE plot. (Default: TRUE)
+#' @param only.var.genes If dataset is larger than ~40k filtered cells,
+#'  set to TRUE. If TRUE, only variable genes will be available for
+#'  downstream analysis. (Default: FALSE)
 #' @param seed.for.pca Set a random seed for PCA calculation. (Default: 42)
 #' @param seed.for.tsne Set a random seed for TSNE calculation. (Default: 1)
 #' @param seed.for.umap Set a random seed for UMAP calculation. (Default: 42)
@@ -56,14 +57,14 @@
 #'  in variation between consecutive PCs. (Default: 0.1)
 #' @param jackstraw Opt to visualize your data in a Jackstraw plot. Jackstraw 
 #'  plot can add more description than an elbow plot but is compute intensive 
-#'  process and may not be seutable for larger datasets. (Default: 0.1)
-#' @param jackstraw.dims Recommended max 10
+#'  process and may not be suitable for larger datasets. (Default: FALSE)
+#' @param jackstraw.dims Recommended max 10.(Default: 5)
 #' @param exclude.sample Exclude unwanted samples from the merge step.
 #'  Include sample names to be removed. If you want to exclude several samples,
 #'  separate each sample number by comma (e.g. sample1,sample2,sample3,sample4).
 #' @param project.name Add project name to the Seurat object metadata. 
 #'  (Default: 'scRNAProject')
-#' @param cell.hashing.data Toggle "true" if you are using cell-hashed data. 
+#' @param cell.hashing.data Set to "TRUE" if you are using cell-hashed data. 
 #'  (Default: FALSE)
 #' 
 #' 
