@@ -57,8 +57,6 @@ getParamRaw <- function(data){
     rename.col="Rename" 
 
     
-    
-    
   } else if (data == "NSCLC_Multi") {
   
       data.table(Sample_Name=
