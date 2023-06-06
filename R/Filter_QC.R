@@ -441,7 +441,7 @@ filterQC <- function(object,
     ncounts.limits=.checkLimits(ncounts.limits)
     
     
-    counts.filter=((so@meta.data$nCount_RNA >= 
+    ncounts.filter=((so@meta.data$nCount_RNA >= 
                       max(ncounts.limits[1],mad.ncounts.limits[1])) &
                      (so@meta.data$nCount_RNA <= 
                         min(ncounts.limits[2], mad.ncounts.limits[2]))
@@ -453,7 +453,7 @@ filterQC <- function(object,
     nfeature.limits=.checkLimits(nfeature.limits)
     
     
-    gene.filter= ((so@meta.data$nFeature_RNA >= 
+    nfeature.filter= ((so@meta.data$nFeature_RNA >= 
                      max(nfeature.limits[1],mad.nfeature.limits[1])) &
                     (so@meta.data$nFeature_RNA <= 
                        min(nfeature.limits[2], mad.nfeature.limits[2]))
@@ -512,8 +512,8 @@ filterQC <- function(object,
 
 
         ### Combine filters ####
-    filterIndex <-counts.filter & 
-      gene.filter & 
+    filterIndex <-ncounts.filter & 
+      nfeature.filter & 
       mitochPer.filter & 
       complexity.filter & 
       top20.filter & 
@@ -521,8 +521,8 @@ filterQC <- function(object,
     filterIndex=as.data.frame(filterIndex)
     rownames(filterIndex) = rownames(so@meta.data)
     
-    filter_matrix <- cbind(counts.filter,
-                           gene.filter,
+    filter_matrix <- cbind(ncounts.filter,
+                           nfeature.filter,
                            mitochPer.filter,
                            complexity.filter,
                            top20.filter,
@@ -547,10 +547,10 @@ filterQC <- function(object,
     
     
     cat('Minimum Cells per Gene: ',min.cells,'\n')
-    cat('Gene per Cell Limits: ',nfeature.limits,'\n')
-    cat('MAD Gene per Cell Limits: ',mad.nfeature.limits,'\n')
-    cat('number of molecules per Cell Limits: ',ncounts.limits,'\n')
-    cat('MAD number of molecules per Cell Limits: ',mad.ncounts.limits,'\n')
+    cat('nfeature Limits: ',nfeature.limits,'\n')
+    cat('MAD nfeature Limits: ',mad.nfeature.limits,'\n')
+    cat('ncounts Limits: ',ncounts.limits,'\n')
+    cat('MAD ncounts Limits: ',mad.ncounts.limits,'\n')
     cat('Percent of Mitochondrial reads per Cell Limits: ',mitoch.limits,'\n')
     cat('MAD Percent of Mitochondrial reads per Cell Limits: ',
         mad.mitoch.limits,'\n')
