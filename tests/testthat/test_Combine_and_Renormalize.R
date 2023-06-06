@@ -1,6 +1,7 @@
 test_that("Load testing dataset", {
   # Seurat_Object <- readRDS('./otherData/PCAnorm.rds')
   
+  
   Seurat_Object <- readRDS(test_path("fixtures", "SO_moduleScore.rds"))
   
   
