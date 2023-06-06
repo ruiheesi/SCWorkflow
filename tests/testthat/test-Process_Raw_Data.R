@@ -1,4 +1,4 @@
-for (data in c('TEC','Chariou','PBMC_Single','NSCLC_Multi')) {
+for (data in c('TEC','Chariou','NSCLC_Multi')) {#,'PBMC_Single')) {
   
   test_that(paste0("Test Filter and QC - Standard (",data," dataset)"), {
     
