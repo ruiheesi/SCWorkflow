@@ -6,7 +6,6 @@ for (data in c('TEC','Chariou','NSCLC_Multi')) {#,'PBMC_Single')) {
     data.run <- getParamRaw(data)
     Raw.out <- do.call(processRawData, data.run)
     
-    
     # create output
     expected.elements = c("object","plots")
     expect_setequal(names(Raw.out), expected.elements)
