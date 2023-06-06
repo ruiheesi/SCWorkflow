@@ -14,46 +14,46 @@
 #'  transcriptome assay. This is to prevent clustering bias in T-cells of the 
 #'  same clonotype. Only recommended if you are also doing TCR-seq. 
 #'  (Default: FALSE)
-#' @param gene.limits Filter out cells where the number of genes found in each 
+#' @param nfeature.limits Filter out cells where the number of genes found in each 
 #'  cell exceed the selected lower or upper limits. 
 #'  Usage c(lower limit, Upper Limit). E.g. setting to c(200,1000) will remove 
-#'  cells that have fewer than 200 genes or more than 30000 genes 
-#'  for each sample (Default: c(NA, NA)).
-#' @param mad.gene.limits Set filter limits based on how many Median Absolute 
-#'  Deviations an outlier cell will have. Calculated from the median gene number 
-#'  for all cells in your sample. Usage c(lower limit, Upper Limit)
-#'  E.g. setting to c(3,5) will remove all cells with 3 absolute deviations less 
-#'  than the median or 5 absolute deviations greater than the median. 
-#'  (Default: c(5,5)
-#' @param counts.limits Filter out cells where the total number of molecules 
+#'  cells that have fewer than 200 genes or more than 1000 genes 
+#'  for each sample. (Default: c(NA, NA))
+#' @param mad.nfeature.limits Set filter limits based on how many Median 
+#' Absolute Deviations an outlier cell will have. Calculated from the median 
+#' gene number for all cells in your sample. Usage c(lower limit, Upper Limit)
+#'  E.g. setting to c(3,5) will remove all cells with more than 3 absolute 
+#'  deviations less than the median or 5 absolute deviations greater than the 
+#'  median. (Default: c(5,5))
+#' @param ncounts.limits Filter out cells where the total number of molecules 
 #'  (umi) detected within a cell exceed the selected limits.
 #'  Usage c(lower limit, Upper Limit). E.g. setting to c(200,100000) will remove 
-#'  cells that have fewer than 200 or greater than 100000 molecules 
-#'  (Default: c(NA, NA)).
-#' @param mad.counts.limits Set filter limits based on how many Median Absolute 
+#'  cells that have fewer than 200 or greater than 100000 molecules. 
+#'  (Default: c(NA, NA))
+#' @param mad.ncounts.limits Set filter limits based on how many Median Absolute 
 #'  Deviations an outlier cell will have. Calculated from the median number of 
 #'  molecules for all cells in your sample. Usage c(lower limit, Upper Limit)
-#'  E.g. setting to c(3,5) will remove all cells with 3 absolute 
-#'  deviations less than the median or with 5 absolute deviations greater than 
-#'  the median. (Default: c(5,5))
+#'  E.g. setting to c(3,5) will remove all cells with more than 3 absolute 
+#'  deviations less than the median or with more than 5 absolute deviations 
+#'  greater than the median. (Default: c(5,5))
 #' @param mitoch.limits Filter out cells whose proportion of mitochondrial genes
 #'  exceed the selected lower or upper limits. 
-#'  Usage c(lower limit, Upper Limit). E.g. setting to c(0,8) will not setlower 
-#'  limit and removes cells with more than 8% mitochondrial RNA. 
+#'  Usage c(lower limit, Upper Limit). E.g. setting to c(0,8) will not set the 
+#'  lower limit and removes cells with more than 8% mitochondrial RNA. 
 #'  (Default: c(NA,8))
 #' @param mad.mitoch.limits Set filter limits based on how many Median Absolute 
 #'  Deviations an outlier cell will have. Calculated from the Median percentage 
 #'  of mitochondrial RNA for all cells in your sample. 
 #'  Usage c(lower limit, Upper Limit). E.g. setting to c(NA,3) will not set a 
-#'  lower limit and remove all cells with 3 absolute deviations greater than 
-#'  the median. (Default: c(NA,3))
+#'  lower limit and remove all cells with more than 3 absolute deviations 
+#'  greater than the median. (Default: c(NA,3))
 #' @param complexity.limits Complexity represents Number of genes detected per 
 #' UMI. The more genes detected per UMI, the more complex the data. 
 #' Filter out cells whose Complexity exceed the selected lower or upper limits.
 #' Cells that have a high number of UMIs but only a low number of genes could 
 #' be dying cells, but also could represent a population of a low complexity 
-#' cell type (i.e red blood cells). We suggest that you set to 0.8 if samples 
-#' have suspected RBC contamination. 
+#' cell type (i.e red blood cells). We suggest that you set the lower limit to 
+#' 0.8 if samples have suspected RBC contamination. 
 #' Usage c(lower limit, Upper Limit). E.g. setting to c(0.8,0) will not set 
 #' an upper limit and removes cells with complexity less than 0.8.
 #' (Default: c(NA,NA))
@@ -61,8 +61,8 @@
 #' Absolute Deviations an outlier cell will have. Calculated from the Median 
 #' complexity for all cells in your sample. 
 #' Usage c(lower limit, Upper Limit). E.g. setting to c(5,NA) will not set an 
-#' upper limit and remove all cells with 5 absolute deviations less than the 
-#' median. (Default: c(5,NA))
+#' upper limit and remove all cells with  more than 5 absolute deviations 
+#' less than the median. (Default: c(5,NA))
 #' @param topNgenes.limits Filter Cells based on the percentage of total counts 
 #' in top N most highly expressed genes. Outlier cells would have a high 
 #' percentage of counts in just a few genes and should be removed. 
@@ -75,8 +75,8 @@
 #' Absolute Deviations an outlier cell will have. Calculated from the Median 
 #' percentage of counts in the top N Genes.
 #' Usage c(lower limit, Upper Limit). E.g. setting to c(5,5) will remove all 
-#' cells with 5 absolute deviations greater or or 5 absolute deviations less 
-#' than the median perecentage. (Default: c(5,5))
+#' cells with more than 5 absolute deviations greater than or 5 absolute 
+#' deviations less than the median percentage. (Default: c(5,5))
 #' @param n.topgnes Select the number of top highly expressed genes used to 
 #' calculate the percentage of reads found in these genes. 
 #' E.g. a value of 20 calculates the percentage of reads found in the top 20 
@@ -113,16 +113,14 @@
 #' @return Seurat Object and QC plots
 
 filterQC <- function(object,
-
-
                      
                      ## Filter Samples
                      min.cells = 20,
                      filter.vdj.genes=F,
-                     gene.limits=c(NA,NA),
-                     mad.gene.limits=c(5,5),
-                     counts.limits=c(NA,NA),
-                     mad.counts.limits=c(5,5),
+                     nfeature.limits=c(NA,NA),
+                     mad.nfeature.limits=c(5,5),
+                     ncounts.limits=c(NA,NA),
+                     mad.ncounts.limits=c(5,5),
                      mitoch.limits = c(NA,8),
                      mad.mitoch.limits = c(NA,3),
                      complexity.limits = c(NA,NA),
@@ -438,27 +436,27 @@ filterQC <- function(object,
     so=.perCountsTop20Genes(so,n.topgnes)
     
     ## Counts(umi) Filter 
-    mad.counts.limits=.madCalc(so,'nCount_RNA',mad.counts.limits)
-    mad.counts.limits=.checkLimits(mad.counts.limits)
-    counts.limits=.checkLimits(counts.limits)
+    mad.ncounts.limits=.madCalc(so,'nCount_RNA',mad.ncounts.limits)
+    mad.ncounts.limits=.checkLimits(mad.ncounts.limits)
+    ncounts.limits=.checkLimits(ncounts.limits)
     
     
     counts.filter=((so@meta.data$nCount_RNA >= 
-                      max(counts.limits[1],mad.counts.limits[1])) &
+                      max(ncounts.limits[1],mad.ncounts.limits[1])) &
                      (so@meta.data$nCount_RNA <= 
-                        min(counts.limits[2], mad.counts.limits[2]))
+                        min(ncounts.limits[2], mad.ncounts.limits[2]))
     ) 
     
     ## Gene Filter (nFeatrue)
-    mad.gene.limits=.madCalc(so,'nFeature_RNA',mad.gene.limits)
-    mad.gene.limits=.checkLimits(mad.gene.limits)
-    gene.limits=.checkLimits(gene.limits)
+    mad.nfeature.limits=.madCalc(so,'nFeature_RNA',mad.nfeature.limits)
+    mad.nfeature.limits=.checkLimits(mad.nfeature.limits)
+    nfeature.limits=.checkLimits(nfeature.limits)
     
     
     gene.filter= ((so@meta.data$nFeature_RNA >= 
-                     max(gene.limits[1],mad.gene.limits[1])) &
+                     max(nfeature.limits[1],mad.nfeature.limits[1])) &
                     (so@meta.data$nFeature_RNA <= 
-                       min(gene.limits[2], mad.gene.limits[2]))
+                       min(nfeature.limits[2], mad.nfeature.limits[2]))
     )  
     
     ## Mitoc Fiter
@@ -549,10 +547,10 @@ filterQC <- function(object,
     
     
     cat('Minimum Cells per Gene: ',min.cells,'\n')
-    cat('Gene per Cell Limits: ',gene.limits,'\n')
-    cat('MAD Gene per Cell Limits: ',mad.gene.limits,'\n')
-    cat('number of molecules per Cell Limits: ',counts.limits,'\n')
-    cat('MAD number of molecules per Cell Limits: ',mad.counts.limits,'\n')
+    cat('Gene per Cell Limits: ',nfeature.limits,'\n')
+    cat('MAD Gene per Cell Limits: ',mad.nfeature.limits,'\n')
+    cat('number of molecules per Cell Limits: ',ncounts.limits,'\n')
+    cat('MAD number of molecules per Cell Limits: ',mad.ncounts.limits,'\n')
     cat('Percent of Mitochondrial reads per Cell Limits: ',mitoch.limits,'\n')
     cat('MAD Percent of Mitochondrial reads per Cell Limits: ',
         mad.mitoch.limits,'\n')
