@@ -3,7 +3,7 @@ getParamCN <- function(data){
   if(data == "TEC"){
     object <- readRDS(test_path(
       paste0("fixtures/",data), paste0(data,'_Filtered_SO_downsample.rds')))
-    object=object[c(1,2)]
+    object=object
     
     npcs = 30
     vars.to.regress = c()
@@ -15,7 +15,7 @@ getParamCN <- function(data){
   } else if (data == "Chariou") {
     object <- readRDS(test_path(
       paste0("fixtures/",data), paste0(data,'_Filtered_SO_downsample.rds')))
-    object=object[c(1,2)]
+    object=object
   
     npcs = 21
     vars.to.regress = c("percent.mt")
@@ -38,7 +38,7 @@ getParamCN <- function(data){
   } else if (data == "NSCLC_Multi") {
     object <- readRDS(test_path(
       paste0("fixtures/",data), paste0(data,'_Filtered_SO_downsample.rds')))
-    object=object[c(1,2)]
+    object=object
     
     npcs = 30
     vars.to.regress = c()
@@ -50,7 +50,7 @@ getParamCN <- function(data){
   } else if (data == "BRCA") {
     object <- readRDS(test_path(
       paste0("fixtures/",data), paste0(data,'_Filtered_SO_downsample.rds')))
-    object=object[c(1,2)]
+    object=object
     
     npcs = 30
     vars.to.regress = c()

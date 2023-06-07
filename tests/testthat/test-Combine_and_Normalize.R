@@ -86,7 +86,8 @@ for (data in c('TEC')) {
     paste0("Test Combine & Renormalize - exclude.sample (",data," dataset)"), {
       
       data.run <- getParamCN(data)
-      data.run$exclude.sample=object[1]%>%names
+      # data.run$input=data.run$input[c(1,2)]
+      data.run$exclude.sample=object$so[1]%>%names
       combine.renormalize.out <- do.call(combineNormalize, data.run)
       
       
@@ -99,12 +100,12 @@ for (data in c('TEC')) {
       expect( nrow(combine.renormalize.out$object@assays$RNA@counts),'> 0' )
       # plot slot contains data
       expect( object.size(combine.renormalize.out$plot),'> 0' )
-      
+
     })
 }
 
 
-for (data in c('PBMC_Single')) {
+for (data in c('TEC')) {
   
   test_that(
     paste0("Test Combine & Renormalize - selection.method = mean.var.plot (",

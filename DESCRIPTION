@@ -73,6 +73,7 @@ Imports:
     gdata,
     ggrepel,
     tidyr,
-    htmlwidgets
+    htmlwidgets,
+    scDblFinder
 Config/testthat/edition: 3
 
