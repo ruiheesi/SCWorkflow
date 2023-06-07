@@ -1,15 +1,15 @@
 test_that("Produce heatmap and return plot and filtered dataframe: TEC data",
-          {
-            cr.object <- getParamHM("TEC")
-            output <- do.call(heatmapSC, cr.object)
+{
+  cr.object <- getParamHM("TEC")
+  output <- do.call(heatmapSC, cr.object)
             
-            expect_type(output, "list")
-            expected.elements = c("plot", "data")
-            expect_setequal(names(output), expected.elements)
-            skip_on_ci()
-            expect_snapshot_file(.drawHeatPng(output$plot),
+  expect_type(output, "list")
+  expected.elements = c("plot", "data")
+  expect_setequal(names(output), expected.elements)
+  skip_on_ci()
+  expect_snapshot_file(.drawHeatPng(output$plot),
                                  "TEC_heatmap.png")
-          })
+})
 
 test_that("Heatmap scaled vs unscaled", {
   cr.object <- getParamHM("TEC")
@@ -28,7 +28,7 @@ test_that("Heatmap scaled vs unscaled", {
                        "TEC_heatmap_unscaled.png")
 
 })
- 
+
 test_that("Heatmap run with bad gene name", {
   cr.object <- getParamHM("TEC")
 
