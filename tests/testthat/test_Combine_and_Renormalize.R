@@ -5,7 +5,6 @@ test_that("Load testing dataset", {
   Seurat_Object <- readRDS(test_path("fixtures", "SO_moduleScore.rds"))
   
 
-  
   Combine_and_Renormalize_out <- Combine_and_Renormalize(Seurat_Object,
                                                      npcs = 15,
                                                      vars_to_regress = c("percent.mt"),

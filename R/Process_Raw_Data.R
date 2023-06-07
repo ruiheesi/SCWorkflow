@@ -44,7 +44,7 @@
 #' @import grid
 #' @import png
 #' @import svglite
-#' @importFrom Seurat CreateAssayObject
+#' @importFrom Seurat CreateAssayObject gene
 #' @importFrom svglite svglite
 #' @importFrom digest digest
 #' 
