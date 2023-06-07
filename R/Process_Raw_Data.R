@@ -63,7 +63,7 @@ processRawData <- function(input,
   ## --------- ##
   ## Functions ####
   ## --------- ##
-  
+  library(Seurat)
   # Cell Cycle Scoring and Find Variable Features
   CC_FVF_so <- function(so){
     so <- CellCycleScoring(object = so, 
