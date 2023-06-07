@@ -39,11 +39,11 @@ test_that("Harmony returns seurat object with adjusted embeddings for Chariou
 })
 
 test_that("Harmony returns seurat object with adjusted embeddings for
-          nsclc_single data", {
+          pbmc_single data", {
 
-  nsclc.single = getHarmonyParam("nsclc_single")
+  pbmc.single = getHarmonyParam("pbmc_single")
 
-  object.harmonized = do.call(harmonyBatchCorrect, nsclc.single)
+  object.harmonized = do.call(harmonyBatchCorrect, pbmc.single)
 
   skip_on_ci()
   expect_snapshot_file(
