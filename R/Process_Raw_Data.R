@@ -44,7 +44,6 @@
 #' @import grid
 #' @import png
 #' @import svglite
-#' @importFrom Seurat CreateAssayObject gene
 #' @importFrom svglite svglite
 #' @importFrom digest digest
 #' 
@@ -67,7 +66,6 @@ processRawData <- function(input,
   
   # Cell Cycle Scoring and Find Variable Features
   CC_FVF_so <- function(so){
-    cc.genes <- Seurat::cc.genes
     so <- CellCycleScoring(object = so, 
                            g2m.features = cc.genes$g2m.genes,
                            s.features = cc.genes$s.genes)
