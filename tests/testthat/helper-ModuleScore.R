@@ -2,7 +2,7 @@ getModuleScoreParam <- function(data){
 
   if(data == "tec"){
     
-      object = select_crobject("TEC")
+      object = selectCRObject("TEC")
       samples.subset = unique(object$orig.ident)
       sample.to.display = unique(object$orig.ident)
       marker.table = read.csv(test_path("fixtures", "Marker_Table_demo.csv"))
@@ -12,7 +12,7 @@ getModuleScoreParam <- function(data){
 
   } else if (data == "chariou") {
     
-      object = select_crobject("Chariou")
+      object = selectCRObject("Chariou")
       samples.subset = unique(object$orig.ident)
       sample.to.display = unique(object$orig.ident)
       marker.table = read.csv(test_path("fixtures", "Marker_Table_demo.csv"))
@@ -20,9 +20,9 @@ getModuleScoreParam <- function(data){
       general.class = celltypes
       lvl.df = read.csv(test_path("fixtures", "MS_Levels_demo.csv"))
       
-  } else if (data == "nsclc.single") {
+  } else if (data == "pbmc.single") {
     
-    object = select_crobject("nsclc-single")
+    object = selectCRObject("pbmc-single")
     samples.subset = unique(object$orig.ident)
     sample.to.display = unique(object$orig.ident)
     set.seed(114)
@@ -38,7 +38,7 @@ getModuleScoreParam <- function(data){
     
   } else if (data == "nsclc.multi") {
 
-    object = select_crobject("nsclc-multi")
+    object = selectCRObject("nsclc-multi")
     samples.subset = unique(object$orig.ident)
     sample.to.display = unique(object$orig.ident)
     set.seed(214)
@@ -54,7 +54,7 @@ getModuleScoreParam <- function(data){
 
   } else if (data == "brca") {
 
-    object = select_crobject("BRCA")
+    object = selectCRObject("BRCA")
     samples.subset = unique(object$orig.ident)
     sample.to.display = unique(object$orig.ident)
     set.seed(314)

@@ -1,20 +1,20 @@
 getCbgAutoParam <- function(data) {
   if (data == "TEC") {
-    object = select_crobject("TEC")
+    object = selectCRObject("TEC")
     samples.subset = unique(object$orig.ident)
     samples.to.display = unique(object$orig.ident)
     marker.table = read.csv(test_path("fixtures", "Marker_Table_demo.csv"))
     cells.of.interest = colnames(marker.table)[1:3]
     
   } else if (data == "Chariou") {
-    object = select_crobject("Chariou")
+    object = selectCRObject("Chariou")
     samples.subset = unique(object$orig.ident)
     samples.to.display = unique(object$orig.ident)
     marker.table = read.csv(test_path("fixtures", "Marker_Table_demo.csv"))
     cells.of.interest = colnames(marker.table)[4:6]
     
   } else if (data == "pbmc.single") {
-    object = select_crobject("nsclc-single")
+    object = selectCRObject("pbmc-single")
     samples.subset = unique(object$orig.ident)
     samples.to.display = unique(object$orig.ident)
     marker.table = apply(read.csv(test_path("fixtures", 
@@ -29,7 +29,7 @@ getCbgAutoParam <- function(data) {
     cells.of.interest = colnames(marker.table)
     
   } else if (data == "nsclc.multi") {
-    object = select_crobject("nsclc-multi")
+    object = selectCRObject("nsclc-multi")
     samples.subset = unique(object$orig.ident)
     samples.to.display = unique(object$orig.ident)
     set.seed(94)
@@ -41,7 +41,7 @@ getCbgAutoParam <- function(data) {
     cells.of.interest = colnames(marker.table)
     
   } else if (data == "BRCA") {
-    object = select_crobject("BRCA")
+    object = selectCRObject("BRCA")
     samples.subset = unique(object$orig.ident)
     samples.to.display = unique(object$orig.ident)
     set.seed(95)

@@ -78,11 +78,11 @@ test_that("modScore returns metadata with scores and cell calls for chariou", {
 })
 
 test_that("modScore returns metadata with scores and cell calls for
-          nsclc.single", {
+          pbmc.single", {
 
-  nsclc.single <- getModuleScoreParam("nsclc.single")
+  pbmc.single <- getModuleScoreParam("pbmc.single")
 
-  suppressWarnings(modscore.demo <- do.call(modScore, nsclc.single))
+  suppressWarnings(modscore.demo <- do.call(modScore, pbmc.single))
 
   skip_on_ci()
   expect_snapshot_file(
@@ -111,7 +111,7 @@ test_that("modScore returns metadata with scores and cell calls for
   expect_equal(mean(modscore.demo$ms.object$rand_type3),
                0.1798533, tolerance = 1e-1)
 
-  expected_elements <- c("Likely_CellType",nsclc.single$celltypes)
+  expected_elements <- c("Likely_CellType",pbmc.single$celltypes)
   expect(all(expected_elements %in% colnames(modscore.demo$ms.object@meta.data)),
          failure_message = "modscore results not found")
 
