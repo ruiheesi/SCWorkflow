@@ -2,35 +2,35 @@ getHarmonyParam <- function(data){
 
   if(data == "TEC"){
     
-      object = select_crobject("TEC")
+      object = selectCRObject("TEC")
       genes.to.add = sample(rownames(object), 5, replace = FALSE)
       group.by.var = c("orig.ident")
       nvar = 100
 
   } else if (data == "Chariou") {
     
-      object = select_crobject("Chariou")
+      object = selectCRObject("Chariou")
       genes.to.add = sample(rownames(object), 5, replace = FALSE)
       group.by.var = c("orig.ident")
       nvar = 100
       
-  } else if (data == "nsclc_single") {
+  } else if (data == "pbmc_single") {
     
-      object = select_crobject("nsclc-single")
+      object = selectCRObject("pbmc-single")
       genes.to.add = sample(rownames(object), 5, replace = FALSE)
       group.by.var = c("Phase")
       nvar = 100
     
   } else if (data == "nsclc_multi") {
 
-      object = select_crobject("nsclc-multi")
+      object = selectCRObject("nsclc-multi")
       genes.to.add = sample(rownames(object), 5, replace = FALSE)
       group.by.var = c("orig.ident")
       nvar = 100
 
   } else if (data == "BRCA") {
 
-      object = select_crobject("BRCA")
+      object = selectCRObject("BRCA")
       genes.to.add = sample(rownames(object), 5, replace = FALSE)
       group.by.var = c("orig.ident")
       nvar = 100

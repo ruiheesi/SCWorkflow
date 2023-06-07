@@ -2,7 +2,7 @@ getPseudobulkParam <- function(data){
   
   if(data == "TEC"){
     
-    object = select_crobject("TEC")
+    object = selectCRObject("TEC")
     contrasts = c("F-M")
     replicate = 'orig.ident'
     subgroup = 'Gender'
@@ -10,7 +10,7 @@ getPseudobulkParam <- function(data){
     
   } else if (data == "Chariou") {
     
-    object = select_crobject("Chariou")
+    object = selectCRObject("Chariou")
     contrasts = c("F-M")
     replicate = 'orig.ident'
     subgroup = 'Gender'
@@ -18,7 +18,7 @@ getPseudobulkParam <- function(data){
     
   } else if (data == "pbmc.single") {
     
-    object = select_crobject("nsclc-single")
+    object = selectCRObject("pbmc-single")
     object@meta.data$group_cluster = paste("cluster", 
                                            object@meta.data$SCT_snn_res.0.2, 
                                            sep = "_")
@@ -29,7 +29,7 @@ getPseudobulkParam <- function(data){
     
   } else if (data == "nsclc.multi") {
     
-    object = select_crobject("nsclc-multi")
+    object = selectCRObject("nsclc-multi")
     object@meta.data$group_cluster = paste("cluster", 
                                            object@meta.data$SCT_snn_res.0.2, 
                                            sep = "_")
@@ -40,7 +40,7 @@ getPseudobulkParam <- function(data){
     
   } else if (data == "BRCA") {
     
-    object = select_crobject("BRCA")
+    object = selectCRObject("BRCA")
     contrasts = c("G2M-S")
     replicate = 'orig.ident'
     subgroup = 'Phase'
