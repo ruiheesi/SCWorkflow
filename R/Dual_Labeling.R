@@ -365,7 +365,7 @@ dualLabeling <- function(object,
   
   #Applying Filters to Data using Thresholds:
   if (filter.data == TRUE) {
-    df <- df %>% mutate(sample = so.sub@meta.data$sample) %>%
+    df <- df %>% mutate(sample = so.sub@meta.data$orig.ident) %>%
       mutate(cellbarcode = rownames(so.sub@meta.data))
     
     if (M1.filter.direction == "greater than") {
@@ -413,21 +413,20 @@ dualLabeling <- function(object,
         rownames(so.sub@meta.data) %in% df$cellbarcode ~ TRUE,
         TRUE ~ FALSE
       ))
-    colnames(so.sub@meta.data) <- sub("x", parameter.name,
-                                      colnames(so.sub@meta.data))
     
-    cat("\n")
-    print("Final Breakdown:")
-    print(addmargins(table(so.sub.df[[parameter.name]], so.sub.df$sample.name)))
+    colnames(so.sub.df) <- sub("x", parameter.name,
+                                      colnames(so.sub.df))
+    
+    data.filt <- as.data.frame.matrix(table(so.sub.df[[parameter.name]], so.sub.df$orig.ident))
+    data.filt$Total <- rowSums(data.filt)
+    
+    grob2 <- tableGrob(data.filt)
+    
     rownames(so.sub.df) <- rownames(so.sub@meta.data)
     so.sub@meta.data <- so.sub.df
-    
-    cat("\n")
-    print("After Filter applied:")
-    print(dim(df)[1])
   }
   
-  result.list <- list("object" = so.sub, "plot" = grob)
+  result.list <- list("object" = so.sub, "plot" = grob, "plot2" = grob2)
   
   return(result.list)
 }
