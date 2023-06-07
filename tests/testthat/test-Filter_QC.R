@@ -5,6 +5,7 @@ for (data in c('TEC','Chariou','PBMC_Single','NSCLC_Multi')) {
     data.run <- getParamFQ(data)
     filter.qc.out <- do.call(filterQC, data.run)
     
+    
     # create output
     expected.elements = c("object","FilteringMeta","plots")
     expect_setequal(names(filter.qc.out), expected.elements)
