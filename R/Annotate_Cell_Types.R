@@ -73,7 +73,7 @@ annotateCellTypes <- function(object,
         labels = HPCA$label.main
       )
       so[["HPCA_main"]] <- 
-        singler$labels[match(so[[]][["seurat_clusters"]], rownames(singler))]
+        singler$labels[match(rownames(so[[]]), rownames(singler))]
       
       singler = SingleR(
         test = so.counts,
@@ -84,8 +84,8 @@ annotateCellTypes <- function(object,
         labels = HPCA$label.fine
       )
       so[["HPCA"]] <-
-        singler$labels[match(so[[]][["seurat_clusters"]], rownames(singler))]
-            
+        singler$labels[match(rownames(so[[]]), rownames(singler))]
+      
       #BP_encode block
       if (!is.null(local.celldex)) {
         BP <- local.celldex[[2]]
@@ -134,7 +134,7 @@ annotateCellTypes <- function(object,
       )
 
       so[["mouseRNAseq_main"]] <-
-        singler$labels[match(so[[]][["seurat_clusters"]], rownames(singler))]
+        singler$labels[match(rownames(so[[]]), rownames(singler))]
       
       singler = SingleR(
         test = so.counts,
@@ -145,7 +145,7 @@ annotateCellTypes <- function(object,
         labels = mousernaseq$label.fine
       )
       so[["mouseRNAseq"]] <-
-        singler$labels[match(so[[]][["seurat_clusters"]], rownames(singler))]
+        singler$labels[match(rownames(so[[]]), rownames(singler))]
       
       #ImmGen block
       if (!is.null(local.celldex)) {
@@ -162,8 +162,8 @@ annotateCellTypes <- function(object,
         labels = immgen$label.main
       )
       so[["immgen_main"]] <- 
-        singler$labels[match(so[[]][["seurat_clusters"]], rownames(singler))]
-
+        singler$labels[match(rownames(so[[]]), rownames(singler))]
+      
       singler = SingleR(
         test = so.counts,
         genes = 'de',
@@ -173,7 +173,7 @@ annotateCellTypes <- function(object,
         labels = immgen$label.fine
       )
       so[["immgen"]] <- 
-        singler$labels[match(so[[]][["seurat_clusters"]], rownames(singler))]
+        singler$labels[match(rownames(so[[]]), rownames(singler))]
       
     }
     return(so)
