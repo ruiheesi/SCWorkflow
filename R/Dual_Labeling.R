@@ -1,9 +1,9 @@
 #' @title Plot coexpression of 2 markers using transcript and/or protein
 #' expression values
-#' @description This method provides visualization of coexpression of 2 genes 
+#' @description This method provides visualization of coexpression of 2 genes
 #' (or proteins) and additional methods for filtering for cells with gene
 #' expression values that are above or below thresholds set for one or both
-#' markers. The method allows for filtering (optional) of the Seurat object 
+#' markers. The method allows for filtering (optional) of the Seurat object
 #' using manually set expression thresholds.
 #'
 #' @param object Seurat-class object
@@ -19,21 +19,21 @@
 #' @param point.size Point size for image (default is 0.5)
 #' @param point.shape Point shape for image (default is 16)
 #' @param point.transparency Point transparency for image (default is 0.5)
-#' @param add.marker.thresholds Add marker thresholds (default is FALSE)
+#' @param add.marker.thresholds Add marker thresholds on plot (default is FALSE)
 #' @param marker.1.threshold Threshold set for first marker (default is 0.5)
 #' @param marker.2.threshold Threshold set for second marker (default is 0.5)
-#' @param filter.data Add new parameter to metadata using marker thresholds
-#' (default is FALSE)
-#' @param M1.filter.direction Filter to samples that have greater than
-#' marker 1 threshold. Choices are "greater than" or "less than" 
-#' (default is "greater than")
-#' @param M2.filter.direction Filter to samples that have greater or less than
-#' marker 2 threshold. Choices are "greater than" or "less than" 
-#' (default is "greater than")
+#' @param filter.data Add new parameter column to metadata annotating where 
+#' marker thresholds are applied (default is TRUE)
+#' @param M1.filter.direction Annotate cells that have gene expression levels 
+#' for marker 1 using the marker 1 threshold. Choices are "greater than" 
+#' or "less than" (default is "greater than")
+#' @param M2.filter.direction Annotate cells that have gene expression levels 
+#' for marker 2 using the marker 2 threshold. Choices are "greater than" 
+#' or "less than" (default is "greater than")
 #' @param apply.filter.1 If TRUE, apply the first filter (default is TRUE)
 #' @param apply.filter.2 If TRUE, apply the second filter (default is TRUE)
 #' @param filter.condition If TRUE, apply both filters 1 and 2 and take
-#' intersection. If FALSE, apply filters and take the union.
+#' intersection. If FALSE, apply both filters and take the union.
 #' @param parameter.name Name for metadata column for new marker filters
 #' (Default is "Marker")
 #' @param trim.marker.1 Trim top and bottom percentile of marker 1 signal to
@@ -61,7 +61,8 @@
 #' @export
 #'
 #' @return a seurat object with optional additional metadata for cells that are
-#' positive or negative for gene markers and a coexpression plot.
+#' positive or negative for gene markers, a coexpression plot and contingency
+#' table showing sum of cells filtered.
 
 dualLabeling <- function(object,
                          samples,
@@ -88,7 +89,8 @@ dualLabeling <- function(object,
                          pre.scale.trim = 0.99,
                          density.heatmap = FALSE,
                          display.unscaled.values = FALSE) {
-
+  
+  
   #### Error Messages ####
   
   #Errors for genes not available in dataset/slot
@@ -104,7 +106,7 @@ dualLabeling <- function(object,
   if (!(marker.2.type %in% names(object@assays))) {
     stop(sprintf("%s slot is not found in dataset", marker.2.type))
   }
-
+  
   #### Functions ####
   
   #Function for drawing overlay images for umap/tsne:
@@ -293,7 +295,7 @@ dualLabeling <- function(object,
   t2 <- marker.2.threshold
   
   #Select marker 1 values and scale:
-  mark1 <- so.sub@assays[[marker.1.type]]@scale.data[marker.1, ]
+  mark1 <- so.sub@assays[[marker.1.type]]@scale.data[marker.1,]
   if (trim.marker.1 == TRUE) {
     q1 <- quantile(mark1, pre.scale.trim)
     q0 <- quantile(mark1, 1 - pre.scale.trim)
@@ -303,7 +305,7 @@ dualLabeling <- function(object,
   mark1.scale <- rescale(mark1, to = c(0, 1))
   
   #Select marker 2 values and scale:
-  mark2 <- so.sub@assays[[marker.2.type]]@scale.data[marker.2, ]
+  mark2 <- so.sub@assays[[marker.2.type]]@scale.data[marker.2,]
   if (trim.marker.2 == TRUE) {
     q1 <- quantile(mark2, pre.scale.trim)
     q0 <- quantile(mark2, 1 - pre.scale.trim)
@@ -331,8 +333,14 @@ dualLabeling <- function(object,
     df_heatmap <- data.frame(
       x = x,
       y = y,
-      d <- densCols(x, y, nbin = 1000, bandwidth = 1,
-                    colramp <- colorRampPalette(rev(rainbow(10, end = 4 / 6))))
+      d <- densCols(
+        x,
+        y,
+        nbin = 1000,
+        bandwidth = 1,
+        colramp <-
+          colorRampPalette(rev(rainbow(10, end = 4 / 6)))
+      )
     )
     
     p <- ggplot(df_heatmap) +
@@ -364,8 +372,8 @@ dualLabeling <- function(object,
   }
   
   #Applying Filters to Data using Thresholds:
-  if (filter.data == TRUE) {
-    df <- df %>% mutate(sample = so.sub@meta.data$sample) %>%
+  if (filter.data == TRUE && (apply.filter.1 == TRUE | apply.filter.2 == TRUE)) {
+    df <- df %>% mutate(sample = so.sub@meta.data$orig.ident) %>%
       mutate(cellbarcode = rownames(so.sub@meta.data))
     
     if (M1.filter.direction == "greater than") {
@@ -391,20 +399,21 @@ dualLabeling <- function(object,
     if (apply.filter.1 == TRUE) {
       if (apply.filter.2 == TRUE) {
         if (filter.condition == TRUE) {
-          df <- df[c(ind1 & ind2), ]
+          df <- df[c(ind1 & ind2),]
         } else {
-          df <- df[c(ind1 | ind2), ]
+          df <- df[c(ind1 | ind2),]
         }
       } else {
-        df <- df[ind1, ]
+        df <- df[ind1,]
       }
     } else {
       if (apply.filter.2) {
-        df <- df[ind2, ]
+        df <- df[ind2,]
       }
     }
     
-    # Print out numbers of cells that meet threshold cutoffs for marker 1, 
+    
+    # Print out numbers of cells that meet threshold cutoffs for marker 1,
     # marker 2 and for either intersection or union of 2 thresholds:
     
     colnames(df)[3:4] <- c(marker.1, marker.2)
@@ -413,21 +422,72 @@ dualLabeling <- function(object,
         rownames(so.sub@meta.data) %in% df$cellbarcode ~ TRUE,
         TRUE ~ FALSE
       ))
-    colnames(so.sub@meta.data) <- sub("x", parameter.name,
-                                      colnames(so.sub@meta.data))
     
-    cat("\n")
-    print("Final Breakdown:")
-    print(addmargins(table(so.sub.df[[parameter.name]], so.sub.df$sample.name)))
+    colnames(so.sub.df) <- sub("x", parameter.name,
+                               colnames(so.sub.df))
+    
+    data.filt <-
+      as.data.frame.matrix(table(so.sub.df[[parameter.name]],
+                                 so.sub.df$orig.ident))
+    data.filt$Total <- rowSums(data.filt)
+    data.filt <- data.filt %>% rownames_to_column("Passed Filter")
+    
+    # Add a title:
+    if (filter.condition == TRUE) {
+      cond = "and"
+    } else {
+      cond = "or"
+    }
+    
+    if (apply.filter.1 == TRUE) {
+      if (apply.filter.2 == TRUE) {
+        titlename <- paste(
+          "Number of cells that pass filters:\n",
+          marker.1,
+          M1.filter.direction,
+          marker.1.threshold,
+          cond,
+          marker.2,
+          M2.filter.direction,
+          marker.2.threshold
+        )
+      } else {
+        titlename <- paste(
+          "Number of cells that pass filter:\n",
+          marker.1,
+          M1.filter.direction,
+          marker.1.threshold
+        )
+      }
+    } else {
+      titlename <- paste(
+        "Number of cells that pass filter:\n",
+        marker.2,
+        M2.filter.direction,
+        marker.2.threshold
+      )
+    }
+    
+    title <-
+      textGrob(
+        titlename,
+        y = 1,
+        vjust = 1,
+        gp = gpar(fontsize = 15)
+      )
+    grid.table <- tableGrob(data.filt, rows = NULL)
+    g <- arrangeGrob(grid.table, top = title)
+    g$heights[[2]] <- unit(0.5, "npc") - max(g$grobs[[1]]$heights)
+    
     rownames(so.sub.df) <- rownames(so.sub@meta.data)
     so.sub@meta.data <- so.sub.df
-    
-    cat("\n")
-    print("After Filter applied:")
-    print(dim(df)[1])
+  } else {
+    g <- textGrob("No filtering thresholds applied")
   }
   
-  result.list <- list("object" = so.sub, "plot" = grob)
+  result.list <- list("object" = so.sub,
+                      "plot" = grob,
+                      "plot2" = g)
   
   return(result.list)
 }
