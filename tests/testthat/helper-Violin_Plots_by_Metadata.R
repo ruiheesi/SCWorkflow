@@ -21,6 +21,28 @@ selectViolin <- function(dataset) {
                                replace = FALSE)
     
     
+  } else if (dataset == "Chariou.allgroups"){
+    
+    print("selected Chariou dataset") 
+    object = selectCRObject("Chariou")
+    group.by = "Gender"
+    group.subset = c()
+    set.seed(821)
+    genes.of.interest = sample(rownames(object$SCT@scale.data), 5, 
+                               replace = FALSE)
+    
+    
+  }else if (dataset == "Chariou.subgroup"){
+    
+    print("selected Chariou dataset") 
+    object = selectCRObject("Chariou")
+    group.by = "Gender"
+    group.subset = c("M")
+    set.seed(822)
+    genes.of.interest = sample(rownames(object$SCT@scale.data), 5, 
+                               replace = FALSE)
+    
+    
   } else if (dataset == "pbmc.single"){
     
     print("selected nsclc_single dataset") 
