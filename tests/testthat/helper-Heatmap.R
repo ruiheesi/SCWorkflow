@@ -7,7 +7,7 @@ getParamHM <- function(data) {
     set.seed(15)
     transcripts <- sample(rownames(object), 10, replace = FALSE)
     proteins <- NULL
-    add.gene.or.protein <- FALSE
+    add.gene.or.protein <- TRUE
     rna.annotations <- transcripts[c(1, 2)]
     protein.annotations <- NULL
     plot.title <- "Heatmap_TEC_test"
