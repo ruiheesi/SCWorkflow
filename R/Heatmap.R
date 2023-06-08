@@ -406,6 +406,7 @@ heatmapSC <- function(object,
   }
   annot.col = list()
   groups = colnames(annotation.col)
+  colnames(annot) <- groups
   
   q = 0
   for (i in 1:dim(annotation.col)[2]) {
