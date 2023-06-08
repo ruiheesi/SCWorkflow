@@ -66,8 +66,8 @@ getParamHM <- function(data) {
     metadata <- c("orig.ident", "SCT_snn_res.0.2")
     set.seed(15)
     transcripts <-
-      sample(rownames(object@assays$SCT@scale.data), 10,
-             replace = FALSE)
+     sample(rownames(object@assays$SCT@scale.data), 10,
+            replace = FALSE)
     proteins <- NULL
     add.gene.or.protein <- TRUE
     rna.annotations <- transcripts[c(1, 2)]
