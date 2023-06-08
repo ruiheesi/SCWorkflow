@@ -48,7 +48,7 @@ violinPlot <- function(object,
                        assay = "SCT", 
                        slot = "scale.data", 
                        group.by, 
-                       group.subset, 
+                       group.subset = c(), 
                        genes.of.interest,
                        filter.outliers = FALSE, 
                        scale.data = TRUE, 
@@ -92,10 +92,6 @@ violinPlot <- function(object,
   if(length(missing.groups) > 0){
     cat("The following groups are missing from the selected ident:\n")
     print(missing.groups)
-  }
-  
-  if(length(group.subset) == 0){
-    stop("No groups were found in the selected ident.")
   }
   
   if(rename.ident %in% c("Gene","Expression","scaled")){
@@ -170,26 +166,18 @@ violinPlot <- function(object,
     ylimit <- NULL
   }
   
-  #set idents
-  if("active.ident" %in% slotNames(object)){
-    new.idents = as.factor(object@meta.data[[group.by]])
-    names(new.idents) = names(object@active.ident)
-    object@active.ident <- as.factor(vector())
-    object@active.ident <- new.idents
-    object.sub = subset(object, ident = group.subset)
+  Idents(object) <- object@meta.data[[group.by]]
+  if(!is.null(group.subset)){
+  object.sub <- subset(object, idents = group.subset)
   } else {
-    new.idents = as.factor(object@meta.data[[group.by]])
-    names(sample.name)=object@meta.data[["Barcode"]]
-    object@active.ident <- as.factor(vector())
-    object@active.ident <- new.idents
-    object.sub = subset(object, ident = group.subset)
+    object.sub <- object
   }
   
   DefaultAssay(object = object) <- assay
   data <- FetchData(object = object.sub, vars = genes.of.interest, slot = slot)
   
-  data[[group.by]] <- object.sub@meta.data[row.names(data),
-                                           group.by]
+  append <- object.sub@meta.data[[group.by]]
+  data[[group.by]] <- append[match(rownames(data),colnames(object.sub))]
   
   df.melt <- reshape2::melt(data)
   
@@ -206,8 +194,12 @@ violinPlot <- function(object,
     df.melt[[group.by]] <- factor(ident.values, levels = ident.levels)
   }else if(reorder.ident){
     # if non-numeric, place in order of groups of interests
+    if(!is.null(group.subset)){
     df.melt[[group.by]] <- factor(df.melt[[group.by]], 
-                                  levels = group.subset)        
+                                  levels = group.subset)
+    } else {
+      df.melt[[group.by]] <- factor(df.melt[[group.by]])
+    }        
   }
   
   # Filter outliers
@@ -240,7 +232,6 @@ violinPlot <- function(object,
     labs(y=axis.title.y) +
     theme(strip.text.y = element_text( 
       color="blue", face="bold.italic", angle = -90))
-  
   
   if(!is.null(ylimit)){
     g <- g + ylim(0,ylimit)
