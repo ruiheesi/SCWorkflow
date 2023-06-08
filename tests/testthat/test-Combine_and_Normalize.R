@@ -1,6 +1,6 @@
 
 
-for (data in c('TEC','Chariou','NSCLC_Single','NSCLC_Multi')) {
+for (data in c('TEC','Chariou','PBMC_Single','NSCLC_Multi')) {
   
   test_that(
     paste0("Test Combine & Renormalize - Standard (",data," dataset)"), {

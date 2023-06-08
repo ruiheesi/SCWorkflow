@@ -294,7 +294,7 @@ combineNormalize <- function(object,
   }
   
   ## --------------- ##
-  ## Main Code Block ##
+  ## Main Code Block ####
   ## --------------- ##
   
   
@@ -314,7 +314,7 @@ combineNormalize <- function(object,
   }
   
   
-  ## Auto detect number of cells and turn on Conserve memory ####
+  ### Auto detect number of cells and turn on Conserve memory ####
   
   ## Calculate total number of cells in input SO.
   cell.count <- sum(unlist((lapply(object, function(x) dim(x)[2]))))
@@ -335,7 +335,7 @@ combineNormalize <- function(object,
   }
   
   
-  ## Normalize Data ####
+  ### Normalize Data ####
   
   if (SCT.level=="Merged") {
     #### Merge and SCTransform ####
@@ -474,11 +474,11 @@ combineNormalize <- function(object,
   } else {stop("SCT method should be either Merged or Sample")}
   
   
-  ## QC samples ####
+  ### QC samples ####
   grobsList = list()  
   
   
-  ### PCA on individual samples ####
+  #### PCA on individual samples ####
   object.merge.split=SplitObject(object.merge, split.by = "orig.ident")
     n=names(object.merge.split)
   object.merge.split=lapply(n,function(x){
@@ -490,7 +490,7 @@ combineNormalize <- function(object,
   
   
   
-  ### Create PCA regression plots  ####
+  #### Create PCA regression plots  ####
   if (is.null(vars.to.regress)==F) {
     
     object.merge.nr.split=SplitObject(object.merge.nr, split.by = "orig.ident")
@@ -541,7 +541,7 @@ combineNormalize <- function(object,
   
   
   
-  ### create Elbow plot ####
+  #### create Elbow plot ####
 
   elbow.grob=lapply(names(object.merge.split),function(x){
     gg=
@@ -558,7 +558,7 @@ combineNormalize <- function(object,
   
   
   
-  ### Create Jackstraw plot  ####
+  #### Create Jackstraw plot  ####
   ## Jackstraw does not work with SCT data so create ScaleData
   if (jackstraw) {
     # jackstraw.dims = (npcs+10)
@@ -605,7 +605,7 @@ combineNormalize <- function(object,
   
   
   
-  ## Detect Citeseq ####
+  #### Detect Citeseq ####
   
   #initialize Citeseq functionality as false, 
   #later the template will check for a Protein assay and run if it finds it
@@ -617,14 +617,14 @@ combineNormalize <- function(object,
   }
   
   
-  ## HTO ####
+  ### HTO ####
   if(cell.hashing.data){
     object.merge <- ScaleData(object.merge, assay = "HTO")
   }
   
   
   
-  ## Dimension reduction ####
+  ### Dimension reduction ####
   
   object.merge <- RunPCA(object = object.merge, 
                          npcs = npcs, verbose = FALSE,
@@ -647,7 +647,7 @@ combineNormalize <- function(object,
   object.merge <- FindNeighbors(object.merge, dims = 1:npcs)
   
   
-  ## Citeseq ####
+  ### Citeseq ####
   
   #check for CITE-seq data and if so, run reductions
   if(do.cite.seq) {
