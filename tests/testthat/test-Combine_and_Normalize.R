@@ -26,7 +26,7 @@ for (data in c('TEC','Chariou','NSCLC_Single','NSCLC_Multi')) {
 
 
 
-for (data in c('PBMC_Single')) {
+for (data in c('TEC')) {
   
   test_that(
     paste0("Test Combine & Renormalize - only.var.genes (",data," dataset)"), {
@@ -87,7 +87,7 @@ for (data in c('TEC')) {
       
       data.run <- getParamCN(data)
       # data.run$input=data.run$input[c(1,2)]
-      data.run$exclude.sample=object$so[1]%>%names
+      data.run$exclude.sample=data.run$object[1]%>%names
       combine.renormalize.out <- do.call(combineNormalize, data.run)
       
       
@@ -100,7 +100,12 @@ for (data in c('TEC')) {
       expect( nrow(combine.renormalize.out$object@assays$RNA@counts),'> 0' )
       # plot slot contains data
       expect( object.size(combine.renormalize.out$plot),'> 0' )
-
+      # sample is removed
+      expect_false(
+        data.run$exclude.sample%in%
+          unique(combine.renormalize.out$object@meta.data$orig.ident)
+                  )
+      
     })
 }
 
