@@ -339,18 +339,9 @@ heatmapSC <- function(object,
   
   metadata <- sub("orig_ident", "orig.ident", metadata)
   
-  #Add Barcode Column:
-  if (!"Barcode" %in% colnames(object@meta.data)) {
-    object@meta.data$Barcode <- rownames(object@meta.data)
-  }
-  
   #Set up annotation track:
   metadata.table <- object@meta.data %>%
     dplyr::filter(orig.ident %in% samples.to.include)
-  
-  if (!"Barcode" %in% metadata) {
-    metadata = c(metadata, "Barcode")
-  }
   
   annot <- metadata.table %>% select(all_of(metadata))
   a = dim(annot)[2] - 1
@@ -361,10 +352,10 @@ heatmapSC <- function(object,
       annot1 <-
         as.matrix(object$Protein@scale.data[protein.annotations,])
       if (length(protein.annotations) == 1) {
-        annot1 <- annot1[match(annot$Barcode, rownames(annot1))]
+        annot1 <- annot1[match(rownames(annot), rownames(annot1))]
         protname <- paste0(protein.annotations, "_Prot")
       } else {
-        annot1 <- annot1[, match(annot$Barcode, colnames(annot1))]
+        annot1 <- annot1[, match(rownames(annot), colnames(annot1))]
         annot1 <- t(annot1)
         colnames(annot1) = paste0(colnames(annot1), "_Prot")
       }
@@ -373,9 +364,9 @@ heatmapSC <- function(object,
     if (length(rna.annotations) > 0) {
       annot2 <- as.matrix(object$SCT@scale.data[rna.annotations,])
       if (length(rna.annotations) == 1) {
-        annot2 <- annot2[match(annot$Barcode, rownames(annot2))]
+        annot2 <- annot2[match(rownames(annot), rownames(annot2))]
       } else {
-        annot2 <- annot2[, match(annot$Barcode, colnames(annot2))]
+        annot2 <- annot2[, match(rownames(annot), colnames(annot2))]
         annot2 <- t(annot2)
       }
     }
@@ -389,11 +380,11 @@ heatmapSC <- function(object,
     annot <- cbind(annot, annot2)
     colnames(annot)[colnames(annot) == "annot2"] <- rna.annotations
   }
-  
+
   #Arrange columns by metadata tracks:
   if (arrange.by.metadata == TRUE) {
-    annot <- annot %>% arrange(across(all_of(metadata))) 
-    df.mat <- df.mat[, match(annot$Barcode, colnames(df.mat))]
+    annot <- annot %>% arrange(across(all_of(colnames(annot)))) 
+    df.mat <- df.mat[, match(rownames(annot), colnames(df.mat))]
     df.mat <-
       df.mat[, apply(df.mat, 2, function(x)
         ! any(is.na(x)))]
@@ -402,18 +393,20 @@ heatmapSC <- function(object,
     cluster.cols = TRUE
   }
   
+  
   #Set up annotation track and colors:
   annotation.col = as.data.frame(unclass(annot[, !(names(annot) %in%
                                                      "Barcode")]))
   annotation.col <- annotation.col %>%
     mutate_if(is.logical, as.factor)
-  rownames(annotation.col) <- annot$Barcode
+  rownames(annotation.col) <- rownames(annot)
   if (dim(annot)[2] == 2) {
     annottitle = colnames(annot)[1]
     colnames(annotation.col) = annottitle
   }
   annot.col = list()
   groups = colnames(annotation.col)
+  colnames(annot) <- groups
   
   q = 0
   for (i in 1:dim(annotation.col)[2]) {

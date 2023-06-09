@@ -3,7 +3,7 @@ selectViolin <- function(dataset) {
   if (dataset == "TEC"){
     
     print("selected TEC dataset") 
-    object = select_crobject("TEC")
+    object = selectCRObject("TEC")
     group.by = "orig_ident"
     group.subset =  unique(object$orig.ident)[1:3]
     set.seed(81)
@@ -13,7 +13,7 @@ selectViolin <- function(dataset) {
   } else if (dataset == "Chariou"){
     
     print("selected Chariou dataset") 
-    object = select_crobject("Chariou")
+    object = selectCRObject("Chariou")
     group.by = "orig_ident"
     group.subset =  unique(object$orig.ident)[1:3]
     set.seed(82)
@@ -21,10 +21,32 @@ selectViolin <- function(dataset) {
                                replace = FALSE)
     
     
+  } else if (dataset == "Chariou.allgroups"){
+    
+    print("selected Chariou dataset") 
+    object = selectCRObject("Chariou")
+    group.by = "Gender"
+    group.subset = c()
+    set.seed(821)
+    genes.of.interest = sample(rownames(object$SCT@scale.data), 5, 
+                               replace = FALSE)
+    
+    
+  }else if (dataset == "Chariou.subgroup"){
+    
+    print("selected Chariou dataset") 
+    object = selectCRObject("Chariou")
+    group.by = "Gender"
+    group.subset = c("M")
+    set.seed(822)
+    genes.of.interest = sample(rownames(object$SCT@scale.data), 5, 
+                               replace = FALSE)
+    
+    
   } else if (dataset == "pbmc.single"){
     
     print("selected nsclc_single dataset") 
-    object = select_crobject("nsclc-single")
+    object = selectCRObject("pbmc-single")
     group.by = "orig.ident"
     group.subset =  unique(object$orig.ident)
     set.seed(83)
@@ -35,7 +57,7 @@ selectViolin <- function(dataset) {
   } else if (dataset == "nsclc.multi"){
     
     print("selected nsclc_multi dataset") 
-    object = select_crobject("nsclc-multi")
+    object = selectCRObject("nsclc-multi")
     group.by = "orig.ident"
     group.subset =  unique(object$orig.ident)[1:3]
     set.seed(84)
@@ -45,7 +67,7 @@ selectViolin <- function(dataset) {
   } else if (dataset == "brca"){
     
     print("selected BRCA dataset") 
-    object = select_crobject("BRCA")
+    object = selectCRObject("BRCA")
     group.by = "orig.ident"
     group.subset =  unique(object$orig.ident)[1:3]
     set.seed(85)

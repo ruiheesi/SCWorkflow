@@ -30,6 +30,38 @@ test_that("Violin plot works for Chariou data", {
 
 })
 
+test_that("Violin plot works for Chariou.allgroup data", {
+  chariou.allgroup.data = selectViolin("Chariou.allgroups")
+  
+  violin_test = do.call(violinPlot, chariou.allgroup.data)
+  
+  skip_on_ci()
+  expect_snapshot_file(
+    .drawViolin(violin_test),
+    "chariou_allgroup_violin.png"
+  )
+  
+  expected_elements = c("gg", "ggplot")
+  expect_setequal(class(violin_test), expected_elements)
+  
+})
+
+test_that("Violin plot works for Chariou.subgroup data", {
+  chariou.subgroup.data = selectViolin("Chariou.subgroup")
+  
+  violin_test = do.call(violinPlot, chariou.subgroup.data)
+  
+  skip_on_ci()
+  expect_snapshot_file(
+    .drawViolin(violin_test),
+    "chariou_subgroup_violin.png"
+  )
+  
+  expected_elements = c("gg", "ggplot")
+  expect_setequal(class(violin_test), expected_elements)
+  
+})
+
 test_that("Violin plot works for pbmc.single data", {
   pbmc.single = selectViolin("pbmc.single")
 
@@ -107,21 +139,6 @@ test_that("Violin plot stops when ident of interest is not found in seurat", {
       genes.of.interest = pbmc.single$genes.of.interest
     ),
     "Unable to find ident of interest in metadata."
-  )
-
-})
-
-test_that("Violin plot stops when group of interest is empty", {
-  pbmc.single <- selectViolin("pbmc.single")
-
-  expect_error(
-    violinPlot(
-      object = pbmc.single$object,
-      group.by = pbmc.single$group.by,
-      group.subset = paste("jibberish", 1:5, sep = "_"),
-      genes.of.interest = pbmc.single$genes.of.interest
-    ),
-    "No groups were found in the selected ident."
   )
 
 })

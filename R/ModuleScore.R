@@ -245,7 +245,7 @@ modScore <- function(object,
                         paste(sample.to.display, collapse = "|"), 
                         clusmat$ident))
     
-    clusmat %>% group_by(clusid) %>% summarise(
+    clusmat %>% group_by(clusid) %>% dplyr::summarise(
       umap1.mean=mean(umap1), 
       umap2.mean=mean(umap2)) -> umap.pos
     
