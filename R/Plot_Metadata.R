@@ -36,6 +36,7 @@
 #' @import grid
 #' @import gridBase
 #' @import gridExtra
+#' @import dplyr
 #'
 #' @export
 #'
@@ -155,7 +156,7 @@ plotMetadata <- function(#Basic Parameters:
         }
       }
       
-      clusmat %>% group_by(clusid) %>% summarise(umap1.mean = mean(umap1),
+      clusmat %>% group_by(clusid) %>% dplyr::summarise(umap1.mean = mean(umap1),
                                                  umap2.mean = mean(umap2)) -> umap.pos
       title = as.character(m)
       cols = list()
@@ -319,7 +320,7 @@ plotMetadata <- function(#Basic Parameters:
         }
       }
       
-      clusmat %>% group_by(clusid) %>% summarise(umap1.mean = mean(umap1),
+      clusmat %>% group_by(clusid) %>% dplyr::summarise(umap1.mean = mean(umap1),
                                                  umap2.mean = mean(umap2)) -> umap.pos
       title = as.character(m)
       print(environmentName(environment(arrange)))
