@@ -1,4 +1,3 @@
-#' 
 #' @title Combine & Normalize 
 #' @description Scales and Normalizes data, Combines samples, 
 #'  runs Dimensional Reduction, Clusters, and returns a combined Seurat Object. 
@@ -68,18 +67,17 @@
 #'  (Default: FALSE)
 #' 
 #' 
-#' @import Seurat
-#' @import ggplot2
-#' @import gridExtra 
-#' @import RColorBrewer
-#' @import svglite
-#' @import ggpubr
-#' @importFrom svglite svglite
-#' @importFrom digest digest
+#' @importFrom Seurat CreateAssayObject Idents as.SingleCellExperiment AddMetaData
+#' @importFrom reshape2 melt
+#' @importFrom magrittr %>%
+#' @importFrom ggplot2 ggplot
+#' @importFrom RColorBrewer brewer.pal
+#' @importFrom ggpubr annotate_figure get_legend ggarrange
 #' 
 #' @export
 #' 
 #' @return Seurat Objects and QC plots
+#' 
 
 
 combineNormalize <- function(object,
