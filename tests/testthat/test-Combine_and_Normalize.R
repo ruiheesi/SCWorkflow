@@ -7,6 +7,7 @@ for (data in c('TEC','Chariou','PBMC_Single','NSCLC_Multi')) {
       
       
       data.run <- getParamCN(data)
+      
       combine.renormalize.out <- do.call(combineNormalize, data.run)
       
       

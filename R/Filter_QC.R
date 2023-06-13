@@ -86,26 +86,17 @@
 #' cells. Doublets are defined as two cells that are sequenced under the same 
 #' cellular barcode, for example, if they were captured in the same droplet.
 #' (Default: TRUE)
-
-
 #' 
-#' @import Seurat 
-#' @import reshape2
-#' @import scDblFinder
-#' @import tidyverse 
-#' @import RColorBrewer
-#' @import stringr
-#' @import svglite 
-#' @import ggplot2
-#' @import ggpubr
-#' @import grid
-#' @import png
-#' @import svglite
-#' @importFrom Seurat CreateAssayObject
+#' 
+#' @importFrom Seurat CreateAssayObject Idents as.SingleCellExperiment AddMetaData
+#' @importFrom reshape2 melt
+#' @importFrom magrittr %>%
+#' @importFrom dplyr arrange 
+#' @importFrom ggplot2 ggplot
+#' @importFrom RColorBrewer brewer.pal
+#' @importFrom ggpubr annotate_figure get_legend ggarrange
 #' @importFrom gridExtra arrangeGrob
-#' @importFrom Seurat Idents
-#' @importFrom svglite svglite
-#' @importFrom digest digest
+#' @importFrom scDblFinder scDblFinder
 
 #' 
 #' @export
