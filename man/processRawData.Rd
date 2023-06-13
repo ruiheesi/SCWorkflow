@@ -52,6 +52,9 @@ regular expression based on new names}
 input contains counts that are already normalzed set to FALSE.
 (Default: TRUE)}
 }
+\value{
+Seurat Object and QC plots
+}
 \description{
 Creates Seurat Objects from h5 files for individual or
 merged samples. Will log normalize and produce QC figures for

@@ -10,7 +10,8 @@ annotateCellTypes(
   reduction.type = "umap",
   legend.dot.size = 2,
   do.finetuning = FALSE,
-  local.celldex = NULL
+  local.celldex = NULL,
+  use.clusters = NULL
 )
 }
 \arguments{
@@ -30,7 +31,10 @@ Default is 2}
 Default is FALSE}
 
 \item{local.celldex}{Provide a local copy of CellDex library.
-Default is FALSE}
+Default is NULL}
+
+\item{use.clusters}{Provide cluster identities for each cell.
+Default is NULL}
 }
 \value{
 a Seurat object with additional metadata
