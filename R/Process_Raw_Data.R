@@ -32,22 +32,18 @@
 #' (Default: TRUE)
 #' 
 #' 
-#' @import Seurat 
-#' @import reshape2
-#' @import scDblFinder
-#' @import tidyverse 
-#' @import RColorBrewer
-#' @import stringr
-#' @import svglite 
-#' @import ggplot2
-#' @import ggpubr
-#' @import grid
-#' @import png
-#' @import svglite
-#' @importFrom svglite svglite
-#' @importFrom digest digest
+#' @importFrom Seurat CreateAssayObject Idents as.SingleCellExperiment AddMetaData
+#' @importFrom reshape2 melt
+#' @importFrom magrittr %>%
+#' @importFrom stringr str_to_title
+#' @importFrom ggplot2 ggplot
+#' @importFrom RColorBrewer brewer.pal
+#' @importFrom ggpubr annotate_figure get_legend ggarrange
 #' 
 #' 
+#' @export
+#' 
+#' @return Seurat Object and QC plots
 
 processRawData <- function(input,
                            sample.metadata.table=NULL,
@@ -60,6 +56,8 @@ processRawData <- function(input,
                            cell.hash=F,
                            do.normalize.data=T                
 ){          
+  
+  
   ## --------- ##
   ## Functions ####
   ## --------- ##
