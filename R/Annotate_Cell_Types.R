@@ -19,20 +19,17 @@
 #' @param do.finetuning Performs the SingleR fine-tuning function.
 #' Default is FALSE
 #' @param local.celldex Provide a local copy of CellDex library.
-#' Default is FALSE
+#' Default is NULL
+#' @param use.clusters Provide cluster identities for each cell.
+#' Default is NULL
 
 
 #'
 #' @import Seurat
-#' @import gridExtra
-#' @import tools
-#' @import grid
-#' @import gridBase
 #' @import cowplot
 #' @import ggplot2
 #' @import RColorBrewer
-#' @import magrittr
-#' @import SingleR
+#' @importFrom SingleR SingleR
 #' @import celldex
 #'
 #'
@@ -47,7 +44,8 @@ annotateCellTypes <- function(object,
                               reduction.type = "umap",
                               legend.dot.size = 2,
                               do.finetuning = FALSE,
-                              local.celldex = NULL) {
+                              local.celldex = NULL,
+                              use.clusters = NULL) {
   ## -------------------------------- ##
   ## Functions                        ##
   ## -------------------------------- ##
@@ -67,24 +65,36 @@ annotateCellTypes <- function(object,
       singler = SingleR(
         test = so.counts,
         genes = 'de',
-        clusters = so@meta.data$seurat_clusters,
+        clusters = clusterList,
         fine.tune = do.finetuning,
         ref = HPCA,
         labels = HPCA$label.main
       )
-      so[["HPCA_main"]] <- 
-        singler$labels[match(rownames(so[[]]), rownames(singler))]
+      if(is.null(use.clusters))
+        {
+          so[["HPCA_main"]] <- 
+            singler$labels[match(rownames(so[[]]), rownames(singler))]
+        } else {
+          so[["HPCA_main"]] <- 
+            singler$labels[match(so[[]][[use.clusters]], rownames(singler))]  
+        }
       
       singler = SingleR(
         test = so.counts,
         genes = 'de',
-        clusters = so@meta.data$seurat_clusters,
+        clusters = clusterList,
         fine.tune = do.finetuning,
         ref = HPCA,
         labels = HPCA$label.fine
       )
-      so[["HPCA"]] <-
-        singler$labels[match(rownames(so[[]]), rownames(singler))]
+      if(is.null(use.clusters))
+      {
+        so[["HPCA"]] <-
+          singler$labels[match(rownames(so[[]]), rownames(singler))]
+      } else {
+        so[["HPCA"]] <- 
+          singler$labels[match(so[[]][[use.clusters]], rownames(singler))]  
+      }
       
       #BP_encode block
       if (!is.null(local.celldex)) {
@@ -95,25 +105,36 @@ annotateCellTypes <- function(object,
       singler = SingleR(
         test = so.counts,
         genes = 'de',
-        clusters = so@meta.data$seurat_clusters,
+        clusters = clusterList,
         fine.tune = do.finetuning,
         ref = BP,
         labels = BP$label.main
       )
-      so[["BP_encode_main"]] <-
-        singler$labels[match(rownames(so[[]]), rownames(singler))]
+      if(is.null(use.clusters))
+      {
+        so[["BP_encode_main"]] <-
+          singler$labels[match(rownames(so[[]]), rownames(singler))]
+      } else {
+        so[["BP_encode_main"]] <- 
+          singler$labels[match(so[[]][[use.clusters]], rownames(singler))]  
+      }
       
       singler = SingleR(
         test = so.counts,
         genes = 'de',
-        clusters = so@meta.data$seurat_clusters,
+        clusters = clusterList,
         fine.tune = do.finetuning,
         ref = BP,
         labels = BP$label.fine
       )
-      so[["BP_encode"]] <-
-        singler$labels[match(rownames(so[[]]), rownames(singler))]
-      
+      if(is.null(use.clusters))
+      {
+        so[["BP_encode"]] <-
+          singler$labels[match(rownames(so[[]]), rownames(singler))]
+      } else {
+        so[["BP_encode"]] <- 
+          singler$labels[match(so[[]][[use.clusters]], rownames(singler))]  
+      }      
     }
     if (species == "Mouse") {
       
@@ -127,25 +148,37 @@ annotateCellTypes <- function(object,
       singler = SingleR(
         test = so.counts,
         genes = 'de',
-        clusters = so@meta.data$seurat_clusters,
+        clusters = clusterList,
         fine.tune = do.finetuning,
         ref = mousernaseq,
         labels = mousernaseq$label.main
       )
-
-      so[["mouseRNAseq_main"]] <-
-        singler$labels[match(rownames(so[[]]), rownames(singler))]
+      if(is.null(use.clusters))
+        {
+          so[["mouseRNAseq_main"]] <-
+            singler$labels[match(rownames(so[[]]), rownames(singler))]
+        } else {
+          so[["mouseRNAseq_main"]] <- 
+            singler$labels[match(so[[]][[use.clusters]], rownames(singler))]  
+        }   
       
       singler = SingleR(
         test = so.counts,
         genes = 'de',
-        clusters = so@meta.data$seurat_clusters,
+        clusters = clusterList,
         fine.tune = do.finetuning,
         ref = mousernaseq,
         labels = mousernaseq$label.fine
       )
-      so[["mouseRNAseq"]] <-
-        singler$labels[match(rownames(so[[]]), rownames(singler))]
+      if(is.null(use.clusters))
+        {
+          so[["mouseRNAseq"]] <-
+            singler$labels[match(rownames(so[[]]), rownames(singler))]
+        } else {
+          so[["mouseRNAseq"]] <- 
+            singler$labels[match(so[[]][[use.clusters]], rownames(singler))]  
+        }       
+      
       
       #ImmGen block
       if (!is.null(local.celldex)) {
@@ -156,24 +189,36 @@ annotateCellTypes <- function(object,
       singler = SingleR(
         test = so.counts,
         genes = 'de',
-        clusters = so@meta.data$seurat_clusters,
+        clusters = clusterList,
         fine.tune = do.finetuning,
         ref = immgen,
         labels = immgen$label.main
       )
-      so[["immgen_main"]] <- 
-        singler$labels[match(rownames(so[[]]), rownames(singler))]
+      if(is.null(use.clusters))
+      {
+        so[["immgen_main"]] <- 
+          singler$labels[match(rownames(so[[]]), rownames(singler))]
+      } else {
+        so[["immgen_main"]] <- 
+          singler$labels[match(so[[]][[use.clusters]], rownames(singler))]  
+      }     
       
       singler = SingleR(
         test = so.counts,
         genes = 'de',
-        clusters = so@meta.data$seurat_clusters,
+        clusters = clusterList,
         fine.tune = do.finetuning,
         ref = immgen,
         labels = immgen$label.fine
       )
-      so[["immgen"]] <- 
-        singler$labels[match(rownames(so[[]]), rownames(singler))]
+      if(is.null(use.clusters))
+        {
+          so[["immgen"]] <- 
+            singler$labels[match(rownames(so[[]]), rownames(singler))]
+        } else {
+          so[["immgen"]] <- 
+            singler$labels[match(so[[]][[use.clusters]], rownames(singler))]  
+        }     
       
     }
     return(so)
@@ -184,9 +229,13 @@ annotateCellTypes <- function(object,
   ## Main Code Block ##
   ## --------------- ##
   
-  
   # Getting Cluster List from MetaData of Seurat Object:
-  clusterList <- object@meta.data$seurat_clusters
+  if(!is.null(use.clusters))
+    {
+      clusterList <- object@meta.data[[use.clusters]]
+    } else {
+      clusterList <- NULL
+    }
   
   # Running Annotation:
   object <- .annotations(object)
@@ -243,15 +292,6 @@ annotateCellTypes <- function(object,
          guides(override.aes = list(size = legend.dot.size),
                                                                                                                                                             colour = guide_legend(ncol = 4)) + ggtitle("Mouse RNAseq Main Cell Type Annotations")
   }
-  
-  #  Adjusting Seurat Object MetaData:
-  #  print(plot_grid(p1,p2,nrow=1))
-  object@meta.data$Barcode <- rownames(object@meta.data)
-  object@meta.data$sample_name <- object@meta.data$orig.ident
-  object@meta.data$sample_name <-
-    gsub("-", "_", object@meta.data$sample_name)
-  object@meta.data$seurat_clusters <- NULL
-  rownames(object@meta.data) <- object@meta.data$Barcode
   
   slot(object, "commands") <- list()
   #  cat("\nSingleR Object Checksum:\n")
