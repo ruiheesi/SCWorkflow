@@ -1,10 +1,20 @@
 Package: SCWorkflow
 Title: SCWorkflow from NIDAP
-Version: 0.0.0.1
-Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: Pakcaging NIDAP templates.
+Version: 1.0.0.0
+Authors@R:  c(person("Maggie", "Cam", email = "maggie.cam@nih.gov", role = "aut", comment = c(ORCID = "0000-0001-8190-9766")), 
+    person("Thomas", "Meyer", email = "thomas.meyer@nih.gov", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-7185-5597")), 
+    person("Jing", "Bian", email = "bianjh@nih.gov", role = "aut", comment = c(ORCID = "0000-0001-7109-716X")), 
+    person("Alexandra", "Michalowski", email = "michaloa@mail.nih.gov", role = "aut", comment = c(ORCID = "0000-0001-9259-6101")),
+    person("Alexei", "Lobanov", email = "alexei.lobanov@nih.gov", role = "aut", comment = c(ORCID = "0000-0002-9883-4374")),
+    person("Philip", "Homan", email = "philip.homan@nih.gov", role = "aut", comment = c(ORCID = "0000-0002-3389-4931")),
+    person("Rui", "He", email = "rui.he@nih.gov", role = "aut"))
+Description: A set of functions for analyzing single-cell RNA-seq data using the
+    Seurat workflow. The user provides H5 files containing the results of the
+    upstream processing through CellRanger, and the package functions allow for
+    the QC, filtering, normalization, annotation, differential gene expression,
+    and further visualizations and analysis based on user input. This package can
+    be run both in a docker container and in user-friendly web-based interactive
+    notebooks (NIDAP, Palantir Foundry).
 License: MIT
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
