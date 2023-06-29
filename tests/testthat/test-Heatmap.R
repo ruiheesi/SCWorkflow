@@ -2,7 +2,7 @@ test_that("Produce heatmap and return plot and filtered dataframe: TEC data",
 {
   cr.object <- getParamHM("TEC")
   output <- do.call(heatmapSC, cr.object)
-            
+
   expect_type(output, "list")
   expected.elements = c("plot", "data")
   expect_setequal(names(output), expected.elements)
@@ -75,6 +75,26 @@ test_that("Produce heatmap - Chariou data", {
   skip_on_ci()
   expect_snapshot_file(.drawHeatPng(output$plot),
                        "Chariou_heatmap.png")
+})
+
+test_that("Chariou with no additional protein/transcript annotations", {
+  cr.object <- getParamHM("Chariou2")
+  output <- do.call(heatmapSC, cr.object)
+
+  expect_type(output, "list")
+  expected.elements = c("plot", "data")
+  expect_setequal(names(output), expected.elements)
+
+  skip_on_ci()
+  expect_snapshot_file(.drawHeatPng(output$plot),
+                       "Chariou_heatmap2.png")
+})
+
+test_that("Produce heatmap - Chariou with no transcripts/proteins", {
+  cr.object <- getParamHM("Chariou3")
+
+  expect_error(do.call(heatmapSC, cr.object),
+               "At least 1 transcript and/or protein is needed for plotting")
 })
 
 test_that("Produce heatmap - PBMC single data", {
