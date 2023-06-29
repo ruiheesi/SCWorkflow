@@ -40,6 +40,7 @@
 #' @importFrom stringr str_replace_all str_wrap
 #' @importFrom colorspace RGB diverge_hcl heat_hcl hex
 #' @importFrom grDevices colorRampPalette
+#' @importFrom RColorBrewer brewer.pal
 #'
 #' @export
 #' 
@@ -76,7 +77,7 @@ heatmapSC <- function(object,
   color.space <- colorspace::RGB(runif(n), runif(n), runif(n))
   color.space <- as(color.space, "LAB")
   
-
+  
   #function to create large palette of colors for annotation tracks 
   .distinctColorPalette <- function(k = 1, seed) {
     current.color.space <- color.space@coords
@@ -89,14 +90,14 @@ heatmapSC <- function(object,
   
   ## Function to create cyan to mustard palette
   .pal <- function (n,
-                   h = c(237, 43),
-                   c = 100,
-                   l = c(70, 90),
-                   power = 1,
-                   fixup = TRUE,
-                   gamma = NULL,
-                   alpha = 1,
-                   ...) {
+                    h = c(237, 43),
+                    c = 100,
+                    l = c(70, 90),
+                    power = 1,
+                    fixup = TRUE,
+                    gamma = NULL,
+                    alpha = 1,
+                    ...) {
     if (n < 1L)
       return(character(0L))
     h <- rep(h, length.out = 2L)
@@ -230,15 +231,33 @@ heatmapSC <- function(object,
   samples.to.include <- samples.to.include[samples.to.include != ""]
   samples.to.include <- gsub("-", "_", samples.to.include)
   
+  #Error messaging for metadata 
+  
+  if(is.null(metadata)){
+    stop("Error: You should choose at least one annotation track under metadata_to_plot")
+  }
+  
+  if(sum(grepl("Barcode",metadata,ignore.case=TRUE)) > 0){
+    sprintf("Annotation Track cannot include Barcode")
+    metadata <- metadata[!grepl('Barcode', metadata, ignore.case=TRUE)]
+  }
+  
   #Clean up transcript names and print missing genes:
   transcripts = gsub(" ", "", transcripts)
   
   l1 <- length(transcripts)
+  p1 <- length(proteins)
+  
+  if(l1 + p1 == 0){
+    stop(sprintf("At least 1 transcript and/or protein is needed for plotting"))
+  }
+  
   dups <- transcripts[duplicated(transcripts)]
   transcripts <- transcripts[!duplicated(transcripts)]
   
+  
   l2 <- length(transcripts)
-  print(sprintf("There are %s total unique genes/proteins in the dataset", l2))
+  sprintf("There are %s total unique genes/proteins in the dataset", l2)
   if (l1 > l2) {
     warning(sprintf("\n\nThe following duplicate genes were removed: %s",
                     dups))
@@ -269,8 +288,8 @@ heatmapSC <- function(object,
       )
     )
   }
-  transcripts <- transcripts[transcripts %in% rownames(object)]
   
+  transcripts <- transcripts[transcripts %in% rownames(object)]
   
   #Clean up protein names and print missing proteins:
   if (!is.null(object@assays$Protein)) {
@@ -278,11 +297,18 @@ heatmapSC <- function(object,
     if (proteins[1] != "") {
       protmiss = setdiff(proteins, rownames(object$Protein@scale.data))
       if (length(protmiss) > 0) {
-        print(sprintf("missing proteins: %s", protmiss))
+        sprintf("missing proteins: %s", protmiss)
       }
     }
     proteins = proteins[proteins %in% rownames(object$Protein@scale.data)]
   }
+  
+  #Error messaging for protein annotation tracks:
+  
+  if(add.gene.or.protein == FALSE & (!is.null(protein.annotations) | !is.null(rna.annotations))) {
+    stop("Error: You should choose to add gene or protein annotation tracks if you add protein or rna annotations")
+  }
+  
   
   #collect transcript expression data from SCT slot
   df.mat1 = NULL
@@ -380,7 +406,7 @@ heatmapSC <- function(object,
     annot <- cbind(annot, annot2)
     colnames(annot)[colnames(annot) == "annot2"] <- rna.annotations
   }
-
+  
   #Arrange columns by metadata tracks:
   if (arrange.by.metadata == TRUE) {
     annot <- annot %>% arrange(across(all_of(colnames(annot)))) 
@@ -400,7 +426,7 @@ heatmapSC <- function(object,
   annotation.col <- annotation.col %>%
     mutate_if(is.logical, as.factor)
   rownames(annotation.col) <- rownames(annot)
-  if (dim(annot)[2] == 2) {
+  if (dim(annot)[2] == 1) {
     annottitle = colnames(annot)[1]
     colnames(annotation.col) = annottitle
   }

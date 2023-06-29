@@ -15,12 +15,36 @@ getParamHM <- function(data) {
   } else if (data == "Chariou") {
     object <- selectCRObject("Chariou")
     sample.names <- c("PBS", "CD8dep", "ENT", "NHSIL12", "Combo")
-    metadata <- "orig.ident"
+    metadata <- c("orig.ident")
     set.seed(15)
     add.gene.or.protein <- TRUE
     transcripts <- sample(rownames(object), 10, replace = FALSE)
     proteins <- NULL
     rna.annotations <- transcripts[c(1, 2)]
+    protein.annotations <- NULL
+    plot.title <- "Heatmap_Chariou_test"
+    
+  } else if (data == "Chariou2") {
+    object <- selectCRObject("Chariou")
+    sample.names <- c("PBS", "CD8dep", "ENT", "NHSIL12", "Combo")
+    metadata <- c("orig.ident","Phase")
+    set.seed(15)
+    add.gene.or.protein <- FALSE
+    transcripts <- sample(rownames(object), 10, replace = FALSE)
+    proteins <- NULL
+    rna.annotations <- NULL
+    protein.annotations <- NULL
+    plot.title <- "Heatmap_Chariou_test"
+  
+  } else if (data == "Chariou3") {
+    object <- selectCRObject("Chariou")
+    sample.names <- c("PBS", "CD8dep", "ENT", "NHSIL12", "Combo")
+    metadata <- c("orig.ident","Phase")
+    set.seed(15)
+    add.gene.or.protein <- FALSE
+    transcripts <- NULL
+    proteins <- NULL
+    rna.annotations <- NULL
     protein.annotations <- NULL
     plot.title <- "Heatmap_Chariou_test"
     
