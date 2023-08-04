@@ -77,7 +77,6 @@ heatmapSC <- function(object,
   color.space <- colorspace::RGB(runif(n), runif(n), runif(n))
   color.space <- as(color.space, "LAB")
   
-  
   #function to create large palette of colors for annotation tracks 
   .distinctColorPalette <- function(k = 1, seed) {
     current.color.space <- color.space@coords
