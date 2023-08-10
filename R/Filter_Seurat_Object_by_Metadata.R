@@ -254,7 +254,7 @@ filterSeuratObjectByMetadata <- function(object,
   
   
   ## User-selected metadata column is used to set idents.
-  Filter.orig = object@meta.data[category.to.filter[1]]
+  Filter.orig = object@meta.data[[category.to.filter[1]]]
   colname <- category.to.filter[1]
   
   ident.of.interest = as.factor(object@meta.data[[colname]])
@@ -264,12 +264,12 @@ filterSeuratObjectByMetadata <- function(object,
   
   ## Get colors from user parameter and add more if the default list is too short.
   if (class(object@meta.data[[category.to.filter[1]]]) != "numeric") {
-    col.length = length(levels(as.factor(Filter.orig[[colname]])))
+    col.length = length(levels(as.factor(Filter.orig[colname])))
     if (length(colors) < col.length) {
       more.cols = .distinctColorPalette(col.length - length(colors), 10)
       colors <- c(colors, more.cols)
     }
-    names(colors) <- levels(as.factor(Filter.orig[[colname]]))
+    names(colors) <- levels(as.factor(Filter.orig[colname]))
     
     ## Keep or remove cells based on user input values.
     if (keep.or.remove) {
