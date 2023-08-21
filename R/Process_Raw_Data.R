@@ -36,6 +36,8 @@
 #' @importFrom reshape2 melt
 #' @importFrom magrittr %>%
 #' @importFrom stringr str_to_title
+#' @importFrom dplyr summarise 
+#' @importFrom tidyr fill 
 #' @importFrom ggplot2 ggplot
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom ggpubr annotate_figure get_legend ggarrange
@@ -62,6 +64,7 @@ processRawData <- function(input,
   ## Functions ####
   ## --------- ##
   library(Seurat)
+  # library(stringr)
   # Cell Cycle Scoring and Find Variable Features
   CC_FVF_so <- function(so){
     so <- CellCycleScoring(object = so, 
@@ -164,7 +167,161 @@ processRawData <- function(input,
     return(so.nf)
   }
   
+### process and add TCRdata
+ .addTCR <- function(x) {
+  # x=sample.names[1]
+  so=so.orig.nf[[x]]
+  df=tcr.list[[x]]
+  df$sample_name <- x
   
+  df$is_cell <- as.logical(df$is_cell)
+  df$productive <- as.logical(df$productive)
+  df$high_confidence <- as.logical(df$high_confidence)
+  df$full_length <- as.logical(df$high_confidence)
+  
+  
+  #filter down to only high confidence,productive contigs with 
+  #sequencable proteins
+  df <- df[which(df$high_confidence==T & df$cdr3!="None" & df$productive==T ),]
+  
+  #collapse beta reads
+  betaSeq <- df %>% 
+    group_by(barcode) %>%
+    dplyr::filter(chain == "TRB") %>%
+    summarise(cell_beta_seq_list = toString((unique(cdr3))),
+              cell_beta_reads_list = toString(list(reads)),
+              cell_unique_betas = n_distinct(c(cdr3)),
+              cell_TRBV_list =toString(unique(v_gene)),
+              cell_TRBJ_list =toString(unique(j_gene))
+              )
+  #collapse beta reads
+  alphaSeq <- df %>% 
+    group_by(barcode) %>%
+    dplyr::filter(chain == "TRA") %>%
+    summarise(cell_alpha_seq_list = toString(unique(cdr3)),
+              cell_alpha_reads_list = toString(list(reads)),
+              cell_unique_alphas =n_distinct(c(cdr3)),
+              cell_TRAV_list =paste(c(v_gene),collapse = ", "),
+              cell_TRAJ_list =paste(c(j_gene),collapse = ", ")
+              )
+  
+  outdf <- merge(betaSeq,alphaSeq,by = "barcode")
+  #add marker columns for cells with multiple alpha or beta sequence
+  outdf <- outdf %>% 
+    group_by(barcode) %>%
+    mutate(isPolyAlphaCell = if_else(cell_unique_alphas >1,TRUE,FALSE),
+           isPolyBetaCell = if_else(cell_unique_betas >1,TRUE,FALSE)
+           )
+  
+  #get the top beta sequence by read
+  topBetadf <- df %>% 
+    group_by(barcode) %>%
+    dplyr::filter(chain == "TRB") %>%
+    arrange(desc(reads)) %>%
+    mutate(cell_top_beta = if_else((row_number()== 1L),cdr3,NULL),
+           cell_TRBV = if_else((row_number()== 1L),v_gene,NULL),
+           cell_TRBJ = if_else((row_number()== 1L),j_gene,NULL)) %>%
+    dplyr::select(barcode, cell_top_beta,cell_TRBV,cell_TRBJ) %>%
+    fill(cell_top_beta,.direction = "updown") %>%
+    fill(cell_TRBV,.direction = "updown") %>%
+    fill(cell_TRBJ,.direction = "updown")
+  
+  outdf <- merge(outdf,topBetadf,by = "barcode")
+  
+  #get top alpha
+  topAlphadf <- df %>% 
+    group_by(barcode) %>%
+    dplyr::filter(chain == "TRA") %>%
+    arrange(desc(reads)) %>%
+    mutate(cell_top_alpha = if_else((row_number()== 1L),cdr3,NULL),
+           cell_TRAV = if_else((row_number()== 1L),v_gene,NULL),
+           cell_TRAJ = if_else((row_number()== 1L),j_gene,NULL)) %>%
+    dplyr::select(barcode, cell_top_alpha,cell_TRAV,cell_TRAJ) %>%
+    fill(cell_top_alpha,.direction = "updown") %>%
+    fill(cell_TRAV,.direction = "updown") %>%
+    fill(cell_TRAJ,.direction = "updown")
+  
+  
+  outdf <- merge(outdf,topAlphadf,by = "barcode") %>%
+    dplyr::select(barcode, everything()) %>%
+    distinct()
+  
+  
+  
+  df <- outdf
+  
+  #reannotate clonotypes as distinct ab_pairs
+  df <- df %>% 
+    mutate(ab_pair = paste(cell_top_alpha,cell_top_beta,sep="&"))
+  
+  ab_pair_df <- df %>% 
+    dplyr::select(ab_pair) %>% 
+    distinct() %>%
+    mutate(clonotype_id = paste("clonotype",row_number(),sep=""))
+  
+  #merge this back into the data frame
+  df = merge(df,ab_pair_df, by = "ab_pair")
+  
+  #summarize cell level data if you have not called Integrate 
+  #TCR cluster template
+  colsToSummarize <- c("cell_top_alpha",
+                       "cell_top_beta",
+                       "clonotype_id",
+                       "vdj_clonotype_id")
+  summarizeCutOff <- min(10,18)
+  
+  for (i in colsToSummarize) {
+    col <- df[[i]]
+    valCount <- length(unique(col))
+    
+    if ((valCount >=summarizeCutOff) & 
+        (!is.element(class(df[[i]][1]),c("numeric","integer")))) 
+      {
+      freqVals <- as.data.frame(-sort(-table(col)))$col[1:summarizeCutOff]
+      summarized_col = list()
+      count <- 0
+      for (j in col) {
+        
+        if (is.na(j) || is.null(j) || (j =="None")) {
+          count <- count + 1
+          summarized_col[count] <- "NULLorNA"
+          #print("NULLorNA")
+        } else if (j %in% freqVals){
+          count <- count + 1
+          summarized_col[count] <- j
+          #print("valid")
+        } else {
+          count <- count + 1
+          summarized_col[count] <- "Other"
+          #print("Other")
+        }
+      }
+      newName = paste("summarized_",i,sep="")
+      df[[newName]] <- unlist(summarized_col)
+    }
+    print("Passed all filters...")
+  }
+  df <- df %>% dplyr::select(barcode,everything())
+  df <- as.data.frame(df)
+  
+  df <- df %>% mutate_if(is.list, as.character) 
+  
+  
+  ### Add Metadata to SO  
+  
+  if (FALSE%in%grepl('G|T|C|A',unique(df$barcode))>1) {
+    stop("Error Processing TCR data: TCR metadata is empty")
+  }
+  
+  rownames(df)=df$barcode
+  df=df[,!colnames(df)%in%'barcode']
+  
+  so=AddMetaData(so,df)
+  # so.orig.nf3=so.orig.nf
+  so@meta.data=replace(so@meta.data, is.na(so@meta.data), "Not captured")
+
+  return(so)
+  }
   
   ## --------------- ##
   ## Main Code Block ####
@@ -186,31 +343,60 @@ processRawData <- function(input,
   ### Create SO object depending on class of input SOs. 
   if(class(input)=='RFilePaths'){
     print(paste0('File Type: ',class(input)))
-    input <- input$value[grepl(".h5",input$value)]
+    input.dat <- input$value[grepl("\\.h5",input$value)]
+    input.tcr <- input$value[grepl("\\.csv",input$value)]
     
-    obj.list <- lapply(input, 
-                       function(x) { return(Read10X_h5(x, use.names=TRUE)) })
+    obj.list = lapply(input.dat, 
+                       function(x){ return(Read10X_h5(x, use.names=TRUE)) })
+    tcr.list = lapply(input.tcr, 
+                       function(x){return(read.delim(x,sep=",", header = T))})
+    
   }else if(class(input)=='FoundryTransformInput'){
     print(paste0('File Type: ',class(input)))
     
-    input=nidapGetFiles(input,'h5')
+    input.dat=nidapGetFiles(input,'\\.h5')
+    input.tcr=nidapGetFiles(input,'\\.csv')
     
-    obj.list <- lapply(input, 
+    obj.list <- lapply(input.dat, 
                        function(x) { return(Read10X_h5(x, use.names=TRUE)) })
+    if (length(input.tcr)>0) {
+      tcr.list = lapply(input.tcr, 
+                         function(x){return(read.delim(x,sep=",", header = T))})
+    }
+    
     
   } else if(class(input)=='character'){
-    if (sum(grepl('.rds',input))==1) {
+    if (sum(grepl('\\.rds',input))==1) {
       ## Log output.
       cat("1. Reading Seurat Object from dataset: seurat_object.rds\n\n")
       
-      obj.list <- readRDS(input)
+      input.dat=input[grepl('\\.rds',input)]
+      input.tcr=input[grepl('\\.csv',input)]
       
-    } else if (sum(grepl('.h5',input))>0){
+      
+      obj.list <- lapply(input.dat, 
+                         function(x) { return(readRDS(x)) })
+      if (length(input.tcr)>0) {
+        tcr.list = lapply(input.tcr, 
+                        function(x){return(read.delim(x,sep=",", header = T))})
+      }
+      
+      
+    } else if (sum(grepl('\\.h5',input))>0){
       ## Log output.
       cat("1. Processing .h5 files from dataset \n\n")
       
-      obj.list <- lapply(input, 
+      input.dat=input[grepl('\\.h5',input)]
+      input.tcr=input[grepl('\\.csv',input)]
+      
+      
+      obj.list <- lapply(input.dat, 
                          function(x) { return(Read10X_h5(x, use.names=TRUE)) })
+      if (length(input.tcr)>0) {
+        tcr.list = lapply(input.tcr, 
+                        function(x){return(read.delim(x,sep=",", header = T))})
+      }
+      
       
     }else {
       stop("Incorrect input format")
@@ -221,11 +407,28 @@ processRawData <- function(input,
   
   
   ## Clean up sample names
-  names(obj.list) <- lapply(input, basename)
+  names(obj.list) <- lapply(input.dat, basename)
   names(obj.list) <- sapply(names(obj.list), 
                             function(x) gsub("_filtered(\\w+)?.h5","", x))
   names(obj.list) <- sapply(names(obj.list), 
                             function(x) gsub("\\.(\\w+)?","", x))
+  
+  
+  if (length(input.tcr)>0) {
+    names(tcr.list) <- lapply(input.tcr, basename)
+    names(tcr.list) <- sapply(names(tcr.list), 
+                              function(x) gsub("_filtered(\\w+)?.csv","", x))
+    names(tcr.list) <- sapply(names(tcr.list), 
+                              function(x) gsub("\\.(\\w+)?","", x))
+    
+   
+    if  (setequal(names(obj.list),names(tcr.list))==F){
+      stop("Names from sequencing files do not match TCR metadata files")
+    } 
+  }  
+  
+
+  
   
   ### Process Metadata table ####
   if(is.null(sample.metadata.table)==F){
@@ -308,6 +511,14 @@ processRawData <- function(input,
   sample.names=names(so.orig.nf)
   
   
+  ### Add TCR Metadata ####
+  if (length(input.tcr)>0) {
+  so.orig.nf=lapply(sample.names,FUN = .addTCR)
+    names(so.orig.nf)=sample.names
+  }
+  
+  
+  
   ### Rename Samples ####
   if(is.null(sample.metadata.table)==F&is.null(rename.col)==F){
     if(sample.name.column!=rename.col){
@@ -329,7 +540,7 @@ processRawData <- function(input,
                                 sample.name.column,drop=F]
         sample.name.column=rename.col
         sample.names=names(so.orig.nf)
-        cat("Renamed Samples:\n",paste(names(so.orig.nf),collapse = '\n'))
+        cat("Renamed Samples:\n",paste(names(so.orig.nf),collapse = '\n'),'\n')
         
         
       }else {
@@ -337,10 +548,10 @@ processRawData <- function(input,
                       names of your samples")
       }
     }else{
-      cat("Sample Names:\n",paste(names(so.orig.nf),collapse = '\n'))
+      cat("Sample Names:\n",paste(names(so.orig.nf),collapse = '\n'),"\n")
     }
   }else{
-    cat("Sample Names:\n",paste(names(so.orig.nf),collapse = '\n'))
+    cat("Sample Names:\n",paste(names(so.orig.nf),collapse = '\n'),"\n")
   }
   
   
@@ -377,8 +588,7 @@ processRawData <- function(input,
   } else { print("No Metadata table was supplied")}
   
   
-  
-  
+
   
   ### Remove Sample files ####
   subsetRegex <- file.filter.regex
