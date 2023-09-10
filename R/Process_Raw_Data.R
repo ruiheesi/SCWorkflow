@@ -413,6 +413,7 @@ processRawData <- function(input,
   }
   
   
+  
   ## Clean up sample names
   names(obj.list) <- lapply(input.dat, basename)
   names(obj.list) <- sapply(names(obj.list), 
@@ -436,7 +437,6 @@ processRawData <- function(input,
   
   
   
-  
   ### Process Metadata table ####
   if(is.null(sample.metadata.table)==F){
     meta_class <- getClass(class(sample.metadata.table)) 
@@ -449,7 +449,27 @@ processRawData <- function(input,
     } else {
       meta.table=sample.metadata.table
     }
+    if (length(setdiff(meta.table[,sample.name.column],names(obj.list)))>0) {
+      stop(paste0("
+                  Names in the sample metadata column: '",sample.name.column,
+                  "' do not match sample names taken from .h5 files. 
+                  Possible reasons could be misspelled names, or spaces in table.
+                  Check sample names:
+                  ",
+                  paste(
+                    paste0("'",setdiff(meta.table[,sample.name.column],names(obj.list)),"'"),
+                    sep="",
+                    collapse = "\n"
+                    ),
+                  "
+                  in Metadata table"
+                  ))
+    }
   } else { print("No Metadata provided")}
+  
+  
+
+  
   
   ### Create Seurat Object ####
   so.orig.nf <- list()
