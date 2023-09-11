@@ -23,10 +23,9 @@
 #' @param keep If TRUE, keep files when pattern is found in sample name.
 #'  If FALSE, remove files when pattern is found in sample name.
 #'  The pattern is set in the file.filter.regex parameter (below).
-#' @param file.filter.regex Pattern or regular expression in file 
-#' name. Use the keep parameter (above) to keep or remove files
-#' that contain pattern. If samples have been renamed set
-#' regular expression based on new names
+#' @param file.filter.regex Pattern or regular expression in sample 
+#' name. Use the 'keep' parameter to keep or remove files that contain pattern.
+#' If samples have been renamed set regular expression based on new names
 #' @param split.h5 If TRUE, split H5 into individual files. (Default: FALSE)
 #' @param cell.hash If TRUE, dataset contains cell hashtags. (Default: FALSE)
 #' @param do.normalize.data If TRUE counts table will be log2 normalized. If 
@@ -642,9 +641,49 @@ processRawData <- function(input,
   }
   
   
+
+ 
   ### Create QC figure ####
-  col1 <- brewer.pal(8, "Set3")[-2] 
-  col2 <- c(col1,brewer.pal(8,"Set2")[3:6])
+  ##Polychorme will create a palette of random colores based on a few seed 
+  ## colors. Here i used RcolorBrewer set1 color palette as the seed. Can not 
+  ## Reproduce exact pallet each time so creating 1 pallet that will be 
+  ## hardcoded in the Filter_QC and Combine_Normalize functions
+  
+  # library(Polychrome)
+  # P100 = createPalette(100,  brewer.pal(5, "Set1"), target = 'normal')
+  # swatch(P100)
+  
+  col2=c("#E6161C","#2E7AB6","#53B251","#9A53A6","#FC7800","#FFDA16","#FC00B2",
+  "#7622FE","#7D532E","#00FBF4","#F126FE","#DCDEE6","#22FD0D","#FD839B",
+  "#005D51","#E2E19E","#C6F022","#FBAD70","#008AFE","#F8AED8","#A5001C",
+  "#B42685","#5835B4","#CEC0FF","#654B63","#FF7DF1","#F91C7F","#5C6D16",
+  "#16FABB","#7DCCAF","#8CD7F4","#C86EFC","#FFCDBD","#882632","#B0921C",
+  "#B65500","#FD0DDB","#65FE84","#9F9CFF","#948C7E","#8FAA00","#758EA1",
+  "#C5166C","#93456A","#0DC4FB","#AF0DB9","#F5AAFD","#554984","#C57A7A",
+  "#0D9D9E","#B7EEAD","#FD7168","#B700FB","#85EC00","#3B8655","#AE8EB5",
+  "#E7E965","#FE87D2","#FC9B16","#AFF27A","#8876FF","#C3D2B4","#FBD092",
+  "#1626DB","#FE5ACD","#E4AA0D","#A96A0D","#B3966A","#00E5FD","#004F6E",
+  "#7D00A3","#FE947F","#BC87E9","#4F4726","#ED3D5A","#C79BA5","#5CA8FD",
+  "#005FBF","#1CBB84","#B2EDED","#FD5C32","#FCD6FF","#F668AB","#97C1FB",
+  "#7F1CD7","#94AF66","#BE16A7","#DE78A1","#22B80D","#7568BB","#82F4A3",
+  "#709686","#FC6086","#BB60A3","#9F1658","#EE6CFF","#2E8BA8","#47E9C8",
+  "#8387BA","#BCCDEC" )
+  # swatch(col2)
+  
+  ##Alternative is to combine RcolorBrewer palettes  to create larger palette
+  ## More limited on number of colors (61)
+  
+  # display.brewer.all()
+  # col2 <- c(brewer.pal(8, "Set1"),
+  #           brewer.pal(12, "Paired"),
+  #           brewer.pal(7, "Dark2"),
+  #           brewer.pal(6, "Accent"),
+  #           brewer.pal(12, "Set3"),
+  #           brewer.pal(8,"Set2"),            
+  #           brewer.pal(11, "Spectral")
+  #           )%>%unique
+
+
   
   features=c("orig.ident",
              "nCount_RNA",
