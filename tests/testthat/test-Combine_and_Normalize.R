@@ -1,16 +1,15 @@
 
 
 for (data in c('TEC','Chariou','PBMC_Single','NSCLC_Multi')) {
-  
+
   test_that(
     paste0("Test Combine & Renormalize - Standard (",data," dataset)"), {
-      
-      
+
+
       data.run <- getParamCN(data)
-      
       combine.renormalize.out <- do.call(combineNormalize, data.run)
-      
-      
+
+
       # create output
       expected.elements = c("object","plots")
       expect_setequal(names(combine.renormalize.out), expected.elements)
@@ -20,7 +19,19 @@ for (data in c('TEC','Chariou','PBMC_Single','NSCLC_Multi')) {
       expect( nrow(combine.renormalize.out$object@assays$RNA@counts),'> 0' )
       # plot slot contains data
       expect( object.size(combine.renormalize.out$plot),'> 0' )
-      
+
+      skip_on_ci()
+      expect_snapshot_file(
+        .drawFig(combine.renormalize.out$plots$TSNE),
+        paste0(data,"_Standard_TSNE.png")
+      )
+      ## Identical test runs returns different rds files
+      # expect_snapshot_file(
+      #   .saveSO(combine.renormalize.out$object),
+      #   paste0(data,"_Standard.rds")
+      # )
+
+
     })
 }
 
@@ -28,17 +39,17 @@ for (data in c('TEC','Chariou','PBMC_Single','NSCLC_Multi')) {
 
 
 for (data in c('TEC')) {
-  
+
   test_that(
     paste0("Test Combine & Renormalize - only.var.genes (",data," dataset)"), {
-      
-      
+
+
       data.run <- getParamCN(data)
-      
+
       data.run$only.var.genes = TRUE
       combine.renormalize.out <- do.call(combineNormalize, data.run)
-      
-      
+
+
       # create output
       expected.elements = c("object","plots")
       expect_setequal(names(combine.renormalize.out), expected.elements)
@@ -48,9 +59,19 @@ for (data in c('TEC')) {
       expect( nrow(combine.renormalize.out$object@assays$RNA@counts),'> 0' )
       # plot slot contains data
       expect( object.size(combine.renormalize.out$plot),'> 0' )
-      
+
+      skip_on_ci()
+      expect_snapshot_file(
+        .drawFig(combine.renormalize.out$plots$TSNE),
+        paste0(data,"_only.var.genes_TSNE.png")
+      )
+      # expect_snapshot_file(
+      #   .saveSO(combine.renormalize.out$object),
+      #   paste0(data,"_only.var.genes.rds")
+      # )
+
     })
-} 
+}
 
 
 
@@ -76,6 +97,16 @@ for (data in c('TEC')) {
       expect( nrow(combine.renormalize.out$object@assays$RNA@counts),'> 0' )
       # plot slot contains data
       expect( object.size(combine.renormalize.out$plot),'> 0' )
+      
+      skip_on_ci()
+      expect_snapshot_file(
+        .drawFig(combine.renormalize.out$plots$TSNE),
+        paste0(data,"_SCTlevel_TSNE.png")
+      )
+      # expect_snapshot_file(
+      #   .saveSO(combine.renormalize.out$object),
+      #   paste0(data,"_SCTlevel.rds")
+      # )
       
     })
 } 
@@ -107,6 +138,16 @@ for (data in c('TEC')) {
           unique(combine.renormalize.out$object@meta.data$orig.ident)
                   )
       
+      skip_on_ci()
+      expect_snapshot_file(
+        .drawFig(combine.renormalize.out$plots$TSNE),
+        paste0(data,"_exclude.sample_TSNE.png")
+      )
+      # expect_snapshot_file(
+      #   .saveSO(combine.renormalize.out$object),
+      #   paste0(data,"_exclude.sample.rds")
+      # )
+      # 
     })
 }
 
@@ -132,6 +173,16 @@ for (data in c('TEC')) {
              expect( nrow(combine.renormalize.out$object@assays$RNA@counts),'> 0' )
              # plot slot contains data
              expect( object.size(combine.renormalize.out$plot),'> 0' )
+             
+             skip_on_ci()
+             expect_snapshot_file(
+               .drawFig(combine.renormalize.out$plots$TSNE),
+               paste0(data,"_selection.method_TSNE.png")
+             )
+             # expect_snapshot_file(
+             #   .saveSO(combine.renormalize.out$object),
+             #   paste0(data,"_selection.method.rds")
+             # )
              
            })
 }
