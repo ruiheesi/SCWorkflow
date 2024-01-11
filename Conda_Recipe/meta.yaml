@@ -7,6 +7,10 @@ package:
   name: r-scworkflow-test
   version: {{ version|replace("-", "_") }}
 
+channels:
+  - conda-forge
+  - bioconda
+
 source:
 
   git_url: https://github.com/ruiheesi/SCWorkflow
