@@ -1,6 +1,6 @@
 Package: SCWorkflow
 Title: SCWorkflow from NIDAP
-Version: 1.1.0
+Version: 1.1.1
 Authors@R:  c(person("Maggie", "Cam", email = "maggie.cam@nih.gov", role = "aut", comment = c(ORCID = "0000-0001-8190-9766")), 
     person("Thomas", "Meyer", email = "thomas.meyer@nih.gov", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-7185-5597")), 
     person("Jing", "Bian", email = "bianjh@nih.gov", role = "aut", comment = c(ORCID = "0000-0001-7109-716X")), 

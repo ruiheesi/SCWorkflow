@@ -2,7 +2,28 @@
 
 
 
-## v1.1.0 (2024-01-11)
+## v1.1.1 (2024-01-12)
+
+### Fix
+
+* fix: update readme ([`d8d4013`](https://github.com/ruiheesi/SCWorkflow/commit/d8d401362ba532345ca58ad3f06d748387e9481e))
+
+### Unknown
+
+* Merge pull request #11 from ruiheesi/dev
+
+Dev ([`e4a2987`](https://github.com/ruiheesi/SCWorkflow/commit/e4a2987652ea1f5fae2ff5063943260e28684bb1))
+
+* Merge pull request #10 from ruiheesi/testCD2
+
+fix: update readme ([`a3f0d9c`](https://github.com/ruiheesi/SCWorkflow/commit/a3f0d9cced7259d5a08b0bf8db2375aa53cee3d0))
+
+
+## v1.1.0 (2024-01-12)
+
+### Documentation
+
+* docs(version): Automatic development release ([`8b5cc98`](https://github.com/ruiheesi/SCWorkflow/commit/8b5cc98cf37cd3f5e43282b95261054b7a913470))
 
 ### Feature
 
@@ -10,9 +31,29 @@
 
 ### Test
 
+* test: update meta.ymal ([`1abd118`](https://github.com/ruiheesi/SCWorkflow/commit/1abd11822ca09dca58921cbe9bf915fb652855b6))
+
+* test: update meta.ymal ([`46ba936`](https://github.com/ruiheesi/SCWorkflow/commit/46ba936561d14d3696a5540bfb70cb3ca25fb3dd))
+
 * test: mute line42 in test-Process_Raw_Data ([`75dbd06`](https://github.com/ruiheesi/SCWorkflow/commit/75dbd064c5a4778030c0d959eaf39bbb5c234983))
 
 ### Unknown
+
+* Merge pull request #8 from ruiheesi/dev
+
+Dev ([`4364548`](https://github.com/ruiheesi/SCWorkflow/commit/4364548c2dc9d0d8df250dd8c4b93488393f334a))
+
+* Merge pull request #7 from ruiheesi/testCD
+
+test: update meta.ymal ([`fe470f9`](https://github.com/ruiheesi/SCWorkflow/commit/fe470f98b9f70060dd8974472aa1d502b60c723a))
+
+* Merge pull request #6 from ruiheesi/dev
+
+Dev ([`4e75a9f`](https://github.com/ruiheesi/SCWorkflow/commit/4e75a9f42b4923bfcf24d677c631d25f445cfaf7))
+
+* Merge pull request #5 from ruiheesi/testCD
+
+test: update meta.ymal ([`caed439`](https://github.com/ruiheesi/SCWorkflow/commit/caed4395ade91b2ef1303a65b030f4809f5e0a17))
 
 * Merge pull request #4 from ruiheesi/dev
 
@@ -25,11 +66,6 @@ test: mute line42 in test-Process_Raw_Data ([`abef880`](https://github.com/ruihe
 * Merge pull request #1 from ruiheesi/testCD
 
 feat: enable CD ([`0194dd9`](https://github.com/ruiheesi/SCWorkflow/commit/0194dd90f3375b97830363ad159df05542874fa5))
-
-
-## v1.0.0 (2023-07-08)
-
-### Unknown
 
 * Fixing visualization for &#34;after&#34; plot ([`d7bb90f`](https://github.com/ruiheesi/SCWorkflow/commit/d7bb90f5a7cb674ffb4605a9378b55e4e2d9f48e))
 
