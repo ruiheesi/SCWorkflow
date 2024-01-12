@@ -12,3 +12,7 @@ Datetime: 2024-01-11 21:07:53, Version:  r-scworkflow-test-dev-1.1.0-r41_0.tar.b
 Datetime: 2024-01-12 17:16:15, Version:  r-scworkflow-test-dev-1.1.1-r41_0.tar.bz2
 <br>[View Commit Log](Commit_Log_r-scworkflow-test-dev-1.1.1-r41_0.log)
 <br>Deployment Status: Success
+
+Datetime: 2024-01-12 17:49:57, Version:  r-scworkflow-test-1.1.1-r41_0.tar.bz2
+<br>[View Commit Log](Commit_Log_r-scworkflow-test-1.1.1-r41_0.log)
+<br>Deployment Status: Default:Unauthorized
