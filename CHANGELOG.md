@@ -2,32 +2,50 @@
 
 
 
-## v1.1.1 (2024-01-12)
+## v1.3.0 (2024-01-28)
 
-### Fix
+### Feature
 
-* fix: update readme ([`d8d4013`](https://github.com/ruiheesi/SCWorkflow/commit/d8d401362ba532345ca58ad3f06d748387e9481e))
+* feat: test ([`4c4cee7`](https://github.com/ruiheesi/SCWorkflow/commit/4c4cee798f2e25cc2ee4d3e0cfe6432fba4bd352))
+
+* feat: test ([`c8274f9`](https://github.com/ruiheesi/SCWorkflow/commit/c8274f95e31d978a6f39b8b73e64674b39bedf20))
+
+* feat: test ([`3aff107`](https://github.com/ruiheesi/SCWorkflow/commit/3aff107b99c9f12e8eff4a0d6366456fdaa42688))
 
 ### Unknown
 
-* Merge pull request #11 from ruiheesi/dev
+* Merge pull request #16 from ruiheesi/dev
 
-Dev ([`e4a2987`](https://github.com/ruiheesi/SCWorkflow/commit/e4a2987652ea1f5fae2ff5063943260e28684bb1))
+Dev ([`f094e92`](https://github.com/ruiheesi/SCWorkflow/commit/f094e924bec0e386cfe705dd259dec4848ab1fd0))
 
-* Merge pull request #10 from ruiheesi/testCD2
+* Merge pull request #15 from ruiheesi/testCD2
 
-fix: update readme ([`a3f0d9c`](https://github.com/ruiheesi/SCWorkflow/commit/a3f0d9cced7259d5a08b0bf8db2375aa53cee3d0))
+Test cd2 ([`89850c1`](https://github.com/ruiheesi/SCWorkflow/commit/89850c1348c0df1456973c8747b8631a393ee11b))
+
+* Merge remote-tracking branch &#39;origin/dev&#39; into testCD2 ([`429581c`](https://github.com/ruiheesi/SCWorkflow/commit/429581c3b0c2dfba0eaf748ce4f0efdf1519de97))
+
+* feat :test ([`10b3e05`](https://github.com/ruiheesi/SCWorkflow/commit/10b3e05b24e44f6e6548b3323e99faa46f4722d7))
 
 
-## v1.1.0 (2024-01-12)
+## v1.2.0 (2024-01-26)
 
 ### Documentation
+
+* docs(version): Automatic development release ([`b8b41d3`](https://github.com/ruiheesi/SCWorkflow/commit/b8b41d3d1042249b673c63742b2679136d5cd1ce))
+
+* docs(version): Automatic development release ([`f420a3b`](https://github.com/ruiheesi/SCWorkflow/commit/f420a3bb6477abda8fd2376d5275e0451b7a0846))
 
 * docs(version): Automatic development release ([`8b5cc98`](https://github.com/ruiheesi/SCWorkflow/commit/8b5cc98cf37cd3f5e43282b95261054b7a913470))
 
 ### Feature
 
+* feat: test harmony ([`6c2830b`](https://github.com/ruiheesi/SCWorkflow/commit/6c2830b6bf37a3e908e82533f78e32ce897a0b50))
+
 * feat: enable CD ([`3696c4b`](https://github.com/ruiheesi/SCWorkflow/commit/3696c4b4876dd18d652c674ab3e68c03cceebea1))
+
+### Fix
+
+* fix: update readme ([`d8d4013`](https://github.com/ruiheesi/SCWorkflow/commit/d8d401362ba532345ca58ad3f06d748387e9481e))
 
 ### Test
 
@@ -38,6 +56,30 @@ fix: update readme ([`a3f0d9c`](https://github.com/ruiheesi/SCWorkflow/commit/a3
 * test: mute line42 in test-Process_Raw_Data ([`75dbd06`](https://github.com/ruiheesi/SCWorkflow/commit/75dbd064c5a4778030c0d959eaf39bbb5c234983))
 
 ### Unknown
+
+* Merge pull request #14 from ruiheesi/dev
+
+Dev ([`c932c71`](https://github.com/ruiheesi/SCWorkflow/commit/c932c71d62a9c1ddb38721609a049e646d863dd0))
+
+* Merge pull request #13 from ruiheesi/testCD2
+
+Test cd2 ([`da01ac7`](https://github.com/ruiheesi/SCWorkflow/commit/da01ac7c185cfee5532ac5e080cd44111170178a))
+
+* Merge pull request #12 from ruiheesi/release_dev
+
+Release dev ([`447457a`](https://github.com/ruiheesi/SCWorkflow/commit/447457a355f127ea2f36ccb573827f0057123ce4))
+
+* Merge pull request #11 from ruiheesi/dev
+
+Dev ([`e4a2987`](https://github.com/ruiheesi/SCWorkflow/commit/e4a2987652ea1f5fae2ff5063943260e28684bb1))
+
+* Merge pull request #10 from ruiheesi/testCD2
+
+fix: update readme ([`a3f0d9c`](https://github.com/ruiheesi/SCWorkflow/commit/a3f0d9cced7259d5a08b0bf8db2375aa53cee3d0))
+
+* Merge pull request #9 from ruiheesi/release_dev
+
+Release dev ([`4026e1a`](https://github.com/ruiheesi/SCWorkflow/commit/4026e1a9747b27488af6886681bb8fb42b268380))
 
 * Merge pull request #8 from ruiheesi/dev
 
