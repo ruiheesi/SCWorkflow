@@ -25,3 +25,7 @@ Datetime: 2024-01-28 21:29:05, Version:  r-scworkflow-test-dev-1.3.0-r41_0.tar.b
 Datetime: 2024-01-28 21:38:49, Version:  r-scworkflow-test-1.3.0-r41_0.tar.bz2
 <br>[View Commit Log](Commit_Log_r-scworkflow-test-1.3.0-r41_0.log)
 <br>Deployment Status: Artifacts:WriteArtifactPermissionDenied
+
+Datetime: 2024-01-29 14:48:28, Version:  r-scworkflow-test-1.3.0-r41_0.tar.bz2
+<br>[View Commit Log](Commit_Log_r-scworkflow-test-1.3.0-r41_0.log)
+<br>Deployment Status: Artifacts:WriteArtifactPermissionDenied
