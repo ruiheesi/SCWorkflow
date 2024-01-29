@@ -35,7 +35,7 @@ test_that("Annotate_Cell_Types run with reduction type TSNE - Mouse TEC Data",
               width = 10,
               height = 10
             )
-            expect_snapshot_file("output", "TEC_annotateCellTypes.tsne.p1.png")
+            expect_snapshot_file("output", "TEC_annotateCellTypes.tsne.p1.png", variant = Sys.info()[["sysname"]])
             ggsave(
               "output/TEC_annotateCellTypes.tsne.p2.png",
               output$p2,
