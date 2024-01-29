@@ -39,7 +39,7 @@ for (data in c('TEC')) {
     expected.elements = c("object","plots")
     expect_setequal(names(Raw.out), expected.elements)
     # SO contains object same length as input
-    # expect_false(equals(length(Raw.out$object),length(data.run$input)))
+    expect_false(equals(length(Raw.out$object),length(data.run$input)))
     # figure slot is a ggplot
     expect_equal(class(Raw.out$plots[[1]])[2], 'ggplot')
     # SO slot contains data
