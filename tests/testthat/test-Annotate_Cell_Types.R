@@ -1,7 +1,7 @@
 test_that("Annotate_Cell_Types run with normal parameters - Mouse TEC Data",
           {
             tec.data <- getParamACT("TEC")
-            output <- do.call(annotateCellTypes, tec.data)
+            suppressWarnings(output <- do.call(annotateCellTypes, tec.data))
             
             ggsave(
               "output/TEC_annotateCellTypes.p1.png",
@@ -27,7 +27,7 @@ test_that("Annotate_Cell_Types run with reduction type TSNE - Mouse TEC Data",
           {
             tec.data <- getParamACT("TEC")
             tec.data$reduction.type <-  "tsne"
-            output <- do.call(annotateCellTypes, tec.data)
+            suppressWarnings(output <- do.call(annotateCellTypes, tec.data))
             
             ggsave(
               "output/TEC_annotateCellTypes.tsne.p1.png",
@@ -35,7 +35,7 @@ test_that("Annotate_Cell_Types run with reduction type TSNE - Mouse TEC Data",
               width = 10,
               height = 10
             )
-            expect_snapshot_file("output", "TEC_annotateCellTypes.tsne.p1.png")
+            expect_snapshot_file("output", "TEC_annotateCellTypes.tsne.p1.png", variant = Sys.info()[["sysname"]])
             ggsave(
               "output/TEC_annotateCellTypes.tsne.p2.png",
               output$p2,
@@ -53,7 +53,7 @@ test_that("Annotate_Cell_Types run with reduction type TSNE - Mouse TEC Data",
 test_that("Test Annotate Cell Types with FineTuning - Mouse TEC dataset", {
   tec.data <- getParamACT("TEC")
   tec.data$do.finetuning <- TRUE
-  output <- do.call(annotateCellTypes, tec.data)
+  output <- suppressWarnings(do.call(annotateCellTypes, tec.data))
   
   ggsave(
     "output/TEC_annotateCellTypes.fine.p1.png",
@@ -78,7 +78,7 @@ test_that("Test Annotate Cell Types with FineTuning - Mouse TEC dataset", {
 
 test_that("Annotate_Cell_Types run with normal parameters - Chariou Data", {
   chariou_data <- getParamACT("Chariou")
-  output <- do.call(annotateCellTypes, chariou_data)
+  output <- suppressWarnings(do.call(annotateCellTypes, chariou_data))
   
   ggsave(
     "output/Chariou_annotateCellTypes.p1.png",
@@ -104,7 +104,7 @@ test_that("Annotate_Cell_Types run with normal parameters - Chariou Data", {
 test_that("Annotate_Cell_Types run with normal parameters - PBMC-single Data",
           {
             pbmc.single.data <- getParamACT("pbmc-single")
-            output <- do.call(annotateCellTypes, pbmc.single.data)
+            suppressWarnings(output <- do.call(annotateCellTypes, pbmc.single.data))
             
             ggsave(
               "output/PBMCsinlge_annotateCellTypes.p1.png",
@@ -129,7 +129,7 @@ test_that("Annotate_Cell_Types run with normal parameters - PBMC-single Data",
 test_that("Annotate_Cell_Types run with normal parameters - NSCLC-multi Data",
           {
             nsclc.multi.data <- getParamACT("nsclc-multi")
-            output <- do.call(annotateCellTypes, nsclc.multi.data)
+            suppressWarnings(output <- do.call(annotateCellTypes, nsclc.multi.data))
             
             ggsave(
               "output/NSCLCmulti_annotateCellTypes.p1.png",
@@ -153,7 +153,7 @@ test_that("Annotate_Cell_Types run with normal parameters - NSCLC-multi Data",
 
 test_that("Annotate_Cell_Types run with normal parameters - BRCA Data", {
   brca.data <- getParamACT("BRCA")
-  output <- do.call(annotateCellTypes, brca.data)
+  output <- suppressWarnings(do.call(annotateCellTypes, brca.data))
   
   ggsave(
     "output/BRCA_annotateCellTypes.p1.png",
