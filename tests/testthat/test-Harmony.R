@@ -1,11 +1,12 @@
 test_that("Harmony returns seurat object with adjusted embeddings for
           TEC data", {
+  skip_on_ci()
 
   tec = getHarmonyParam("TEC")
 
   object.harmonized = do.call(harmonyBatchCorrect, tec)
    
-  skip_on_ci()
+
   expect_snapshot_file(
     .drawHarmonyFig(object.harmonized$adj.tsne),
     "tec_harm.png"
@@ -20,12 +21,12 @@ test_that("Harmony returns seurat object with adjusted embeddings for
 
 test_that("Harmony returns seurat object with adjusted embeddings for Chariou
           data", {
-
+  skip_on_ci()
   chariou = getHarmonyParam("Chariou")
 
   object.harmonized = do.call(harmonyBatchCorrect, chariou)
 
-  skip_on_ci()
+
   expect_snapshot_file(
     .drawHarmonyFig(object.harmonized$adj.tsne),
     "char_harm.png"
@@ -40,12 +41,12 @@ test_that("Harmony returns seurat object with adjusted embeddings for Chariou
 
 test_that("Harmony returns seurat object with adjusted embeddings for
           pbmc_single data", {
-
+  skip_on_ci()
   pbmc.single = getHarmonyParam("pbmc_single")
 
   object.harmonized = do.call(harmonyBatchCorrect, pbmc.single)
 
-  skip_on_ci()
+  
   expect_snapshot_file(
     .drawHarmonyFig(object.harmonized$adj.tsne),
     "pbmc_single_harm.png"
@@ -60,12 +61,11 @@ test_that("Harmony returns seurat object with adjusted embeddings for
 
 test_that("Harmony returns seurat object with adjusted embeddings for
           nsclc_multi data", {
-
+  skip_on_ci()
   nsclc.multi = getHarmonyParam("nsclc_multi")
 
   object.harmonized = do.call(harmonyBatchCorrect, nsclc.multi)
 
-  skip_on_ci()
   expect_snapshot_file(
     .drawHarmonyFig(object.harmonized$adj.tsne),
     "nsclc_multi_harm.png"
@@ -80,12 +80,12 @@ test_that("Harmony returns seurat object with adjusted embeddings for
 
 test_that("Harmony returns seurat object with adjusted embeddings for
           BRCA data", {
-
+  skip_on_ci()
+          
   brca = getHarmonyParam("BRCA")
 
   object.harmonized = do.call(harmonyBatchCorrect, brca)
 
-  skip_on_ci()
   expect_snapshot_file(
     .drawHarmonyFig(object.harmonized$adj.tsne),
     "BRCA_harm.png"
@@ -99,7 +99,7 @@ test_that("Harmony returns seurat object with adjusted embeddings for
 })
 
 test_that("Harmony provides warning when genes are not found in the data", {
-
+  skip_on_ci()
   tec = getHarmonyParam("TEC")
 
   expect_warning(harmonyBatchCorrect(
@@ -113,7 +113,7 @@ test_that("Harmony provides warning when genes are not found in the data", {
 
 test_that("Harmony stops when variable features to subset by exceeds number of
           genes in the data", {
-
+  skip_on_ci()
   tec = getHarmonyParam("TEC")
 
   expect_error(harmonyBatchCorrect(
