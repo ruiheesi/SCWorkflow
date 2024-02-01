@@ -2,36 +2,32 @@
 
 
 
-## v1.0.1 (2024-02-01)
+## v1.0.2 (2024-02-01)
 
 ### Fix
 
-* fix: add skip on CI for harmony ([`55c1c0d`](https://github.com/NIDAP-Community/SCWorkflow/commit/55c1c0d5cee5e19cfe1e80d76421bcc3f44dc2fb))
-
-* fix: Suppress warning for celldex, move CI handle for test Harmony, add png for page creation ([`406594a`](https://github.com/NIDAP-Community/SCWorkflow/commit/406594a94f11f02f5ea19c0ddf3eb5e0e264bcef))
+* fix: update package name in action file ([`00c816c`](https://github.com/NIDAP-Community/SCWorkflow/commit/00c816ce96752842efd294432ef0cea07b98e908))
 
 ### Unknown
 
-* Merge pull request #51 from NIDAP-Community/dev
+* Merge pull request #53 from NIDAP-Community/dev
 
-Update test files for Harmony and Annotation, add GitHub page image ([`5c19124`](https://github.com/NIDAP-Community/SCWorkflow/commit/5c19124e27cc4c1bebed7a3b3f65cf6445b1680e))
+fix: update package name in action file ([`1ea1b0c`](https://github.com/NIDAP-Community/SCWorkflow/commit/1ea1b0ca03efe68d1714f6590645cb0232485e04))
 
-* Merge pull request #50 from NIDAP-Community/CDupdate
+* Merge pull request #52 from NIDAP-Community/CDupdate
 
-fix: add skip on CI for harmony ([`3268a82`](https://github.com/NIDAP-Community/SCWorkflow/commit/3268a821009e051e70bfa7f62c6360495001ff2b))
-
-* Merge pull request #49 from NIDAP-Community/CDupdate
-
-fix: Suppress warning for celldex, move CI handle for test Harmony, a… ([`30de884`](https://github.com/NIDAP-Community/SCWorkflow/commit/30de88464309ffcd421d35be02d253471a618797))
+fix: update package name in action file ([`3956593`](https://github.com/NIDAP-Community/SCWorkflow/commit/39565932049fc16f4bb6cf9efe8757b9cc978d1d))
 
 
-## v1.0.0 (2024-02-01)
+## v1.0.1 (2024-02-01)
 
 ### Build
 
 * build: update conda recipe and action file ([`32f800c`](https://github.com/NIDAP-Community/SCWorkflow/commit/32f800c62dac1f81e683863efcc5609400e37bed))
 
 ### Documentation
+
+* docs(version): Automatic development release ([`0548007`](https://github.com/NIDAP-Community/SCWorkflow/commit/05480075fa38301c5dae385ffa3b2ca1bb5d6520))
 
 * docs: Adding changelog ([`34b1e0b`](https://github.com/NIDAP-Community/SCWorkflow/commit/34b1e0b120bbda080266d54cb12d7c7b10fec168))
 
@@ -59,6 +55,10 @@ fix: Suppress warning for celldex, move CI handle for test Harmony, a… ([`30de
 
 ### Fix
 
+* fix: add skip on CI for harmony ([`55c1c0d`](https://github.com/NIDAP-Community/SCWorkflow/commit/55c1c0d5cee5e19cfe1e80d76421bcc3f44dc2fb))
+
+* fix: Suppress warning for celldex, move CI handle for test Harmony, add png for page creation ([`406594a`](https://github.com/NIDAP-Community/SCWorkflow/commit/406594a94f11f02f5ea19c0ddf3eb5e0e264bcef))
+
 * fix: Revise version format ([`7992d22`](https://github.com/NIDAP-Community/SCWorkflow/commit/7992d22f06692966e3aa3e543a24e51f84b96d5a))
 
 * fix: update readme ([`d8d4013`](https://github.com/NIDAP-Community/SCWorkflow/commit/d8d401362ba532345ca58ad3f06d748387e9481e))
@@ -74,6 +74,18 @@ fix: Suppress warning for celldex, move CI handle for test Harmony, a… ([`30de
 * test: mute line42 in test-Process_Raw_Data ([`75dbd06`](https://github.com/NIDAP-Community/SCWorkflow/commit/75dbd064c5a4778030c0d959eaf39bbb5c234983))
 
 ### Unknown
+
+* Merge pull request #51 from NIDAP-Community/dev
+
+Update test files for Harmony and Annotation, add GitHub page image ([`5c19124`](https://github.com/NIDAP-Community/SCWorkflow/commit/5c19124e27cc4c1bebed7a3b3f65cf6445b1680e))
+
+* Merge pull request #50 from NIDAP-Community/CDupdate
+
+fix: add skip on CI for harmony ([`3268a82`](https://github.com/NIDAP-Community/SCWorkflow/commit/3268a821009e051e70bfa7f62c6360495001ff2b))
+
+* Merge pull request #49 from NIDAP-Community/CDupdate
+
+fix: Suppress warning for celldex, move CI handle for test Harmony, a… ([`30de884`](https://github.com/NIDAP-Community/SCWorkflow/commit/30de88464309ffcd421d35be02d253471a618797))
 
 * Merge pull request #47 from NIDAP-Community/dev
 
