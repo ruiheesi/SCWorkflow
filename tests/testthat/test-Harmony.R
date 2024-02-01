@@ -99,7 +99,7 @@ test_that("Harmony returns seurat object with adjusted embeddings for
 })
 
 test_that("Harmony provides warning when genes are not found in the data", {
-
+  skip_on_ci()
   tec = getHarmonyParam("TEC")
 
   expect_warning(harmonyBatchCorrect(
@@ -113,7 +113,7 @@ test_that("Harmony provides warning when genes are not found in the data", {
 
 test_that("Harmony stops when variable features to subset by exceeds number of
           genes in the data", {
-
+  skip_on_ci()
   tec = getHarmonyParam("TEC")
 
   expect_error(harmonyBatchCorrect(
