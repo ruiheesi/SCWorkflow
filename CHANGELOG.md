@@ -2,34 +2,28 @@
 
 
 
-## v1.4.0 (2024-01-29)
+## v1.4.1 (2024-02-13)
 
-### Feature
+### Fix
 
-* feat: Update test-annotation to supress warnings ([`3d5cf8f`](https://github.com/ruiheesi/SCWorkflow/commit/3d5cf8f39546ccf008e77dff6f003ac1620604da))
-
-### Test
-
-* test: Adding variant for Action skip ([`b0bea4c`](https://github.com/ruiheesi/SCWorkflow/commit/b0bea4cf7517f963414f272424ecfd86ec2c82e3))
+* fix: test docker container update ([`ff3b2b7`](https://github.com/ruiheesi/SCWorkflow/commit/ff3b2b7c26878ec0a86fcd007f9b4126c1a89056))
 
 ### Unknown
 
-* Merge pull request #19 from ruiheesi/dev
+* Merge pull request #22 from ruiheesi/dev
 
-Dev ([`b2df3c2`](https://github.com/ruiheesi/SCWorkflow/commit/b2df3c28dfd2adca66c7ddf52011f1f388e15b8b))
+Dev ([`7d77254`](https://github.com/ruiheesi/SCWorkflow/commit/7d77254c2655a7441b615b63b296d9752239be09))
 
-* Merge pull request #18 from ruiheesi/testCD2
+* Merge pull request #21 from ruiheesi/testCD2
 
-Test cd2 ([`cbf9d09`](https://github.com/ruiheesi/SCWorkflow/commit/cbf9d09b25537dcd0d965c0230c1f5326e974666))
-
-* Merge pull request #17 from ruiheesi/release_dev
-
-Release dev ([`93dac20`](https://github.com/ruiheesi/SCWorkflow/commit/93dac20d157a58bc9255598689bf630a968e1c01))
+fix: test docker container update ([`14b471b`](https://github.com/ruiheesi/SCWorkflow/commit/14b471b2e44164ebba5b08555f555b4900a88a43))
 
 
-## v1.3.0 (2024-01-28)
+## v1.4.0 (2024-01-29)
 
 ### Documentation
+
+* docs(version): Automatic development release ([`ff2430f`](https://github.com/ruiheesi/SCWorkflow/commit/ff2430f00cc67db2289c16f41711f3713da24aa3))
 
 * docs(version): Automatic development release ([`184b4f9`](https://github.com/ruiheesi/SCWorkflow/commit/184b4f9d2bd6ee833c18670d4c9c405ba52c5bac))
 
@@ -40,6 +34,8 @@ Release dev ([`93dac20`](https://github.com/ruiheesi/SCWorkflow/commit/93dac20d1
 * docs(version): Automatic development release ([`8b5cc98`](https://github.com/ruiheesi/SCWorkflow/commit/8b5cc98cf37cd3f5e43282b95261054b7a913470))
 
 ### Feature
+
+* feat: Update test-annotation to supress warnings ([`3d5cf8f`](https://github.com/ruiheesi/SCWorkflow/commit/3d5cf8f39546ccf008e77dff6f003ac1620604da))
 
 * feat: test ([`4c4cee7`](https://github.com/ruiheesi/SCWorkflow/commit/4c4cee798f2e25cc2ee4d3e0cfe6432fba4bd352))
 
@@ -57,6 +53,8 @@ Release dev ([`93dac20`](https://github.com/ruiheesi/SCWorkflow/commit/93dac20d1
 
 ### Test
 
+* test: Adding variant for Action skip ([`b0bea4c`](https://github.com/ruiheesi/SCWorkflow/commit/b0bea4cf7517f963414f272424ecfd86ec2c82e3))
+
 * test: update meta.ymal ([`1abd118`](https://github.com/ruiheesi/SCWorkflow/commit/1abd11822ca09dca58921cbe9bf915fb652855b6))
 
 * test: update meta.ymal ([`46ba936`](https://github.com/ruiheesi/SCWorkflow/commit/46ba936561d14d3696a5540bfb70cb3ca25fb3dd))
@@ -64,6 +62,18 @@ Release dev ([`93dac20`](https://github.com/ruiheesi/SCWorkflow/commit/93dac20d1
 * test: mute line42 in test-Process_Raw_Data ([`75dbd06`](https://github.com/ruiheesi/SCWorkflow/commit/75dbd064c5a4778030c0d959eaf39bbb5c234983))
 
 ### Unknown
+
+* Merge pull request #19 from ruiheesi/dev
+
+Dev ([`b2df3c2`](https://github.com/ruiheesi/SCWorkflow/commit/b2df3c28dfd2adca66c7ddf52011f1f388e15b8b))
+
+* Merge pull request #18 from ruiheesi/testCD2
+
+Test cd2 ([`cbf9d09`](https://github.com/ruiheesi/SCWorkflow/commit/cbf9d09b25537dcd0d965c0230c1f5326e974666))
+
+* Merge pull request #17 from ruiheesi/release_dev
+
+Release dev ([`93dac20`](https://github.com/ruiheesi/SCWorkflow/commit/93dac20d157a58bc9255598689bf630a968e1c01))
 
 * Merge pull request #16 from ruiheesi/dev
 
