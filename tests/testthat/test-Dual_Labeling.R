@@ -2,7 +2,7 @@ test_that("Test Dual labeling TEC Data", {
   CRObject <- getParamDL("TEC")
   output <- do.call(dualLabeling, CRObject)
   
-  expected.elements = c("object", "plot","plot2")
+  expected.elements = c("object", "plot","plot_densityHM","plot_table")
   expect_setequal(names(output), expected.elements)
   expect_length(output$plot$grobs, 7)
   

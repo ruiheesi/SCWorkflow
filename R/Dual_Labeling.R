@@ -43,8 +43,6 @@
 #' pre-scale trim values (below) to remove extremely low and high values
 #' (Default is TRUE)
 #' @param pre.scale.trim Set trimming percentile values (Defalut is 0.99)
-#' @param density.heatmap Creates a additional heatmap showing the density
-#' distribution of cells. (Default is FALSE)
 #' @param display.unscaled.values Set to TRUE if you want to view the unscaled
 #' gene/protein expression values (Default is FALSE)
 
@@ -88,7 +86,6 @@ dualLabeling <- function (object,
                           trim.marker.1 = TRUE, 
                           trim.marker.2 = TRUE, 
                           pre.scale.trim = 0.99, 
-                          density.heatmap = FALSE, 
                           display.unscaled.values = FALSE) 
 {
     
@@ -337,7 +334,7 @@ dualLabeling <- function (object,
     gg.list <- .ggOverlay(so.sub, df, marker.1, marker.2)
     gg.list2 <- .ggOverlay2(so.sub, df, marker.1, marker.2)
     
-    if (density.heatmap == TRUE) {
+
         x = df$mark1.scale
         y = df$mark2.scale
         
@@ -370,18 +367,10 @@ dualLabeling <- function (object,
                   gg.list2[[1]], 
                   gg.list2[[2]], 
                   gg.list2[[3]], 
-                  p2, 
                   ncol = 3)
-  } else {
-    grob <- 
-      arrangeGrob(gg.list[[1]],
-                  gg.list[[2]],
-                  gg.list[[3]], 
-                  gg.list2[[1]], 
-                  gg.list2[[2]], 
-                  gg.list2[[3]], 
-                  ncol = 3)
-    } 
+    grobHM <- 
+      arrangeGrob(p2,ncol=1,nrow=1)
+  
     
     #Applying Filters to Data using Thresholds:
     if (filter.data == TRUE && 
@@ -500,8 +489,9 @@ dualLabeling <- function (object,
     }
     
     result.list <- list(object = so.sub, 
-                        plot = grob, 
-                        plot2 = g)
+                        plot = grob,
+                        plot_densityHM = grobHM,
+                        plot_table = g)
     
     return(result.list)
 }
