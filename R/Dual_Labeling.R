@@ -15,7 +15,7 @@
 #' @param marker.2.type Slot to use for second marker. Choices are "SCT",
 #' "protein","HTO" (default is "SCT")
 #' @param data.reduction Dimension Reduction method to use for image. Options
-#' are "umap" or "tsne" (default is "umap")
+#' are umap, tsne, or both (default is "umap")
 #' @param point.size Point size for image (default is 0.5)
 #' @param point.shape Point shape for image (default is 16)
 #' @param point.transparency Point transparency for image (default is 0.5)
@@ -24,10 +24,10 @@
 #' @param marker.2.threshold Threshold set for second marker (default is 0.5)
 #' @param filter.data Add new parameter column to metadata annotating where 
 #' marker thresholds are applied (default is TRUE)
-#' @param M1.filter.direction Annotate cells that have gene expression levels 
+#' @param marker.1.filter.direction Annotate cells that have gene expression levels 
 #' for marker 1 using the marker 1 threshold. Choices are "greater than" 
 #' or "less than" (default is "greater than")
-#' @param M2.filter.direction Annotate cells that have gene expression levels 
+#' @param marker.2.filter.direction Annotate cells that have gene expression levels 
 #' for marker 2 using the marker 2 threshold. Choices are "greater than" 
 #' or "less than" (default is "greater than")
 #' @param apply.filter.1 If TRUE, apply the first filter (default is TRUE)
@@ -35,13 +35,13 @@
 #' @param filter.condition If TRUE, apply both filters 1 and 2 and take
 #' intersection. If FALSE, apply both filters and take the union.
 #' @param parameter.name Name for metadata column for new marker filters
-#' (Default is "Marker")
+#' (Default is "My_CoExp")
 #' @param trim.marker.1 Trim top and bottom percentile of marker 1 signal to
 #' pre-scale trim values (below) to remove extremely low and high values
-#' (Default is TRUE)
+#' (Default is FALSE)
 #' @param trim.marker.2 Trim top and bottom percentile of marker 2 signal to
 #' pre-scale trim values (below) to remove extremely low and high values
-#' (Default is TRUE)
+#' (Default is FALSE)
 #' @param pre.scale.trim Set trimming percentile values (Defalut is 0.99)
 #' @param display.unscaled.values Set to TRUE if you want to view the unscaled
 #' gene/protein expression values (Default is FALSE)
@@ -69,22 +69,22 @@ dualLabeling <- function (object,
                           marker.2, 
                           marker.1.type = "SCT", 
                           marker.2.type = "SCT", 
-                          data.reduction = "umap", 
+                          data.reduction = "both", 
                           point.size = 0.5, 
                           point.shape = 16, 
                           point.transparency = 0.5, 
-                          add.marker.thresholds = FALSE, 
+                          add.marker.thresholds = TRUE, 
                           marker.1.threshold = 0.5, 
                           marker.2.threshold = 0.5, 
-                          filter.data = FALSE, 
-                          M1.filter.direction = "greater than", 
-                          M2.filter.direction = "greater than", 
+                          filter.data = TRUE, 
+                          marker.1.filter.direction = "greater than", 
+                          marker.2.filter.direction = "greater than", 
                           apply.filter.1 = TRUE, 
                           apply.filter.2 = TRUE, 
                           filter.condition = TRUE, 
-                          parameter.name = "Marker", 
-                          trim.marker.1 = TRUE, 
-                          trim.marker.2 = TRUE, 
+                          parameter.name = "My_CoExp", 
+                          trim.marker.1 = FALSE, 
+                          trim.marker.2 = FALSE, 
                           pre.scale.trim = 0.99, 
                           display.unscaled.values = FALSE) 
 {
@@ -104,11 +104,28 @@ dualLabeling <- function (object,
     if (!(marker.2.type %in% names(object@assays))) {
         stop(sprintf("%s slot is not found in dataset", marker.2.type))
     }
-  
+    if (data.reduction=='both') {
+      if(sum(c('tsne','umap')%in%names(object@reductions))<2){
+        rdctns=names(object@reductions)[names(object@reductions)%in%c('umap','tsne')]
+      stop(sprintf("Object does not contain both umap and tsne reductions.
+       Change Data Reduction parameter to %s",
+                   paste(rdctns,collapse=' or ')
+                   )
+           )
+      }
+    }else{ 
+      if (data.reduction%in%names(object@reductions)==F){
+        stop(sprintf("Object does not contain %s reduction. \n    ",
+                     data.reduction),
+             sprintf("Change Data Reduction parameter to %s",
+                c('tsne','umap')[c('tsne','umap')%in%names(object@reductions)])
+        )
+      }
+    }
   #### Functions ####
   
   #Function for drawing overlay images for umap/tsne:
-    .ggOverlay <- function(so.sub, df, marker.1, marker.2) {
+    .ggOverlay <- function(so.sub, df, marker.1, marker.2,reduction) {
         df <- df %>% arrange(mark1.scale)
         
         xmin <- min(df$dr1) - 0.1 * min(df$dr1)
@@ -127,8 +144,8 @@ dualLabeling <- function (object,
             alpha = point.transparency
           ) + 
           theme_classic() + 
-          xlab(paste0(data.reduction, "-1")) + 
-          ylab(paste0(data.reduction, "-2")) + 
+          xlab(paste0(reduction, "-1")) + 
+          ylab(paste0(reduction, "-2")) + 
           ggtitle(marker.1) + 
           coord_fixed()
         
@@ -147,8 +164,8 @@ dualLabeling <- function (object,
             alpha = point.transparency
           ) + 
           theme_classic() + 
-          xlab(paste0(data.reduction, "-1")) + 
-          ylab(paste0(data.reduction, "-2")) + 
+          xlab(paste0(reduction, "-1")) + 
+          ylab(paste0(reduction, "-2")) + 
           ggtitle(marker.2) + 
             coord_fixed()
         
@@ -169,8 +186,8 @@ dualLabeling <- function (object,
             alpha = point.transparency
           ) + 
             theme_classic() + 
-          xlab(paste0(data.reduction, "-1")) + 
-          ylab(paste0(data.reduction, "-2")) + 
+          xlab(paste0(reduction, "-1")) + 
+          ylab(paste0(reduction, "-2")) + 
           ggtitle("Combined") + 
           coord_fixed()
         
@@ -322,22 +339,90 @@ dualLabeling <- function (object,
     }
     mark2.scale <- rescale(mark2, to = c(0, 1))
     
-    #Draw Plots:
-    df <- data.frame(
-      cbind(
-        dr1 = so.sub@reductions[[data.reduction]]@cell.embeddings[,1], 
-        dr2 = so.sub@reductions[[data.reduction]]@cell.embeddings[,2], 
-        mark1.scale, 
-        mark2.scale
-      )
-    )
-    gg.list <- .ggOverlay(so.sub, df, marker.1, marker.2)
-    gg.list2 <- .ggOverlay2(so.sub, df, marker.1, marker.2)
+   
     
+    if (data.reduction=='tsne'|data.reduction=='umap') {
+      
+      #Draw Plots:
+      df <- data.frame(
+        cbind(
+          dr1 = so.sub@reductions[[data.reduction]]@cell.embeddings[,1], 
+          dr2 = so.sub@reductions[[data.reduction]]@cell.embeddings[,2], 
+          mark1.scale, 
+          mark2.scale
+        )
+      )
+      
+      gg.list <- .ggOverlay(so.sub, df, marker.1, marker.2,data.reduction)
+      gg.list2 <- .ggOverlay2(so.sub, df, marker.1, marker.2)
+      
+      grob <- 
+        arrangeGrob(gg.list[[1]], 
+                    gg.list[[2]], 
+                    gg.list[[3]],
+                    gg.list2[[1]], 
+                    gg.list2[[2]], 
+                    gg.list2[[3]], 
+                    ncol = 3)
+      
+      
+    } else if (data.reduction=='both'){
+      
+      #Draw Plots:
+      df.u <- data.frame(
+        cbind(
+          dr1 = so.sub@reductions[['umap']]@cell.embeddings[,1], 
+          dr2 = so.sub@reductions[['umap']]@cell.embeddings[,2], 
+          mark1.scale, 
+          mark2.scale
+        )
+      )
+      gg.list.u <- .ggOverlay(so.sub, df.u, marker.1, marker.2,'umap')
+      
+      
+      #Draw Plots:
+      df.t <- data.frame(
+        cbind(
+          dr1 = so.sub@reductions[['tsne']]@cell.embeddings[,1], 
+          dr2 = so.sub@reductions[['tsne']]@cell.embeddings[,2], 
+          mark1.scale, 
+          mark2.scale
+        )
+      )
+      gg.list.t <- .ggOverlay(so.sub, df.t, marker.1, marker.2,'tsne')
+      
+      
+      ## df.u being used is arbitrary. only difference between df.u and df.t is 
+      ## reduction columns which are not being used by ggOverlay2
+      df=df.u[,colnames(df.u)%in%c('dr1','dr2')==F]
+      
+      gg.list2 <- .ggOverlay2(so.sub, df, marker.1, marker.2)
+     
+      
+      grob.u <- 
+        arrangeGrob(gg.list.u[[1]], 
+                    gg.list.u[[2]], 
+                    gg.list.u[[3]],
+                    gg.list2[[1]], 
+                    gg.list2[[2]], 
+                    gg.list2[[3]], 
+                    ncol = 3)
+      grob.t <- 
+        arrangeGrob(gg.list.t[[1]], 
+                    gg.list.t[[2]], 
+                    gg.list.t[[3]],
+                    gg.list2[[1]], 
+                    gg.list2[[2]], 
+                    gg.list2[[3]], 
+                    ncol = 3)
+      
+    } else {
+      stop("Incorrect selection for data.reduction: use either umap,tsne or both")
+    }
+    
+    x = df$mark1.scale
+    y = df$mark2.scale
 
-        x = df$mark1.scale
-        y = df$mark2.scale
-        
         df_heatmap <- data.frame(
           x = x, 
           y = y, 
@@ -360,14 +445,7 @@ dualLabeling <- function (object,
             
   p2 <- ggMarginal(p, df_heatmap, x = marker.1, y = marker.2, type = "density")
 
-    grob <- 
-      arrangeGrob(gg.list[[1]], 
-                  gg.list[[2]], 
-                  gg.list[[3]],
-                  gg.list2[[1]], 
-                  gg.list2[[2]], 
-                  gg.list2[[3]], 
-                  ncol = 3)
+
     grobHM <- 
       arrangeGrob(p2,ncol=1,nrow=1)
   
@@ -379,7 +457,7 @@ dualLabeling <- function (object,
         df <- df %>% mutate(sample = so.sub@meta.data$orig.ident) %>% 
             mutate(cellbarcode = rownames(so.sub@meta.data))
         
-        if (M1.filter.direction == "greater than") {
+        if (marker.1.filter.direction == "greater than") {
             ind1 <- df$mark1.scale > t1
         } else {
             ind1 <- df$mark1.scale < t1
@@ -389,7 +467,7 @@ dualLabeling <- function (object,
         print("Marker 1 filter:")
         print(sum(ind1))
         
-        if (M2.filter.direction == "greater than") {
+        if (marker.2.filter.direction == "greater than") {
             ind2 <- df$mark2.scale > t2
         } else {
             ind2 <- df$mark2.scale < t2
@@ -447,18 +525,18 @@ dualLabeling <- function (object,
                 titlename <- paste(
                   "Number of cells that pass filters:\n", 
                   marker.1, 
-                  M1.filter.direction, 
+                  marker.1.filter.direction, 
                   marker.1.threshold, 
                   cond, 
                   marker.2, 
-                  M2.filter.direction, 
+                  marker.2.filter.direction, 
                   marker.2.threshold
                 )
             } else {
                 titlename <- paste(
                   "Number of cells that pass filter:\n", 
                   marker.1, 
-                  M1.filter.direction, 
+                  marker.1.filter.direction, 
                   marker.1.threshold
                 )
             }
@@ -466,7 +544,7 @@ dualLabeling <- function (object,
             titlename <- paste(
               "Number of cells that pass filter:\n",
               marker.2, 
-              M2.filter.direction, 
+              marker.2.filter.direction, 
               marker.2.threshold
             )
         }
@@ -488,10 +566,24 @@ dualLabeling <- function (object,
         g <- textGrob("No filtering thresholds applied")
     }
     
-    result.list <- list(object = so.sub, 
-                        plot = grob,
-                        plot_densityHM = grobHM,
-                        plot_table = g)
+    
+    if (data.reduction=='tsne'|data.reduction=='umap') {
+      
+      result.list <- list(object = so.sub, 
+                          plot = grob,
+                          plot_densityHM = grobHM,
+                          plot_table = g)
+      
+      
+    } else if (data.reduction=='both'){
+      
+      result.list <- list(object = so.sub, 
+                          plot_tsne = grob.t,
+                          plot_umap = grob.u,
+                          plot_densityHM = grobHM,
+                          plot_table = g)
+    }
+
     
     return(result.list)
 }
