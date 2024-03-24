@@ -6,7 +6,7 @@ getParamCN <- function(data){
     object=object
     
     npcs = 30
-    vars.to.regress = c()
+    vars.to.regress = NULL
     clust.res.low=0.2
     clust.res.high = 1.2
     only.var.genes = FALSE 
@@ -24,12 +24,12 @@ getParamCN <- function(data){
     only.var.genes = FALSE 
     
     
-  } else if (data == "PBMC_Single") {
+  } else if (data == "NSCLC_Single") {
     object <- readRDS(test_path(
       paste0("fixtures/",data), paste0(data,'_Filtered_SO_downsample.rds')))
     
     npcs = 30
-    vars.to.regress = c()
+    vars.to.regress = NULL
     clust.res.low=0.2
     clust.res.high = 1.2
     only.var.genes = FALSE 
@@ -41,7 +41,7 @@ getParamCN <- function(data){
     object=object
     
     npcs = 30
-    vars.to.regress = c()
+    vars.to.regress = NULL
     clust.res.low=0.2
     clust.res.high = 1.2
     only.var.genes = FALSE 
@@ -53,7 +53,7 @@ getParamCN <- function(data){
     object=object
     
     npcs = 30
-    vars.to.regress = c()
+    vars.to.regress = NULL
     clust.res.low=0.2
     clust.res.high = 1.2
     only.var.genes = TRUE 
