@@ -2,26 +2,28 @@
 
 
 
-## v1.4.1 (2024-02-13)
+## v1.4.2 (2024-05-21)
 
-### Fix
+### Performance
 
-* fix: test docker container update ([`ff3b2b7`](https://github.com/ruiheesi/SCWorkflow/commit/ff3b2b7c26878ec0a86fcd007f9b4126c1a89056))
+* perf(violinplot): version 96 update ([`973be3c`](https://github.com/ruiheesi/SCWorkflow/commit/973be3cddfe038f0ea55f208a6545bb2be27f269))
 
 ### Unknown
 
-* Merge pull request #22 from ruiheesi/dev
+* Merge pull request #25 from ruiheesi/dev
 
-Dev ([`7d77254`](https://github.com/ruiheesi/SCWorkflow/commit/7d77254c2655a7441b615b63b296d9752239be09))
+test_demo_update_CD ([`4ed5b1b`](https://github.com/ruiheesi/SCWorkflow/commit/4ed5b1b17115c9e486ad0cae6abaab72a30f917b))
 
-* Merge pull request #21 from ruiheesi/testCD2
+* Merge pull request #24 from ruiheesi/demo_update
 
-fix: test docker container update ([`14b471b`](https://github.com/ruiheesi/SCWorkflow/commit/14b471b2e44164ebba5b08555f555b4900a88a43))
+perf(violinplot): version 96 update ([`7ff4e0f`](https://github.com/ruiheesi/SCWorkflow/commit/7ff4e0fdc8f61ad54adc0a0bd4929f035ee91284))
 
 
-## v1.4.0 (2024-01-29)
+## v1.4.1 (2024-02-13)
 
 ### Documentation
+
+* docs(version): Automatic development release ([`02e6cda`](https://github.com/ruiheesi/SCWorkflow/commit/02e6cda71bc2fdcb099b4f9b09aca1c888740734))
 
 * docs(version): Automatic development release ([`ff2430f`](https://github.com/ruiheesi/SCWorkflow/commit/ff2430f00cc67db2289c16f41711f3713da24aa3))
 
@@ -49,6 +51,8 @@ fix: test docker container update ([`14b471b`](https://github.com/ruiheesi/SCWor
 
 ### Fix
 
+* fix: test docker container update ([`ff3b2b7`](https://github.com/ruiheesi/SCWorkflow/commit/ff3b2b7c26878ec0a86fcd007f9b4126c1a89056))
+
 * fix: update readme ([`d8d4013`](https://github.com/ruiheesi/SCWorkflow/commit/d8d401362ba532345ca58ad3f06d748387e9481e))
 
 ### Test
@@ -62,6 +66,14 @@ fix: test docker container update ([`14b471b`](https://github.com/ruiheesi/SCWor
 * test: mute line42 in test-Process_Raw_Data ([`75dbd06`](https://github.com/ruiheesi/SCWorkflow/commit/75dbd064c5a4778030c0d959eaf39bbb5c234983))
 
 ### Unknown
+
+* Merge pull request #22 from ruiheesi/dev
+
+Dev ([`7d77254`](https://github.com/ruiheesi/SCWorkflow/commit/7d77254c2655a7441b615b63b296d9752239be09))
+
+* Merge pull request #21 from ruiheesi/testCD2
+
+fix: test docker container update ([`14b471b`](https://github.com/ruiheesi/SCWorkflow/commit/14b471b2e44164ebba5b08555f555b4900a88a43))
 
 * Merge pull request #19 from ruiheesi/dev
 
