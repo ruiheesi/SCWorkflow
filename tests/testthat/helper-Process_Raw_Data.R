@@ -31,7 +31,9 @@ getParamRaw <- function(data){
           sep = '\t')
       
     input=list.files(
-      test_path(paste0("fixtures/",data,"/h5files")),".h5",full.names = T)
+      test_path(paste0("fixtures/",data,"/h5files")),"",full.names = T)
+    # input=list.files(
+    #   test_path(paste0("fixtures/",data,"/h5files")),".h5",full.names = T)
     organism = "Mouse"
     sample.metadata.table=
       test_path(paste0("fixtures/",data,"/",data,"_metadata.txt"))
