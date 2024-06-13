@@ -63,6 +63,7 @@
 #' @param exclude.sample Exclude unwanted samples from the merge step.
 #'  Include sample names to be removed. If you want to exclude several samples,
 #'  separate each sample number by comma (e.g. sample1,sample2,sample3,sample4).
+#'  (Default: NULL)
 #' @param project.name Add project name to the Seurat object metadata. 
 #'  (Default: 'scRNAProject')
 #' @param cell.hashing.data Set to "TRUE" if you are using cell-hashed data. 
@@ -75,6 +76,9 @@
 #' @param cell.count.limit If total number of cell exceeds this limit conserve
 #'  memory option of SCTransform will be used and return only Variable Genes. 
 #'  (Default: 35000)  
+#' @param reduce.so Remove any additional assays from input Seurat Objects
+#'  except for the original RNA Assay. This option should be used if input 
+#'  Seurat Object was created outside of the NIDAP pipeline. (Default: FALSE)
 #' 
 #' 
 #' @importFrom Seurat CreateAssayObject Idents as.SingleCellExperiment AddMetaData
@@ -126,8 +130,9 @@ combineNormalize <- function(object,
                              jackstraw = FALSE,
                              jackstraw.dims=5,
                              
-                             exclude.sample = "",
+                             exclude.sample = NULL,
                              cell.count.limit= 35000,
+                             reduce.so = FALSE,
                              project.name = 'scRNAProject',
                              cell.hashing.data = FALSE
                              
@@ -139,7 +144,7 @@ combineNormalize <- function(object,
   ##--------------- ##
   ## Error Messages ##
   ## -------------- ##
-  
+
   
   ## --------- ##
   ## Functions ####
@@ -320,6 +325,18 @@ combineNormalize <- function(object,
     object <- object[!names(object)%in%exclude.sample]
   }
   
+  # Remove all assays except RNA
+  if(reduce.so==T){
+  smpls=names(object)
+  object2=sapply(smpls,function(x){
+    so=object[[x]]
+    DefaultAssay(so)='RNA'
+    so=DietSeurat(object = so,
+                  assays = c('RNA','Protein')
+                  )
+    return(so)
+  })
+  }
   
   ## Auto detect number of cells and turn on Conserve memory ====
   

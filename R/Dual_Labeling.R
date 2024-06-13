@@ -46,14 +46,14 @@
 #' @param display.unscaled.values Set to TRUE if you want to view the unscaled
 #' gene/protein expression values (Default is FALSE)
 
-#' @importFrom Seurat
+#' @import Seurat
+#' @import ggExtra
 #' @importFrom scales rescale
 #' @importFrom gridExtra arrangeGrob
 #' @importFrom grid grid.draw
 #' @importFrom dplyr arrange mutate case_when
 #' @importFrom magrittr %>%
 #' @importFrom stats quantile
-#' @importFrom ggExtra ggMarginal
 #' @importFrom ggplot2 ggplot geom_point theme_classic xlab ylab geom_vline
 #'  geom_hline scale_color_identity theme_bw coord_fixed ggtitle aes
 #'
