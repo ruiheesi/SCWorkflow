@@ -27,7 +27,7 @@ getParamFQ <- function(data){
     
   } else if (data == "NSCLC_Multi") {
     object=readRDS(test_path(
-      paste0("fixtures/",data), paste0(data,'_ProcessRaw_SO_downsample.rds')))
+      paste0("fixtures/",data), paste0('NSCLCmulti','_ProcessRaw_SO_downsample.rds')))
 
     mad.mitoch.limits=c(NA,3)
     mitoch.limits = c(NA,25)
