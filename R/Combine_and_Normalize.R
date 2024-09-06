@@ -124,7 +124,7 @@ combineNormalize <- function(object,
                              clust.res.bin = 0.2,
                              
                              # Select PCs
-                             methods.pca = 'none',
+                             methods.pca = NULL,
                              var.threshold = 0.1,
                              pca.reg.plot = FALSE,
                              jackstraw = FALSE,
@@ -596,7 +596,7 @@ combineNormalize <- function(object,
   
   ### Determin # of PCs ====
     #### create Elbow plot ====
-  if ('none'%in%methods.pca==F) {
+  if (is.null(methods.pca) == FALSE) {
     
     elbow.grob=lapply(names(object.merge.split),function(x){
       gg=
