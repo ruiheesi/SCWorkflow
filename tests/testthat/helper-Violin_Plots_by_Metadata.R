@@ -4,10 +4,12 @@ selectViolin <- function(dataset) {
     
     print("selected TEC dataset") 
     object = selectCRObject("TEC")
-    group.by = "orig_ident"
-    group.subset =  unique(object$orig.ident)[1:3]
+    group = "orig_ident"
+    assay = 'SCT'
+    slot = 'scale.data'
+    #group.subset =  unique(object$orig.ident)[1:3]
     set.seed(81)
-    genes.of.interest = sample(rownames(object$SCT@scale.data), 5, 
+    genes = sample(rownames(object$SCT@scale.data), 5, 
                                replace = FALSE)
     
   } else if (dataset == "Chariou"){
