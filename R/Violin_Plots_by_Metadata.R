@@ -44,40 +44,28 @@
 
 #' @return violin ggplot2 object
 
-violinPlot <- function(object, 
-                       assay = "SCT", 
-                       slot = "scale.data", 
-                       group.by, 
-                       group.subset = c(), 
-                       genes.of.interest,
-                       filter.outliers = FALSE, 
-                       scale.data = TRUE, 
-                       log.scale.data = FALSE, 
-                       reorder.ident = TRUE,
-                       rename.ident = "", 
-                       ylimit = 0, 
-                       plot.style = "grid", 
-                       outlier.low.lim = 0.1, 
-                       outlier.up.lim = 0.9, 
-                       jitter.points = FALSE,
-                       jitter.width = 0.05, 
-                       jitter.dot.size = 0.5, 
-                       print.outliers = TRUE){
-  
-  # Error Messages
-  gene.filter <- genes.of.interest %in% rownames(GetAssayData(
-    object = object, slot = slot, assay = assay))
-  missing.genes <- genes.of.interest[!gene.filter]
-  genes.of.interest <- genes.of.interest[gene.filter]
-  
-  if(length(missing.genes) > 0){
-    print(paste("The following genes are missing from the dataset:", 
-                missing.genes, sep = " "))
-  }
-  
-  if(length(genes.of.interest) == 0){
-    stop("No query genes were found in the dataset.")
-  }
+violinPlot <- function (object, assay, slot, genes, group, facet_data = FALSE, facet_by = "", jitter_points, jitter_dot_size) 
+{
+    library(Seurat)
+    library(ggplot2)
+    library(gridExtra)
+    library(tidyr)
+    library(dplyr)
+    library(broom)
+
+    if (!assay %in% Assays(object)) {
+        stop("expression data type was not found in Seurat object")
+    } else if (!slot %in% slotNames(object[[assay]])) {
+        stop("slot not found in Seurat[[assay]]")
+    } else if (all(!genes %in% rownames(object[[assay]]))) {
+        stop("no genes were found in Seurat object")
+    } else if (!group %in% colnames(object@meta.data)) {
+        stop("grouping parameter was not found in Seurat object")
+    } else if (!is.null(facet_by)) {
+        if (!facet_by %in% colnames(object@meta.data)) {
+            stop("facet parameter was not found in Seurat object")
+        }
+      }
   
   if(!group.by %in% colnames(object@meta.data)){
     colnames(object@meta.data) <- gsub("\\.","_",colnames(object@meta.data))
