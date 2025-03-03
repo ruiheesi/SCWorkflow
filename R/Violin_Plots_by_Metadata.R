@@ -54,6 +54,7 @@ violinPlot_dev <- function (object, assay, slot, genes, group, facet_data = FALS
     library(broom)
   
   ### Testing, add new comments for deployment 20250303
+  print('new code for testing 20250303')
 
     if (!assay %in% Assays(object)) {
         stop("expression data type was not found in Seurat object")
