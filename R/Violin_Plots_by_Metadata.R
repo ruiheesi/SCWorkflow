@@ -44,7 +44,7 @@
 
 #' @return violin ggplot2 object
 
-violinPlot <- function (object, assay, slot, genes, group, facet_data = FALSE, facet_by = "", jitter_points, jitter_dot_size) 
+violinPlot <- function (object, assay, slot, genes, group, facet_by = "", jitter_points, jitter_dot_size) 
 {
   library(Seurat)
   library(ggplot2)
@@ -52,6 +52,8 @@ violinPlot <- function (object, assay, slot, genes, group, facet_data = FALSE, f
   library(tidyr)
   library(dplyr)
   library(broom)
+  
+  facet_data = facet_by != ""
   
   if (!assay %in% Assays(object)) {
     stop("expression data type was not found in Seurat object")
@@ -61,10 +63,6 @@ violinPlot <- function (object, assay, slot, genes, group, facet_data = FALSE, f
     stop("no genes were found in Seurat object")
   } else if (!group %in% colnames(object@meta.data)) {
     stop("grouping parameter was not found in Seurat object")
-  } else if (!is.null(facet_by)) {
-    if (!facet_by %in% colnames(object@meta.data)) {
-      stop("facet parameter was not found in Seurat object")
-    }
   }
   
   # Scale to non-negative for visualization
