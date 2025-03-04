@@ -7,6 +7,8 @@ selectViolin <- function(dataset) {
     group = "orig_ident"
     assay = 'SCT'
     slot = 'scale.data'
+    jitter_points = T
+    jitter_dot_size = 4
     #group.subset =  unique(object$orig.ident)[1:3]
     set.seed(81)
     genes = sample(rownames(object$SCT@scale.data), 5, 
