@@ -44,7 +44,17 @@
 
 #' @return violin ggplot2 object
 
-violinPlot_mod <- function (object, assay, slot, genes, group, facet_by = "", jitter_points, jitter_dot_size) 
+violinPlot_mod <- function (object, 
+                            assay, 
+                            slot, 
+                            genes, 
+                            group, 
+                            facet_by = "", 
+                            filter_outliers = F,
+                            outlier_low = 0.05,
+                            outlier_high = 0.95,
+                            jitter_points, 
+                            jitter_dot_size) 
 {
   library(Seurat)
   library(ggplot2)
