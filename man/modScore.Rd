@@ -6,15 +6,10 @@
 \usage{
 modScore(
   object,
-  samples.subset,
-  sample.to.display,
   marker.table,
-  cite.seq = FALSE,
-  celltypes,
-  threshold = c(0),
+  ms.threshold,
   general.class,
-  multi.lvl = FALSE,
-  lvl.df,
+  lvl.vec = c(),
   reduction = "tsne",
   nbins = 10,
   gradient.ft.size = 6,
@@ -25,33 +20,11 @@ modScore(
 \arguments{
 \item{object}{Seurat-class object}
 
-\item{samples.subset}{List of samples to subset the data by}
-
-\item{sample.to.display}{List of samples to depict on dimension plot,
-samples not in the list would be colored gray in
-the background}
-
 \item{marker.table}{Table of marker genes for each celltype
 (column names of the table), append "_prot" or
 "_neg" for proteins or negative markers}
 
-\item{cite.seq}{Set to TRUE if there are CITE-seq markers in
-marker.table (Default: FALSE)}
-
-\item{celltypes}{Vector of celltypes from marker.table to
-screen for}
-
-\item{threshold}{Specify bimodal thresholds for cell classification,
-should be of the same length as celltypes
-vector}
-
 \item{general.class}{Base population of cells to classify}
-
-\item{multi.lvl}{Toggle to TRUE if there are subpopulations of cells
-you want to screen for (Default: FALSE)}
-
-\item{lvl.df}{Table of subpopulation levels and parent-child
-information (e.g. Tcells-CD4, Tcells-CD8)}
 
 \item{reduction}{Choose among tsne, umap, and pca (Default: tsne)}
 
@@ -66,6 +39,22 @@ density plot of ModuleScore distribution
 ModuleScore distribution (Default: 6)}
 
 \item{step.size}{Set step size of distribution plots (Default: 0.1)}
+
+\item{cite.seq}{Set to TRUE if there are CITE-seq markers in
+marker.table (Default: FALSE)}
+
+\item{celltypes}{Vector of celltypes from marker.table to
+screen for}
+
+\item{threshold}{Specify bimodal thresholds for cell classification,
+should be of the same length as celltypes
+vector}
+
+\item{multi.lvl}{Toggle to TRUE if there are subpopulations of cells
+you want to screen for (Default: FALSE)}
+
+\item{lvl.df}{Table of subpopulation levels and parent-child
+information (e.g. Tcells-CD4, Tcells-CD8)}
 }
 \value{
 List containing annotated dimension plot with ModuleScore
